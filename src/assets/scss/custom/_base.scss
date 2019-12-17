@@ -1,0 +1,25 @@
+.v-content__wrap {
+  background-color: $dark-blue--lighten;
+}
+
+.border-right-divider {
+  border-right: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.border--grey {
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+}
+
+@media (min-width: 1904px) {
+  .container--custom {
+    max-width: 1185px !important;
+  }
+}
+
+@media (max-width: 959px) {
+  .cards-wrapper {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+}
+
