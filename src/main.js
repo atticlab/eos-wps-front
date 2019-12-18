@@ -17,7 +17,7 @@ import './plugins/helpers';
 import './plugins/errorsHandler';
 
 // Apis
-import './api/userServiceApi';
+import './api/independentEosApi';
 
 // Constants
 import './plugins/constants';
