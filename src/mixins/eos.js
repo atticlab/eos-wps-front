@@ -9,9 +9,9 @@ export default {
   data() {
     return {
       $_independentEos: null,
-      isActiveProposalsLoading: false,
+      // isActiveProposalsLoading: false,
       isProposalExistLoading: false,
-      isDraftProposalByAccountLoading: false,
+      // isDraftProposalByAccountLoading: false,
       isSendDepositLoading: false,
       isCreateProposalDraft: false,
       isModifyProposalDraftLoading: false,
@@ -58,33 +58,37 @@ export default {
         ],
       };
     },
-    async $_getActiveProposals() {
-      let lowerBound = '';
-
-      try {
-        this.isActiveProposalsLoading = true;
-        let response = await this
-          .$_getTableRows(proposalsTable, this.$constants.CONTRACT_NAME, lowerBound, lowerBound);
-        const result = response.rows;
-        if (!result.length) {
-          return result;
-        }
-
-        while (response.more) {
-          lowerBound = result[result.length - 1].proposal_name;
-          /* eslint-disable */
-          response = await this.$_getTableRows(proposalsTable, this.$constants.CONTRACT_NAME, lowerBound, lowerBound);
-          /* eslint-enable */
-          result.push(...response.rows);
-        }
-        return result;
-      } catch (e) {
-        console.error('$_getActiveProposals', e);
-        return [];
-      } finally {
-        this.isActiveProposalsLoading = false;
-      }
-    },
+    // async $_getActiveProposals() {
+    //   let lowerBound = '';
+    //
+    //   try {
+    //     this.isActiveProposalsLoading = true;
+    //     let response = await this
+    //       .$_getTableRows(proposalsTable, this.$constants.CONTRACT_NAME, lowerBound, lowerBound);
+    //     const result = response.rows;
+    //     if (!result.length) {
+    //       return result;
+    //     }
+    //
+    //     while (response.more) {
+    //       lowerBound = result[result.length - 1].proposal_name;
+    //       /* eslint-disable */
+    //       response = await this.$_getTableRows(
+    //       proposalsTable,
+    //       this.$constants.CONTRACT_NAME,
+    //       lowerBound,
+    //       lowerBound);
+    //       /* eslint-enable */
+    //       result.push(...response.rows);
+    //     }
+    //     return result;
+    //   } catch (e) {
+    //     console.error('$_getActiveProposals', e);
+    //     return [];
+    //   } finally {
+    //     this.isActiveProposalsLoading = false;
+    //   }
+    // },
     async $_isProposalExist(candidateName) {
       if (!candidateName) {
         throw new Error('$_isProposalExist empty candidateName');
@@ -112,37 +116,42 @@ export default {
         this.isProposalExistLoading = false;
       }
     },
-    async $_getDraftProposalByAccount() {
-      let lowerBound = '';
-
-      if (!this.getAccountName) {
-        // TODO: notify about err
-        throw new Error('you should login in Scatter');
-      }
-      try {
-        this.isDraftProposalByAccountLoading = true;
-        let response = await this
-          .$_getTableRows(draftsTable, this.getAccountName, lowerBound, lowerBound);
-        const result = response.rows;
-        if (!result.length) {
-          return result;
-        }
-
-        while (response.more) {
-          lowerBound = result[result.length - 1].proposal_name;
-          /* eslint-disable */
-          response = await this.$_getTableRows(draftsTable, this.$constants.CONTRACT_NAME, lowerBound, lowerBound);
-          /* eslint-enable */
-          result.push(...response.rows);
-        }
-        return result;
-      } catch (e) {
-        console.error('$_getDraftProposalByAccount', e);
-        return [];
-      } finally {
-        this.isDraftProposalByAccountLoading = false;
-      }
-    },
+    // async $_getDraftProposalByAccount() {
+    //   let lowerBound = '';
+    //
+    //   if (!this.getAccountName) {
+    //     // TODO: notify about err
+    //     throw new Error('you should login in Scatter');
+    //   }
+    //   try {
+    //     this.isDraftProposalByAccountLoading = true;
+    //     let response = await this
+    //       .$_getTableRows(draftsTable, this.getAccountName, lowerBound, lowerBound);
+    //     const result = response.rows;
+    //     if (!result.length) {
+    //       return result;
+    //     }
+    //
+    //     while (response.more) {
+    //       lowerBound = result[result.length - 1].proposal_name;
+    //       /* eslint-disable */
+    //       response = await this.$_getTableRows(
+    //       draftsTable,
+    //       this.$constants.CONTRACT_NAME,
+    //       lowerBound,
+    //       lowerBound
+    //       );
+    //       /* eslint-enable */
+    //       result.push(...response.rows);
+    //     }
+    //     return result;
+    //   } catch (e) {
+    //     console.error('$_getDraftProposalByAccount', e);
+    //     return [];
+    //   } finally {
+    //     this.isDraftProposalByAccountLoading = false;
+    //   }
+    // },
     async $_sendDeposit() {
       if (!this.eos) {
         // TODO: notify about err

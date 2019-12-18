@@ -29,6 +29,9 @@ const routes = [
     path: '/proposals/drafts',
     name: 'ProposalsDrafts',
     component: Proposals,
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: '/proposal/active/:slug',
@@ -39,11 +42,17 @@ const routes = [
     path: '/proposal/draft/:slug',
     name: 'ProposalDraft',
     component: Proposal,
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: '/proposal-editor/:slug?',
     name: 'Proposal editor',
     component: ProposalCreation,
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: '/404',
@@ -56,18 +65,27 @@ const routes = [
   },
 ];
 
-// const routesForbiddenBeforeSignIn = [
-//   'Proposal editor',
-//   'ProposalsDrafts',
-//   'ProposalDraft',
-// ];
-
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   // Makes a page go to the top when a route is visited
   scrollBehavior: () => ({ y: 0 }),
   routes,
+});
+
+// Guard routes which require auth
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!Vue.prototype.$store.getters['userService/getAccountNameWithAuthority']) {
+      next({
+        path: '/',
+      });
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
 });
 
 export default router;

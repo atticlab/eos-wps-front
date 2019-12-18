@@ -7,53 +7,71 @@
 
       <v-divider class="my-12" />
 
-      <v-card />
-      <v-row v-if="!isDrafts">
-        <v-col
-          sm="4"
-          md="3"
-        >
-          <div class="sort-by">
-            <v-select
-              v-model="selectedSortOption"
-              :items="sortByOptions"
-              label="Sort by"
-              outlined
-              dense
-              :menu-props="{ offsetY:true }"
-            />
-          </div>
-        </v-col>
-      </v-row>
+      <div
+        v-if="isActiveProposalsLoading || isDraftProposalByAccountLoading"
+        class="d-flex justify-center"
+      >
+        <v-progress-circular
+          :size="70"
+          :width="7"
+          color="primary"
+          indeterminate
+        />
+      </div>
 
-      <ProposalItem
-        v-for="(proposal, index) in proposalsFullInfo"
-        :key="index"
-        :proposal-name="proposal.proposal_name"
-        :title="proposal.title"
-        :proposer="proposal.proposer"
-        :img="proposal.proposal_json.img"
-        :category="proposal.proposal_json.category.toUpperCase()"
-        :summary="proposal.proposal_json.summary"
-        :budget="proposal.total_budget"
-        :duration="proposal.duration"
-        :payments="proposal.payments"
-        :status="proposal.status"
-        :votes="proposal.total_net_votes"
-        :is-draft="proposal.isDraft"
-      />
+      <template v-else>
+        <v-row v-if="!isDrafts">
+          <v-col
+            sm="4"
+            md="3"
+          >
+            <div class="sort-by">
+              <v-select
+                v-model="selectedSortOption"
+                :items="sortByOptions"
+                label="Sort by"
+                outlined
+                dense
+                :menu-props="{ offsetY:true }"
+              />
+            </div>
+          </v-col>
+        </v-row>
+
+        <ProposalItem
+          v-for="(proposal, index) in proposalsFullInfo"
+          :key="index"
+          :proposal-name="proposal.proposal_name"
+          :title="proposal.title"
+          :proposer="proposal.proposer"
+          :img="proposal.proposal_json.img"
+          :category="proposal.proposal_json.category"
+          :summary="proposal.proposal_json.summary"
+          :budget="proposal.total_budget"
+          :duration="proposal.duration"
+          :payments="proposal.payments"
+          :status="proposal.status"
+          :votes="proposal.total_net_votes"
+          :is-draft="proposal.isDraft"
+        />
+      </template>
     </v-container>
   </div>
 </template>
 
 <script>
   import ProposalItem from '@/components/ProposalItem.vue';
+  import getActiveProposals from '@/mixins/getActiveProposals';
+  import getDraftsByAccountName from '@/mixins/getDraftsByAccountName';
+  // import eos from '@/mixins/eos';
 
   export default {
     name: 'Proposals',
     components: {
       ProposalItem,
     },
+    // getDraftsByAccountName
+    mixins: [getActiveProposals, getDraftsByAccountName],
     data() {
       return {
         sortByOptions: [
@@ -63,7 +81,7 @@
         selectedSortOption: null,
         // Active or drafts
         proposalsType: '',
-        proposals: [],
+        // proposals: [],
         votes: [],
       };
     },
@@ -98,9 +116,12 @@
         handler(val) {
           // Request either active proposals or drafts
           this.proposalsType = this.getLastPartOfRoute(val.path);
-          this.proposals = this.proposalsType === 'active'
-                            ? this.$constants.PROPOSALS_ACTIVE
-                            : this.$constants.PROPOSALS_DRAFT;
+          if (this.proposalsType === 'active') {
+            this.$_getActiveProposals();
+          } else {
+            this.$_getDraftProposalByAccount();
+          }
+
           // get votes
           this.votes = this.$constants.VOTES;
         },
