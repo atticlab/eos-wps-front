@@ -176,29 +176,11 @@
 <script>
   import { mapActions, mapGetters } from 'vuex';
   import eos from '@/mixins/eos';
-  import getActiveProposals from '@/mixins/getActiveProposals';
-  import getDeposits from '@/mixins/getDeposits';
-  import getDraftByProposalName from '@/mixins/getDraftByProposalName';
-  import getDraftsByAccountName from '@/mixins/getDraftsByAccountName';
-  import getSettings from '@/mixins/getSettings';
-  import getState from '@/mixins/getState';
-  import getVotes from '@/mixins/getVotes';
-  import isProposalExist from '@/mixins/isProposalExist';
   import ActionType from '@/store/constants';
 
   export default {
     name: 'App',
-    mixins: [
-      eos,
-      getActiveProposals,
-      getDeposits,
-      getDraftByProposalName,
-      getDraftsByAccountName,
-      getSettings,
-      getState,
-      isProposalExist,
-      getVotes,
-    ],
+    mixins: [eos],
     data() {
       return {
         drawer: false,
@@ -209,21 +191,6 @@
         getAccountNameWithAuthority: 'getAccountNameWithAuthority',
       }),
     },
-    /* eslint-disable */
-    // watch: {
-    //   async getAccountNameWithAuthority() {
-    //     console.log('$_getDeposits', await this.$_getDeposits());
-    //     console.log('$_getActiveProposals', await this.$_getActiveProposals());
-    //     console.log('$_getDraftProposalByProposalName', await this.$_getDraftProposalByProposalName('1111111.1111'));
-    //     console.log('$_getDraftProposalByAccountName', await this.$_getDraftProposalByAccountName());
-    //     console.log('$_getSettings', await this.$_getSettings());
-    //     console.log('$_getState', await this.$_getState());
-    //     console.log('$_getVotes', await this.$_getVotes());
-    //     console.log('$_isProposalExist \'1111111.1111\'', await this.$_isProposalExist('1111111.1111'));
-    //     console.log('$_isProposalExist \'1111sd1.1111\'', await this.$_isProposalExist('1111sd1.1111'));
-    //   },
-    // },
-    /* eslint-enable */
     mounted() {
       this[ActionType.SCATTER_INIT]();
     },
