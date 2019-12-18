@@ -74,15 +74,15 @@ const router = new VueRouter({
 });
 
 // Guard routes which require auth
+// eslint-disable-next-line consistent-return
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (!Vue.prototype.$store.getters['userService/getAccountNameWithAuthority']) {
-      next({
+      return next({
         path: '/',
       });
-    } else {
-      next();
     }
+    return next();
   }
   next();
 });
