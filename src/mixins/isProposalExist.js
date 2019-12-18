@@ -15,11 +15,11 @@ export default {
 
       try {
         this.isProposalExistLoading = true;
-        const promiseArr = [this.$independentEosApi(proposalsTable, this
+        const promiseArr = [this.$independentEosApi.getTableRows(proposalsTable, this
                                 .$constants.CONTRACT_NAME, candidateName, candidateName)];
         if (this.getAccountName) {
-          promiseArr.push(this
-            .$independentEosApi(draftsTable, this.getAccountName, candidateName, candidateName));
+          promiseArr.push(this.$independentEosApi
+            .getTableRows(draftsTable, this.getAccountName, candidateName, candidateName));
         }
         const [activeProposal, draftProposal] = await Promise.all(promiseArr);
         if (!this.getAccountName) {

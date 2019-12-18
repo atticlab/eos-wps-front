@@ -2,7 +2,7 @@ export default {
   data() {
     return {
       isSettingsLoading: false,
-      proposalsSettings: [],
+      proposalsSettings: {},
     };
   },
   methods: {
@@ -20,10 +20,10 @@ export default {
                                 );
         const result = response.rows;
         if (!result || !result.length) {
-          return [];
+          return {};
         }
 
-        this.proposalsSettings = this.$helpers.copyDeep(result);
+        this.proposalsSettings = this.$helpers.copyDeep(result[0]);
         return this.proposalsSettings;
       } catch (e) {
         console.error('$_getSettings', e);

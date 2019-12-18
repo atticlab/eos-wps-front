@@ -2,7 +2,7 @@ export default {
   data() {
     return {
       isStateLoading: false,
-      proposalState: [],
+      proposalState: {},
     };
   },
   methods: {
@@ -20,10 +20,10 @@ export default {
                                 );
         const result = response.rows;
         if (!result || !result.length) {
-          return [];
+          return {};
         }
 
-        this.proposalState = this.$helpers.copyDeep(result);
+        this.proposalState = this.$helpers.copyDeep(result[0]);
         return this.proposalState;
       } catch (e) {
         console.error('$_getState', e);
