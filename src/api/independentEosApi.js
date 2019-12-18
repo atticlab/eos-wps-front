@@ -16,7 +16,7 @@ const independentEosCalls = {
       upper_bound: upperBound,
       index_position: 1,
       key_type: 'i64',
-      limit: 100,
+      limit: 1000,
       reverse: false,
       show_payer: false,
     };

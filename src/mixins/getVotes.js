@@ -1,27 +1,27 @@
 export default {
   data() {
     return {
-      isActiveProposalsLoading: false,
-      proposals: [],
+      isVotesLoading: false,
+      proposalsVotes: [],
     };
   },
   methods: {
-    async $_getActiveProposals() {
+    async $_getVotes() {
       let lowerBound = '';
-      const proposalsTable = 'proposals';
+      const votesTable = 'votes';
 
       try {
-        this.isActiveProposalsLoading = true;
+        this.isVotesLoading = true;
         let response = await this.$independentEosApi
                                 .getTableRows(
-                                  proposalsTable,
+                                  votesTable,
                                   this.$constants.CONTRACT_NAME,
                                   lowerBound,
                                   null,
                                 );
         const result = response.rows;
-        if (!result.length) {
-          return result;
+        if (!result || !result.length) {
+          return [];
         }
 
         while (response.more) {
@@ -29,7 +29,7 @@ export default {
           /* eslint-disable */
           response = this.$independentEosApi
                          .getTableRows(
-                           proposalsTable,
+                           votesTable,
                            this.$constants.CONTRACT_NAME,
                            lowerBound,
                            null,
@@ -37,13 +37,13 @@ export default {
           /* eslint-enable */
           result.push(...response.rows);
         }
-        this.proposals = this.$helpers.copyDeep(result);
-        return result;
+        this.proposalsVotes = this.$helpers.copyDeep(result);
+        return this.proposalsVotes;
       } catch (e) {
-        console.error('$_getActiveProposals', e);
+        console.error('$_getVotes', e);
         return [];
       } finally {
-        this.isActiveProposalsLoading = false;
+        this.isVotesLoading = false;
       }
     },
   },

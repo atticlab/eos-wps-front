@@ -1,17 +1,8 @@
-import Eos from 'eosjs';
 import { mapState, mapGetters } from 'vuex';
-import config from '@/config';
-
-const proposalsTable = 'proposals';
-const draftsTable = 'drafts';
 
 export default {
   data() {
     return {
-      $_independentEos: null,
-      // isActiveProposalsLoading: false,
-      isProposalExistLoading: false,
-      // isDraftProposalByAccountLoading: false,
       isSendDepositLoading: false,
       isCreateProposalDraft: false,
       isModifyProposalDraftLoading: false,
@@ -22,24 +13,6 @@ export default {
     };
   },
   methods: {
-    $_getTableRows(table, scope, lowerBound = null, upperBound = null) {
-      const reqObj = {
-        json: true,
-        code: this.$constants.CONTRACT_NAME,
-        scope,
-        table,
-        table_key: '',
-        lower_bound: lowerBound,
-        upper_bound: upperBound,
-        index_position: 1,
-        key_type: 'i64',
-        limit: 100,
-        reverse: false,
-        show_payer: false,
-      };
-
-      return this.$_independentEos.getTableRows(reqObj);
-    },
     $_buildBaseTransactionPayload(actionName, data) {
       if (!actionName) throw new Error('empty actionName');
       if (!data) throw new Error('empty data');
@@ -58,100 +31,6 @@ export default {
         ],
       };
     },
-    // async $_getActiveProposals() {
-    //   let lowerBound = '';
-    //
-    //   try {
-    //     this.isActiveProposalsLoading = true;
-    //     let response = await this
-    //       .$_getTableRows(proposalsTable, this.$constants.CONTRACT_NAME, lowerBound, lowerBound);
-    //     const result = response.rows;
-    //     if (!result.length) {
-    //       return result;
-    //     }
-    //
-    //     while (response.more) {
-    //       lowerBound = result[result.length - 1].proposal_name;
-    //       /* eslint-disable */
-    //       response = await this.$_getTableRows(
-    //       proposalsTable,
-    //       this.$constants.CONTRACT_NAME,
-    //       lowerBound,
-    //       lowerBound);
-    //       /* eslint-enable */
-    //       result.push(...response.rows);
-    //     }
-    //     return result;
-    //   } catch (e) {
-    //     console.error('$_getActiveProposals', e);
-    //     return [];
-    //   } finally {
-    //     this.isActiveProposalsLoading = false;
-    //   }
-    // },
-    async $_isProposalExist(candidateName) {
-      if (!candidateName) {
-        throw new Error('$_isProposalExist empty candidateName');
-      }
-
-      try {
-        this.isProposalExistLoading = true;
-        const promiseArr = [this
-          .$_getTableRows(proposalsTable, this
-            .$constants.CONTRACT_NAME, candidateName, candidateName)];
-        if (this.getAccountName) {
-          promiseArr.push(this
-            .$_getTableRows(draftsTable, this.getAccountName, candidateName, candidateName));
-        }
-        const [activeProposal, draftProposal] = await Promise.all(promiseArr);
-        if (!this.getAccountName) {
-          return !!activeProposal.rows.length;
-        }
-        return !!activeProposal.rows.length || !!draftProposal.rows.length;
-      } catch (e) {
-        // TODO: notify about err
-        console.error('$_isProposalExist', e);
-        return false;
-      } finally {
-        this.isProposalExistLoading = false;
-      }
-    },
-    // async $_getDraftProposalByAccount() {
-    //   let lowerBound = '';
-    //
-    //   if (!this.getAccountName) {
-    //     // TODO: notify about err
-    //     throw new Error('you should login in Scatter');
-    //   }
-    //   try {
-    //     this.isDraftProposalByAccountLoading = true;
-    //     let response = await this
-    //       .$_getTableRows(draftsTable, this.getAccountName, lowerBound, lowerBound);
-    //     const result = response.rows;
-    //     if (!result.length) {
-    //       return result;
-    //     }
-    //
-    //     while (response.more) {
-    //       lowerBound = result[result.length - 1].proposal_name;
-    //       /* eslint-disable */
-    //       response = await this.$_getTableRows(
-    //       draftsTable,
-    //       this.$constants.CONTRACT_NAME,
-    //       lowerBound,
-    //       lowerBound
-    //       );
-    //       /* eslint-enable */
-    //       result.push(...response.rows);
-    //     }
-    //     return result;
-    //   } catch (e) {
-    //     console.error('$_getDraftProposalByAccount', e);
-    //     return [];
-    //   } finally {
-    //     this.isDraftProposalByAccountLoading = false;
-    //   }
-    // },
     async $_sendDeposit() {
       if (!this.eos) {
         // TODO: notify about err
@@ -304,8 +183,5 @@ export default {
       getAccountName: 'getAccountName',
       getAccountPermission: 'getAccountPermission',
     }),
-  },
-  beforeCreate() {
-    this.$_independentEos = Eos(config.eos);
   },
 };

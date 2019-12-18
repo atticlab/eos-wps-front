@@ -1,35 +1,35 @@
 export default {
   data() {
     return {
-      isActiveProposalsLoading: false,
-      proposals: [],
+      isDepositsLoading: false,
+      proposalsDeposits: [],
     };
   },
   methods: {
-    async $_getActiveProposals() {
+    async $_getDeposits() {
       let lowerBound = '';
-      const proposalsTable = 'proposals';
+      const depositsTable = 'deposits';
 
       try {
-        this.isActiveProposalsLoading = true;
+        this.isDepositsLoading = true;
         let response = await this.$independentEosApi
                                 .getTableRows(
-                                  proposalsTable,
+                                  depositsTable,
                                   this.$constants.CONTRACT_NAME,
                                   lowerBound,
                                   null,
                                 );
         const result = response.rows;
-        if (!result.length) {
-          return result;
+        if (!result || !result.length) {
+          return [];
         }
 
         while (response.more) {
-          lowerBound = result[result.length - 1].proposal_name;
+          lowerBound = result[result.length - 1].account;
           /* eslint-disable */
           response = this.$independentEosApi
                          .getTableRows(
-                           proposalsTable,
+                           depositsTable,
                            this.$constants.CONTRACT_NAME,
                            lowerBound,
                            null,
@@ -37,13 +37,13 @@ export default {
           /* eslint-enable */
           result.push(...response.rows);
         }
-        this.proposals = this.$helpers.copyDeep(result);
-        return result;
+        this.proposalsDeposits = this.$helpers.copyDeep(result);
+        return this.proposalsDeposits;
       } catch (e) {
-        console.error('$_getActiveProposals', e);
+        console.error('$_getDeposits', e);
         return [];
       } finally {
-        this.isActiveProposalsLoading = false;
+        this.isDepositsLoading = false;
       }
     },
   },
