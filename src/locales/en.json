@@ -23,7 +23,9 @@
     "numberOfPayments": "Number of payments",
     "start": "Start",
     "end": "End",
-    "months": "month(s)"
+    "months": "month(s)",
+    "passingProposals": "Passing proposals",
+    "notPassingProposals": "Not passing proposals"
   },
   "proposalItem": {
     "availableBudget": "Available budget",
@@ -126,5 +128,9 @@
     "budgetErr": "Monthly budget must be at least 100 EOS",
     "overviewEmpty": "Overview can't be empty",
     "milestonesEmpty": "Add at least one timeline item"
+  },
+  "proposalStatuses": {
+    "passing": "Passing",
+    "notPassing": "Not passing"
   }
 }

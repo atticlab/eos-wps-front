@@ -20,7 +20,7 @@
           <div class="proposal-item__content body-2">
             <div class="proposal-item__content-left mb-6 mb-md-0 mr-md-2">
               <div class="mb-3">
-                <span class="teal--darken-4--bold">{{ category }}</span>
+                <span class="teal--darken-4--bold text-capitalize">{{ category }}</span>
                 <v-divider
                   vertical
                   class="mx-2"
@@ -41,7 +41,7 @@
                 <div class="font-weight-bold mb-3">
                   {{ $t('proposalItem.availableBudget') }}:
                 </div>
-                <div>{{ $constants.AVAILABLE_BUDGET }}</div>
+                <div>{{ availableBudget }}</div>
               </div>
               <div
                 class="mb-3 mr-sm-2"
@@ -51,8 +51,8 @@
                 </div>
                 <div
                   :class="{'font-weight-bold text-capitalize': true,
-                           'red--text': status === 'expired',
-                           'green--text': status === 'active' || status === 'completed'
+                           'red--text': status === $t('proposalStatuses.notPassing'),
+                           'green--text': status === $t('proposalStatuses.passing')
                   }"
                 >
                   {{ status }}
@@ -79,11 +79,7 @@
                   {{ $t('common.votes') }}:
                 </div>
                 <div
-                  :class="{
-                    'red--text': true,
-                    'green--text': false,
-                    'font-weight-bold': true
-                  }"
+                  class="font-weight-bold indigo--text"
                 >
                   {{ votes }}
                 </div>
@@ -115,13 +111,17 @@
         type: String,
         default: Vue.prototype.$constants.PROPOSAL_IMAGE_STUB_URL,
       },
+      availableBudget: {
+        type: String,
+        default: 'No data',
+      },
       proposer: {
         type: String,
         default: 'No data',
       },
       category: {
         type: String,
-        default: 'No data',
+        default: 'No category',
       },
       summary: {
         type: String,
@@ -129,7 +129,7 @@
       },
       budget: {
         type: String,
-        default: '0 EOS',
+        default: '0.0000 EOS',
       },
       duration: {
         type: Number,
@@ -137,7 +137,7 @@
       },
       payments: {
         type: String,
-        default: '0 EOS',
+        default: '0.0000 EOS',
       },
       status: {
         type: String,
