@@ -57,14 +57,14 @@ export default {
     producers() {
       if (!this.getAccountName) return;
 
-      if (this.producers.find(e => e.owner === this.getAccountName)) {
+      if (this.producers.find(e => e.owner === this.getAccountName && e.is_active)) {
         this[ActionType.SET_IS_BP](true);
       }
     },
     getAccountName() {
       if (!this.producers || !this.producers.length) return;
 
-      if (this.producers.find(e => e.owner === this.getAccountName)) {
+      if (this.producers.find(e => e.owner === this.getAccountName && e.is_active)) {
         this[ActionType.SET_IS_BP](true);
       }
     },
