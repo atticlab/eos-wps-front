@@ -64,6 +64,25 @@ const helpers = {
 
     return proposalCopy;
   },
+  // Build a payload for actions with the smart contract
+  buildBaseTransactionPayload(actionName, data) {
+    if (!actionName) throw new Error('empty actionName');
+    if (!data) throw new Error('empty data');
+
+    return {
+      actions: [
+        {
+          account: this.$constants.CONTRACT_NAME,
+          name: actionName,
+          authorization: [{
+            actor: Vue.prototype.$store.getters['userService/getAccountName'],
+            permission: Vue.prototype.$store.getters['userService/getAccountPermission'],
+          }],
+          data,
+        },
+      ],
+    };
+  },
 };
 
 // Use the helpers as a plugin globally

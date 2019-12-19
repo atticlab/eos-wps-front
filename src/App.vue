@@ -175,12 +175,10 @@
 
 <script>
   import { mapActions, mapGetters } from 'vuex';
-  import eos from '@/mixins/eos';
   import ActionType from '@/store/constants';
 
   export default {
     name: 'App',
-    mixins: [eos],
     data() {
       return {
         drawer: false,
