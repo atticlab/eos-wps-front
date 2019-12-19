@@ -7,4 +7,7 @@ export default {
   [ActionType.SET_EOS_ACCOUNT]: (state, data) => {
     state.eosAccount = data;
   },
+  [ActionType.SET_IS_BP]: (state, data) => {
+    state.isBp = data;
+  },
 };

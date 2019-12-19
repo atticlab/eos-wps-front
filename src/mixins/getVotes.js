@@ -8,35 +8,31 @@ export default {
   methods: {
     async $_getVotes() {
       let lowerBound = '';
+      let response = null;
       const votesTable = 'votes';
+      const result = [];
 
       try {
         this.isVotesLoading = true;
-        let response = await this.$independentEosApi
-                                .getTableRows(
-                                  votesTable,
-                                  this.$constants.CONTRACT_NAME,
-                                  lowerBound,
-                                  null,
-                                );
-        const result = response.rows;
+        do {
+          /* eslint-disable */
+          response = await this.$independentEosApi
+            .getTableRows(
+              votesTable,
+              this.$constants.CONTRACT_NAME,
+              this.$constants.CONTRACT_NAME,
+              lowerBound,
+              null,
+            );
+          /* eslint-enable */
+          result.push(...response.rows);
+          lowerBound = response.next_key;
+        } while (response.more);
+
         if (!result || !result.length) {
           return [];
         }
 
-        while (response.more) {
-          lowerBound = result[result.length - 1].proposal_name;
-          /* eslint-disable */
-          response = this.$independentEosApi
-                         .getTableRows(
-                           votesTable,
-                           this.$constants.CONTRACT_NAME,
-                           lowerBound,
-                           null,
-                         );
-          /* eslint-enable */
-          result.push(...response.rows);
-        }
         this.proposalsVotes = this.$helpers.copyDeep(result);
         return this.proposalsVotes;
       } catch (e) {

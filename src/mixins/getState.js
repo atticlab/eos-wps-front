@@ -15,6 +15,7 @@ export default {
                                 .getTableRows(
                                   stateTable,
                                   this.$constants.CONTRACT_NAME,
+                                  this.$constants.CONTRACT_NAME,
                                   null,
                                   null,
                                 );
@@ -27,7 +28,7 @@ export default {
         return this.proposalState;
       } catch (e) {
         console.error('$_getState', e);
-        return [];
+        return {};
       } finally {
         this.isStateLoading = false;
       }

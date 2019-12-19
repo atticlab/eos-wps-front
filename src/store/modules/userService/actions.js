@@ -35,5 +35,7 @@ export default {
     }
     commit(ActionType.SET_EOS, null);
     commit(ActionType.SET_EOS_ACCOUNT, null);
+    commit(ActionType.SET_IS_BP, false);
   },
+  [ActionType.SET_IS_BP]: ({ commit }, data) => commit(ActionType.SET_IS_BP, data),
 };

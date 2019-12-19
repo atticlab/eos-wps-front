@@ -8,35 +8,31 @@ export default {
   methods: {
     async $_getDeposits() {
       let lowerBound = '';
+      let response = null;
       const depositsTable = 'deposits';
+      const result = [];
 
       try {
         this.isDepositsLoading = true;
-        let response = await this.$independentEosApi
-                                .getTableRows(
-                                  depositsTable,
-                                  this.$constants.CONTRACT_NAME,
-                                  lowerBound,
-                                  null,
-                                );
-        const result = response.rows;
+        do {
+          /* eslint-disable */
+          response = await this.$independentEosApi
+            .getTableRows(
+              depositsTable,
+              this.$constants.CONTRACT_NAME,
+              this.$constants.CONTRACT_NAME,
+              lowerBound,
+              null,
+            );
+          /* eslint-enable */
+          result.push(...response.rows);
+          lowerBound = response.next_key;
+        } while (response.more);
+
         if (!result || !result.length) {
           return [];
         }
 
-        while (response.more) {
-          lowerBound = result[result.length - 1].account;
-          /* eslint-disable */
-          response = this.$independentEosApi
-                         .getTableRows(
-                           depositsTable,
-                           this.$constants.CONTRACT_NAME,
-                           lowerBound,
-                           null,
-                         );
-          /* eslint-enable */
-          result.push(...response.rows);
-        }
         this.proposalsDeposits = this.$helpers.copyDeep(result);
         return this.proposalsDeposits;
       } catch (e) {
