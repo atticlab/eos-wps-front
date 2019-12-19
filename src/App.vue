@@ -175,12 +175,12 @@
 
 <script>
   import { mapActions, mapGetters } from 'vuex';
-  import eos from '@/mixins/eos';
+  // import eos from '@/mixins/eos';
   import ActionType from '@/store/constants';
 
   export default {
     name: 'App',
-    mixins: [eos],
+    // mixins: [eos],
     data() {
       return {
         drawer: false,
@@ -197,8 +197,8 @@
     // watch: {
     //   getAccountNameWithAuthority() {
     //     this.$_createProposalDraft({
-    //       proposalName: 'sdfhfg',
-    //       title: 'gdgfgfg',
+    //       proposalName: 'test',
+    //       title: 'Test',
     //       monthly_budget: '1000.0000 EOS',
     //       duration: 1,
     //       proposal_json: [],
