@@ -29,6 +29,7 @@ export default {
         const response = await this.$independentEosApi
                                  .getTableRows(
                                    draftsTable,
+                                   this.$constants.CONTRACT_NAME,
                                    this.getAccountName,
                                    proposalName,
                                    proposalName,
@@ -41,7 +42,7 @@ export default {
         return this.proposalDraft;
       } catch (e) {
         console.error('$_getDraftProposalByProposalName', e);
-        return [];
+        return {};
       } finally {
         this.isDraftProposalByProposalNameLoading = false;
       }

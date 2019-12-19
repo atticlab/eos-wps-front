@@ -15,6 +15,7 @@ export default {
                                 .getTableRows(
                                   settingsTable,
                                   this.$constants.CONTRACT_NAME,
+                                  this.$constants.CONTRACT_NAME,
                                   null,
                                   null,
                                 );
@@ -27,7 +28,7 @@ export default {
         return this.proposalsSettings;
       } catch (e) {
         console.error('$_getSettings', e);
-        return [];
+        return {};
       } finally {
         this.isSettingsLoading = false;
       }
