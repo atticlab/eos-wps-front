@@ -4,7 +4,7 @@ export default {
   data() {
     return {
       proposals: [],
-      isDraftProposalByAccountLoading: false,
+      isDraftProposalByAccountNameLoading: false,
     };
   },
   computed: {
@@ -13,7 +13,7 @@ export default {
     }),
   },
   methods: {
-    async $_getDraftProposalByAccount() {
+    async $_getDraftProposalByAccountName() {
       let lowerBound = '';
       const draftsTable = 'drafts';
 
@@ -28,11 +28,11 @@ export default {
                                    draftsTable,
                                    this.getAccountName,
                                    lowerBound,
-                                   lowerBound,
+                                   null,
                                  );
         const result = response.rows;
-        if (!result.length) {
-          return result;
+        if (!result || !result.length) {
+          return [];
         }
 
         while (response.more) {
@@ -43,15 +43,15 @@ export default {
                                  draftsTable,
                                  this.$constants.CONTRACT_NAME,
                                  lowerBound,
-                                 lowerBound
+                                 null
                                );
           /* eslint-enable */
           result.push(...response.rows);
         }
         this.proposals = this.$helpers.copyDeep(result);
-        return result;
+        return this.proposals;
       } catch (e) {
-        console.error('$_getDraftProposalByAccount', e);
+        console.error('$_getDraftProposalByAccountName', e);
         return [];
       } finally {
         this.isDraftProposalByAccountLoading = false;

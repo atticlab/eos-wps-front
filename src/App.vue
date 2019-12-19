@@ -194,17 +194,6 @@
     mounted() {
       this[ActionType.SCATTER_INIT]();
     },
-    // watch: {
-    //   getAccountNameWithAuthority() {
-    //     this.$_createProposalDraft({
-    //       proposalName: 'sdfhfg',
-    //       title: 'gdgfgfg',
-    //       monthly_budget: '1000.0000 EOS',
-    //       duration: 1,
-    //       proposal_json: [],
-    //     });
-    //   },
-    // },
     methods: {
       ...mapActions('userService', [
         ActionType.SCATTER_INIT,
