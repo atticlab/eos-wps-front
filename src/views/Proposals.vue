@@ -63,7 +63,6 @@
   import ProposalItem from '@/components/ProposalItem.vue';
   import getActiveProposals from '@/mixins/getActiveProposals';
   import getDraftsByAccountName from '@/mixins/getDraftsByAccountName';
-  // import eos from '@/mixins/eos';
 
   export default {
     name: 'Proposals',
