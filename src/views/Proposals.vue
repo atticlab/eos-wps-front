@@ -8,7 +8,7 @@
       <v-divider class="my-12" />
 
       <div
-        v-if="isActiveProposalsLoading || isDraftProposalByAccountLoading"
+        v-if="isActiveProposalsLoading || isDraftProposalByAccountNameLoading"
         class="d-flex justify-center"
       >
         <v-progress-circular
@@ -70,7 +70,6 @@
     components: {
       ProposalItem,
     },
-    // getDraftsByAccountName
     mixins: [getActiveProposals, getDraftsByAccountName],
     data() {
       return {
@@ -119,7 +118,7 @@
           if (this.proposalsType === 'active') {
             this.$_getActiveProposals();
           } else {
-            this.$_getDraftProposalByAccount();
+            this.$_getDraftProposalByAccountName();
           }
 
           // get votes
