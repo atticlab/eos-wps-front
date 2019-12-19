@@ -5,10 +5,10 @@ import config from '@/config';
 const independentEosApi = Eos(config.eos);
 
 const independentEosCalls = {
-  getTableRows(table, scope, lowerBound = null, upperBound = null) {
+  getTableRows(table, code, scope, lowerBound = null, upperBound = null) {
     const reqObj = {
       json: true,
-      code: Vue.prototype.$constants.CONTRACT_NAME,
+      code,
       scope,
       table,
       table_key: '',

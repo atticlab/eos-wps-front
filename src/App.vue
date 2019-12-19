@@ -176,9 +176,11 @@
 <script>
   import { mapActions, mapGetters } from 'vuex';
   import ActionType from '@/store/constants';
+  import getProducers from '@/mixins/getProducers';
 
   export default {
     name: 'App',
+    mixins: [getProducers],
     data() {
       return {
         drawer: false,
@@ -189,7 +191,8 @@
         getAccountNameWithAuthority: 'getAccountNameWithAuthority',
       }),
     },
-    mounted() {
+    async mounted() {
+      this.$_getProducers();
       this[ActionType.SCATTER_INIT]();
     },
     methods: {

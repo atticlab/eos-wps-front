@@ -5,6 +5,7 @@ const state = {
   eos: null,
   eosAccount: null,
   scatter: null,
+  isBp: false,
 };
 
 /* eslint-disable */
