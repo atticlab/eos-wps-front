@@ -177,10 +177,11 @@
   import { mapActions, mapGetters } from 'vuex';
   import ActionType from '@/store/constants';
   import getProducers from '@/mixins/getProducers';
+  import getEosPrice from '@/mixins/getEosPrice';
 
   export default {
     name: 'App',
-    mixins: [getProducers],
+    mixins: [getProducers, getEosPrice],
     data() {
       return {
         drawer: false,
@@ -193,6 +194,7 @@
     },
     async mounted() {
       this.$_getProducers();
+      this.$_getEosPrice();
       this[ActionType.SCATTER_INIT]();
     },
     methods: {
