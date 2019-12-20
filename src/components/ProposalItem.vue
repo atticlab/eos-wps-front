@@ -44,6 +44,7 @@
                 <div>{{ availableBudget }}</div>
               </div>
               <div
+                v-if="!isDraft"
                 class="mb-3 mr-sm-2"
               >
                 <div class="mb-3 font-weight-bold">
@@ -58,7 +59,9 @@
                   {{ status }}
                 </div>
               </div>
-              <div class="mb-3 mr-sm-2">
+              <div
+                class="mb-3 mr-sm-2"
+              >
                 <div class="mb-3 font-weight-bold">
                   {{ $t('common.requested') }}:
                 </div>
@@ -66,12 +69,16 @@
                   {{ budget }}
                 </div>
               </div>
-              <div class="mb-3 mr-sm-2">
+              <div
+                v-if="isDraft"
+                class="mb-3 mr-sm-2"
+              >
                 <div class="mb-3 font-weight-bold">
-                  {{ $t('common.payments') }}:
+                  {{ $t('common.paymentsDuration') }}:
                 </div>
                 <div>
-                  {{ payments }}
+                  {{ duration }}
+                  {{ $t('common.months') }}
                 </div>
               </div>
               <div v-if="!isDraft">

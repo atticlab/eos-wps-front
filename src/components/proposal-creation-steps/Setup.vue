@@ -170,7 +170,7 @@
 
           <div class="mt-12">
             <h2 class="title mb-6">
-              {{ $t('proposalCreationPage.paymentsDuration') }}
+              {{ $t('common.paymentsDuration') }}
             </h2>
 
 

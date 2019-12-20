@@ -24,14 +24,15 @@ export default {
         throw new Error('you should login in Scatter');
       }
       try {
-        this.isDraftProposalByAccountLoading = true;
+        this.isDraftProposalByAccountNameLoading = true;
         do {
           /* eslint-disable */
           response = await this.$independentEosApi
             .getTableRows(
               draftsTable,
               this.$constants.CONTRACT_NAME,
-              this.$constants.CONTRACT_NAME,
+              // this.$constants.CONTRACT_NAME,
+              this.getAccountName,
               lowerBound,
               null
             );
@@ -41,6 +42,7 @@ export default {
         } while (response.more);
 
         if (!result || !result.length) {
+          this.proposals = [];
           return [];
         }
 
@@ -50,7 +52,7 @@ export default {
         console.error('$_getDraftProposalByAccountName', e);
         return [];
       } finally {
-        this.isDraftProposalByAccountLoading = false;
+        this.isDraftProposalByAccountNameLoading = false;
       }
     },
   },
