@@ -25,7 +25,7 @@ export default {
         const response = await this.eos.transaction(
           this.$helpers.buildBaseTransactionPayload('submitdraft', {
             proposer: this.getAccountName,
-            proposal_name: data.proposalName,
+            proposal_name: data.proposal_name,
             title: data.title,
             monthly_budget: data.monthly_budget,
             duration: data.duration,

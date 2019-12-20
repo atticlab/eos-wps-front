@@ -235,13 +235,14 @@
     maxValue, url,
   } from 'vuelidate/lib/validators';
   import BudgetTable from '@/components/BudgetTable.vue';
+  import createProposalDraft from '@/mixins/createProposalDraft';
 
   export default {
     name: 'Setup',
     components: {
       BudgetTable,
     },
-    mixins: [validationMixin],
+    mixins: [validationMixin, createProposalDraft],
     validations: {
       setupData: {
         proposal_name: {
@@ -275,11 +276,7 @@
           url,
         },
         video: {
-          allowedVideoUrls: helpers.regex('allowedVideoUrls',
-          // /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)?
-          // |http(?:s?):\/\/(?:www\.)
-          // ?youku.com?|http(?:s?):\/\/(?:www\.)?tudou.com?|http(?:s?):\/\/(?:www\.)?iqiyi.com?/),
-          /youtu(?:be\.com\/watch\?v=|\.be\/)?|youku.com?|tudou.com?|iqiyi.com?/),
+          url,
         },
         duration: {
           required,
@@ -399,7 +396,7 @@
         if (!this.$v.setupData.video.$dirty) return errors;
 
         // eslint-disable-next-line no-unused-expressions
-        !this.$v.setupData.video.allowedVideoUrls && errors.push(this.$t('validationMessages.allowedVideo'));
+        !this.$v.setupData.video.url && errors.push(this.$t('validationMessages.urlString'));
 
         return errors;
       },
@@ -496,7 +493,7 @@
         this.$v.$touch();
         return !this.$v.setupData.$anyError;
       },
-      propose() {
+      async propose() {
         if (!this.validateAll()) {
           this.showErrorMsg({
             title: this.$t('notifications.error'),
@@ -521,12 +518,36 @@
           return;
         }
 
+        const proposalAdditionalInfo = this.restructureProposalAdditionalInfo({
+          summary: this.setupData.summary,
+          category: this.setupData.category,
+          img: this.setupData.img,
+          video: this.setupData.video,
+          budgets: JSON.stringify(this.budgetItemsNew),
+        });
+
+        const payload = {
+          proposal_name: this.setupData.proposal_name,
+          title: this.setupData.title,
+          monthly_budget: this.monthlyBudget,
+          duration: this.setupData.duration,
+          proposal_json: proposalAdditionalInfo,
+        };
+
+        await this.$_createProposalDraft(payload);
+
         this.$router.push(`proposal-editor/${this.setupData.proposal_name}`);
         this.changeCurrentStep(2);
       },
       modify() {
         alert('Modify');
         this.changeCurrentStep(2);
+      },
+      restructureProposalAdditionalInfo(additionalInfo) {
+        const additionalInfoCopy = this.$helpers.copyDeep(additionalInfo);
+
+        return Object.entries(additionalInfoCopy)
+                     .map(entry => ({ key: entry[0], value: entry[1] }));
       },
     },
   };
