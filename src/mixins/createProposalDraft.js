@@ -20,6 +20,10 @@ export default {
         // TODO: notify about err
         throw new Error('eos don\'t inited');
       }
+      if (!data || !Object.keys(data).length) {
+        throw new Error('empty data');
+      }
+
       try {
         this.isCreateProposalDraftLoading = true;
         const response = await this.eos.transaction(
@@ -27,9 +31,9 @@ export default {
             proposer: this.getAccountName,
             proposal_name: data.proposal_name,
             title: data.title,
-            monthly_budget: data.monthly_budget,
+            monthly_budget: data.monthlyBudget,
             duration: data.duration,
-            proposal_json: data.proposal_json,
+            proposal_json: data.proposalJson,
           }),
         );
         return response.transaction_id;

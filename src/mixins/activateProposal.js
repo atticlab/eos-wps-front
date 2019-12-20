@@ -20,6 +20,10 @@ export default {
         // TODO: notify about err
         throw new Error('eos don\'t inited');
       }
+      if (!data || !Object.keys(data).length) {
+        throw new Error('empty data');
+      }
+
       try {
         this.isActivateProposalLoading = true;
         const res = await this.eos.transaction(
