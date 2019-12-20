@@ -19,7 +19,7 @@
         />
       </div>
 
-      <template v-else>
+      <template v-else-if="!isDrafts">
         <!--        <v-row v-if="!isDrafts">-->
         <!--          <v-col-->
         <!--            sm="4"-->
@@ -86,6 +86,26 @@
           />
         </div>
       </template>
+
+      <template v-else>
+        <ProposalItem
+          v-for="(proposal, index) in proposalsParsed"
+          :key="index"
+          :proposal-name="proposal.proposal_name"
+          :title="proposal.title"
+          :proposer="proposal.proposer"
+          :available-budget="proposal.available_budget"
+          :img="proposal.proposal_json.img"
+          :category="proposal.proposal_json.category"
+          :summary="proposal.proposal_json.summary"
+          :budget="proposal.total_budget"
+          :duration="proposal.duration"
+          :payments="proposal.payments"
+          :status="proposal.status"
+          :votes="proposal.total_net_votes"
+          :is-draft="isDrafts"
+        />
+      </template>
     </v-container>
   </div>
 </template>
@@ -120,28 +140,36 @@
       };
     },
     computed: {
-      // isDrafts() {
-      //   return this.$route.path.includes('drafts');
-      // },
+      isDrafts() {
+        return this.$route.path.includes('drafts');
+      },
       proposalsTitle() {
         return this.proposalsType === 'active'
                ? this.$t('common.activeProposals')
                : this.$t('common.drafts');
       },
-      proposalsFullInfo() {
-        if (!this.proposals || this.proposals.length === 0
-          || !this.proposalsVotes || this.proposalsVotes.length === 0
-          || !this.proposalsSettings || Object.keys(this.proposalsSettings).length === 0) return [];
+      proposalsParsed() {
+        if (!this.proposals || this.proposals.length === 0) return [];
 
         const proposalsClone = this.$helpers.copyDeep(this.proposals);
-        const proposalsParsed = proposalsClone.map(
-          proposal => this.$helpers.parseProposal(proposal),
-        );
+        return proposalsClone
+          .map(
+            proposal => this.$helpers.parseProposal(proposal),
+          );
+      },
+      proposalsFullInfo() {
+        if (!this.proposalsParsed || this.proposalsParsed.length === 0
+          || !this.proposalsVotes || this.proposalsVotes.length === 0
+          || !this.proposalsSettings || Object.keys(this.proposalsSettings).length === 0
+          || this.isDrafts) return [];
+
+        const proposalsParsedCopy = this.$helpers.copyDeep(this.proposalsParsed);
 
         // Add total_net_votes to proposals
         let proposalWithVotes = [];
         this.proposalsVotes.forEach((vote) => {
-          proposalWithVotes = proposalsParsed.map(proposal => this.$helpers.mergeVoteWithProposal(
+          proposalWithVotes = proposalsParsedCopy
+            .map(proposal => this.$helpers.mergeVoteWithProposal(
             vote,
             proposal,
           ));

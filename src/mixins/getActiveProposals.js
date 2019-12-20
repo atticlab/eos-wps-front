@@ -30,6 +30,7 @@ export default {
         } while (response.more);
 
         if (!result || !result.length) {
+          this.proposals = [];
           return [];
         }
 

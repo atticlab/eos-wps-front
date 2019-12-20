@@ -25,7 +25,8 @@
     "end": "End",
     "months": "month(s)",
     "passingProposals": "Passing proposals",
-    "notPassingProposals": "Not passing proposals"
+    "notPassingProposals": "Not passing proposals",
+    "paymentsDuration": "Duration of payments"
   },
   "proposalItem": {
     "availableBudget": "Available budget",
@@ -98,7 +99,6 @@
     "requestedEosPerMonth": "Requested EOS per month",
     "editProposal": "Edit proposal",
     "removeProposal": "Remove proposal",
-    "paymentsDuration": "Duration of payments",
     "chooseDuration": "Choose a duration of payments"
   },
   "notFoundPage": {
