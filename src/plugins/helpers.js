@@ -72,7 +72,7 @@ const helpers = {
     return {
       actions: [
         {
-          account: this.$constants.CONTRACT_NAME,
+          account: Vue.prototype.$constants.CONTRACT_NAME,
           name: actionName,
           authorization: [{
             actor: Vue.prototype.$store.getters['userService/getAccountName'],
