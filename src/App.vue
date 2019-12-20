@@ -178,11 +178,10 @@
   import ActionType from '@/store/constants';
   import getProducers from '@/mixins/getProducers';
   import getEosPrice from '@/mixins/getEosPrice';
-  import createProp from '@/mixins/createProposalDraft';
 
   export default {
     name: 'App',
-    mixins: [getProducers, getEosPrice, createProp],
+    mixins: [getProducers, getEosPrice],
     data() {
       return {
         drawer: false,
@@ -192,27 +191,6 @@
       ...mapGetters('userService', {
         getAccountNameWithAuthority: 'getAccountNameWithAuthority',
       }),
-    },
-    watch: {
-      async getAccountNameWithAuthority() {
-        console.log('createprop', await this.$_createProposalDraft({
-          proposalName: 'qqqqq1',
-          title: 'qqqq1',
-          monthlyBudget: '100.0000 EOS',
-          duration: 1,
-          proposalJson: [{
-            key: 'key',
-            value: JSON.stringify([
-              {
-                title: 'asddas',
-              },
-              {
-                title: 'adads',
-              },
-            ]),
-          }],
-        }));
-      },
     },
     async mounted() {
       this.$_getProducers();
