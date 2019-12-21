@@ -274,7 +274,7 @@
     <v-btn
       class="mb-2 mb-sm-0 mr-2"
       color="success"
-      @click="saveDraft"
+      @click="modify"
     >
       {{ $t('proposalCreationPage.saveDraft') }}
     </v-btn>
@@ -286,10 +286,11 @@
   import {
  required, minLength, maxLength, helpers,
 } from 'vuelidate/lib/validators';
+  import modifyProposalDraft from '@/mixins/modifyProposalDraft';
 
   export default {
     name: 'TimelineEditable',
-    mixins: [validationMixin],
+    mixins: [validationMixin, modifyProposalDraft],
     validations: {
       editedItem: {
         title: {
@@ -417,7 +418,7 @@
         deep: true,
         handler(val) {
           if (!val || Object.keys(val).length === 0) return;
-          this.milestones = val.proposal_json.milestones;
+          this.milestones = val.proposal_json.milestones || [];
         },
       },
     },
@@ -465,14 +466,32 @@
         }
         this.closeDialogEdit();
       },
-      saveDraft() {
+      async modify() {
         if (this.milestones.length === 0) {
           return this.showErrorMsg({
             title: this.$t('notifications.error'),
             message: this.$t('notifications.milestonesEmpty'),
           });
         }
-        return alert('Saved!');
+
+        const proposalAdditionalInfo = this.$helpers.copyDeep(this.proposal.proposal_json);
+        proposalAdditionalInfo.milestones = JSON.stringify(this.$helpers.copyDeep(this.milestones));
+
+        const proposalAdditionalInfoRestructured = this.$helpers.restructureProposalAdditionalInfo(
+          proposalAdditionalInfo,
+        );
+
+        const payload = {
+          proposalName: this.proposal.proposal_name,
+          title: this.proposal.title,
+          proposalJson: proposalAdditionalInfoRestructured,
+        };
+
+        if (await this.$_modifyProposalDraft(payload)) {
+          this.$emit('is-draft-modified', true);
+        }
+
+        return null;
       },
     },
   };

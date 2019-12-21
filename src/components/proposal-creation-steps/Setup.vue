@@ -229,6 +229,7 @@
       v-if="!proposalId"
       color="success"
       class="mr-2"
+      :disabled="isCreateProposalDraftLoading"
       @click="propose"
     >
       {{ $t('proposalCreationPage.continue') }}
@@ -552,23 +553,24 @@
           return;
         }
 
-        const proposalAdditionalInfo = this.restructureProposalAdditionalInfo({
+        const proposalAdditionalInfo = this.$helpers.restructureProposalAdditionalInfo({
           summary: this.setupData.summary,
           category: this.setupData.category,
-          img: this.setupData.img,
-          video: this.setupData.video,
           budgets: JSON.stringify(this.budgetItemsNew),
         });
 
+        if (this.setupData.img) proposalAdditionalInfo.img = this.setupData.img;
+        if (this.setupData.video) proposalAdditionalInfo.video = this.setupData.video;
+
         const payload = {
-          proposal_name: this.setupData.proposal_name,
+          proposalName: this.setupData.proposal_name,
           title: this.setupData.title,
-          monthly_budget: this.monthlyBudget,
+          monthlyBudget: this.monthlyBudget,
           duration: this.setupData.duration,
-          proposal_json: proposalAdditionalInfo,
+          proposalJson: proposalAdditionalInfo,
         };
 
-        if (await this.$_isProposalExist(payload.proposal_name)) {
+        if (await this.$_isProposalExist(payload.proposalName)) {
           this.showErrorMsg({
             title: this.$t('notifications.error'),
             message: this.$t('notifications.proposalNameExists'),
@@ -585,12 +587,6 @@
       modify() {
         alert('Modify');
         this.changeCurrentStep(2);
-      },
-      restructureProposalAdditionalInfo(additionalInfo) {
-        const additionalInfoCopy = this.$helpers.copyDeep(additionalInfo);
-
-        return Object.entries(additionalInfoCopy)
-                     .map(entry => ({ key: entry[0], value: entry[1] }));
       },
     },
   };

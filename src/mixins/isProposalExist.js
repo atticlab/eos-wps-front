@@ -16,7 +16,6 @@ export default {
 
       try {
         this.isProposalExistLoading = true;
-        console.log();
         const promiseArr = [this.$independentEosApi.getTableRows(
           proposalsTable,
           this.$constants.CONTRACT_NAME,
