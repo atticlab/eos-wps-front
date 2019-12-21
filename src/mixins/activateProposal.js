@@ -27,10 +27,13 @@ export default {
       try {
         this.isActivateProposalLoading = true;
         const res = await this.eos.transaction(
-          this.$helpers.buildBaseTransactionPayload('activate', {
-            proposer: this.getAccountName,
-            proposal_name: data.proposalName,
-          }),
+          this.$helpers.buildBaseTransactionPayload([{
+            actionName: 'activate',
+            data: {
+              proposer: this.getAccountName,
+              proposal_name: data.proposalName,
+            },
+          }]),
         );
         return res.transaction_id;
       } catch (e) {

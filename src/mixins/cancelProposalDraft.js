@@ -27,10 +27,13 @@ export default {
       try {
         this.isCancelProposalDraftLoading = true;
         const res = await this.eos.transaction(
-          this.$helpers.buildBaseTransactionPayload('canceldraft', {
-            proposer: this.getAccountName,
-            proposal_name: data.proposalName,
-          }),
+          this.$helpers.buildBaseTransactionPayload([{
+            actionName: 'canceldraft',
+            data: {
+              proposer: this.getAccountName,
+              proposal_name: data.proposalName,
+            },
+          }]),
         );
         return res.transaction_id;
       } catch (e) {
