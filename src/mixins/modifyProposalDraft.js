@@ -27,12 +27,26 @@ export default {
       try {
         this.isModifyProposalDraftLoading = true;
         const response = await this.eos.transaction(
-          this.$helpers.buildBaseTransactionPayload('modifydraft', {
-            proposer: this.getAccountName,
-            proposal_name: data.proposalName,
-            title: data.title,
-            proposal_json: data.proposalJson,
-          }),
+          this.$helpers.buildBaseTransactionPayload([
+            {
+              actionName: 'modifydraft',
+              data: {
+                proposer: this.getAccountName,
+                proposal_name: data.proposalName,
+                title: data.title,
+                proposal_json: data.proposalJson,
+              },
+            },
+            {
+              actionName: 'modifybudget',
+              data: {
+                proposer: this.getAccountName,
+                proposal_name: data.proposalName,
+                monthly_budget: data.monthlyBudget,
+                duration: data.duration,
+              },
+            },
+          ]),
         );
         return response.transaction_id;
       } catch (e) {
