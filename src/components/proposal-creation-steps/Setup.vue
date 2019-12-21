@@ -549,7 +549,7 @@
           category: this.setupData.category,
           img: this.setupData.img,
           video: this.setupData.video,
-          budgets_s: JSON.stringify(this.budgetItemsNew),
+          budgets: JSON.stringify(this.budgetItemsNew),
         });
 
         const payload = {
@@ -569,14 +569,9 @@
           return;
         }
 
-        // console.log( await this.$_createProposalDraft(payload));
-        try {
-          await this.$_createProposalDraft(payload);
+        if (await this.$_createProposalDraft(payload)) {
           this.$router.push(`proposal-editor/${this.setupData.proposal_name}`);
           this.changeCurrentStep(2);
-        } catch (e) {
-          // console.warn(e);
-          this.$errorsHandler.handleError(e);
         }
       },
       modify() {
