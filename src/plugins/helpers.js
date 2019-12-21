@@ -83,6 +83,12 @@ const helpers = {
       ],
     };
   },
+  restructureProposalAdditionalInfo(additionalInfo) {
+    const additionalInfoCopy = this.copyDeep(additionalInfo);
+
+    return Object.entries(additionalInfoCopy)
+                 .map(entry => ({ key: entry[0], value: entry[1] }));
+  },
 };
 
 // Use the helpers as a plugin globally

@@ -468,6 +468,14 @@
       },
     },
     watch: {
+      proposalInitial: {
+        immediate: true,
+        handler(val) {
+          if (this.proposalId) {
+            this.proposal = this.$helpers.copyDeep(val);
+          }
+        },
+      },
       $route: {
         immediate: true,
         handler() {

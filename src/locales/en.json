@@ -131,7 +131,8 @@
     "overviewEmpty": "Overview can't be empty",
     "milestonesEmpty": "Add at least one timeline item",
     "proposalNameExists": "A proposal with the same name already exists! Try another one",
-    "unexpectedError": "Unexpected error"
+    "unexpectedError": "Unexpected error",
+    "cancelledAction": "You cancelled the action"
   },
   "proposalStatuses": {
     "passing": "Passing",

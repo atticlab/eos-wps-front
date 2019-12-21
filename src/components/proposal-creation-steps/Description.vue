@@ -28,6 +28,7 @@
   import VueQuillEditor from 'vue-quill-editor';
   import { validationMixin } from 'vuelidate';
   import { required, maxLength } from 'vuelidate/lib/validators';
+  import modifyProposalDraft from '@/mixins/modifyProposalDraft';
 
   // require styles
   // eslint-disable-next-line import/no-extraneous-dependencies
@@ -42,7 +43,7 @@
 
   export default {
     name: 'Description',
-    mixins: [validationMixin],
+    mixins: [validationMixin, modifyProposalDraft],
     validations: {
       text: {
         required,
@@ -73,6 +74,14 @@
       },
     },
     watch: {
+      proposalInitial: {
+        immediate: true,
+        handler(val) {
+          if (this.proposalId) {
+            this.proposal = this.$helpers.copyDeep(val);
+          }
+        },
+      },
       $route: {
         immediate: true,
         handler() {
@@ -99,15 +108,33 @@
         this.$v.$touch();
         return !this.$v.text.$anyError;
       },
-      modify() {
+      async modify() {
         if (!this.validateAll()) {
           return this.showErrorMsg({
             title: this.$t('notifications.error'),
             message: this.$t('notifications.overviewEmpty'),
           });
         }
-        alert('Modify');
-        return this.changeCurrentStep(3);
+
+        const proposalAdditionalInfo = this.$helpers.copyDeep(this.proposal.proposal_json);
+        proposalAdditionalInfo.overview = this.text;
+
+        const proposalAdditionalInfoRestructured = this.$helpers.restructureProposalAdditionalInfo(
+            proposalAdditionalInfo,
+        );
+
+        const payload = {
+          proposalName: this.proposal.proposal_name,
+          title: this.proposal.title,
+          proposalJson: proposalAdditionalInfoRestructured,
+        };
+
+        if (await this.$_modifyProposalDraft(payload)) {
+          this.$emit('is-draft-modified', true);
+          this.changeCurrentStep(3);
+        }
+
+        return null;
       },
     },
   };

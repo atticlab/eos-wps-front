@@ -107,8 +107,8 @@
         // default: this.$t('common.noData'),
       },
       created: {
-        type: Number,
-        default: () => '',
+        type: String,
+        default: '',
       },
     },
   };

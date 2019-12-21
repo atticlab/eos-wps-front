@@ -68,6 +68,7 @@
   import Description from '@/components/proposal-creation-steps/Description.vue';
   import TimelineEditable from '@/components/proposal-creation-steps/TimelineEditable.vue';
   import proposalParsed from '@/mixins/proposalParsed';
+  import getDraftByProposalName from '@/mixins/getDraftByProposalName';
 
   export default {
     name: 'ProposalCreation',
@@ -76,7 +77,7 @@
       Description,
       TimelineEditable,
     },
-    mixins: [proposalParsed],
+    mixins: [proposalParsed, getDraftByProposalName],
     data() {
       return {
         currentStep: 1,
@@ -110,11 +111,17 @@
         handler() {
           if (this.proposalId) {
             // get proposal from the contract
-            this.proposal = this.$constants.PROPOSAL_DRAFT;
+            // this.proposal = this.$constants.PROPOSAL_DRAFT;
+            this.$_getDraftProposalByProposalName(this.proposalId);
           } else {
             this.proposal = {};
           }
         },
+      },
+      currentStep() {
+        if (this.proposalId) {
+          this.$_getDraftProposalByProposalName(this.proposalId);
+        }
       },
     },
     methods: {
