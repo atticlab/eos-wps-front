@@ -40,7 +40,7 @@ export default {
       } catch (e) {
         // TODO: notify about err
         console.error('$_createProposal', e);
-        return null;
+        throw new Error(e);
       } finally {
         this.isCreateProposalDraftLoading = false;
       }

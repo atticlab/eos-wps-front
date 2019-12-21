@@ -2,6 +2,7 @@ export default {
   data() {
     return {
       isProposalExistLoading: false,
+      // isProposalEx: false,
     };
   },
   methods: {
@@ -15,6 +16,7 @@ export default {
 
       try {
         this.isProposalExistLoading = true;
+        console.log();
         const promiseArr = [this.$independentEosApi.getTableRows(
           proposalsTable,
           this.$constants.CONTRACT_NAME,
@@ -34,8 +36,10 @@ export default {
         }
         const [activeProposal, draftProposal] = await Promise.all(promiseArr);
         if (!this.getAccountName) {
+          // this.isProposalEx = !activeProposal.rows.length;
           return !!activeProposal.rows.length;
         }
+        // this.isProposalEx = !!activeProposal.rows.length || !!draftProposal.rows.length;
         return !!activeProposal.rows.length || !!draftProposal.rows.length;
       } catch (e) {
         // TODO: notify about err

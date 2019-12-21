@@ -84,7 +84,7 @@
     "setupTimelineP": "By setting up tasks and events, community members can be informed about your proposal progress. It makes your proposal more validated and trustworthy as the community will always know where you are in your delivery timeline.",
     "save": "Save",
     "addTask": "Add task",
-    "buildBudget": "Build the budget for your proposal",
+    "buildBudget": "Add budget items to your proposal ",
     "addNewItem": "Add new item",
     "editItem": "Edit item",
     "deleteItem": "Delete item",
@@ -97,9 +97,11 @@
     "oneTime": "One-time",
     "multiMonth": "Multi-month",
     "requestedEosPerMonth": "Requested EOS per month",
+    "monthlyEosBudget": "Monthly EOS budget",
     "editProposal": "Edit proposal",
     "removeProposal": "Remove proposal",
-    "chooseDuration": "Choose a duration of payments"
+    "chooseDuration": "Choose a duration of payments",
+    "budgetEos": "Budget is allocated and paid in EOS!"
   },
   "notFoundPage": {
     "notFound": "Not found",
@@ -122,12 +124,14 @@
     "urlString": "The field must be a URL"
   },
   "notifications": {
-    "error": "error",
+    "error": "Error",
     "fillFields": "Fill all the fields correctly",
     "durationErr": "Duration must be at least 1 month and at most 6 months",
     "budgetErr": "Monthly budget must be at least 100 EOS",
     "overviewEmpty": "Overview can't be empty",
-    "milestonesEmpty": "Add at least one timeline item"
+    "milestonesEmpty": "Add at least one timeline item",
+    "proposalNameExists": "A proposal with the same name already exists! Try another one",
+    "unexpectedError": "Unexpected error"
   },
   "proposalStatuses": {
     "passing": "Passing",
