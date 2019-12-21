@@ -37,7 +37,7 @@ export default {
             },
           },
         ];
-        if (data.monthlyBudget || data.duration) {
+        if (data.monthlyBudget && data.duration) {
           payload.push({
             actionName: 'modifybudget',
             data: {
