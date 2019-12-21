@@ -27,14 +27,17 @@ export default {
       try {
         this.isCreateProposalDraftLoading = true;
         const response = await this.eos.transaction(
-          this.$helpers.buildBaseTransactionPayload('submitdraft', {
-            proposer: this.getAccountName,
-            proposal_name: data.proposalName,
-            title: data.title,
-            monthly_budget: data.monthlyBudget,
-            duration: data.duration,
-            proposal_json: data.proposalJson,
-          }),
+          this.$helpers.buildBaseTransactionPayload([{
+            actionName: 'submitdraft',
+            data: {
+              proposer: this.getAccountName,
+              proposal_name: data.proposalName,
+              title: data.title,
+              monthly_budget: data.monthlyBudget,
+              duration: data.duration,
+              proposal_json: data.proposalJson,
+            },
+          }]),
         );
         return response.transaction_id;
       } catch (e) {

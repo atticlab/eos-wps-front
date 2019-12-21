@@ -23,9 +23,12 @@ export default {
       try {
         this.isRefundLoading = true;
         const res = await this.eos.transaction(
-          this.$helpers.buildBaseTransactionPayload('refund', {
-            account: this.getAccountName,
-          }),
+          this.$helpers.buildBaseTransactionPayload([{
+            actionName: 'refund',
+            data: {
+              account: this.getAccountName,
+            },
+          }]),
         );
         return res.transaction_id;
       } catch (e) {

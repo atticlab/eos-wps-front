@@ -27,11 +27,14 @@ export default {
       try {
         this.isVoteProposalLoading = true;
         const res = await this.eos.transaction(
-          this.$helpers.buildBaseTransactionPayload('vote', {
-            voter: this.getAccountName,
-            proposal_name: data.proposalName,
-            vote: data.vote,
-          }),
+          this.$helpers.buildBaseTransactionPayload([{
+            actionName: 'vote',
+            data: {
+              voter: this.getAccountName,
+              proposal_name: data.proposalName,
+              vote: data.vote,
+            },
+          }]),
         );
         return res.transaction_id;
       } catch (e) {

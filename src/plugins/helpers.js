@@ -65,22 +65,26 @@ const helpers = {
     return proposalCopy;
   },
   // Build a payload for actions with the smart contract
-  buildBaseTransactionPayload(actionName, data) {
-    if (!actionName) throw new Error('empty actionName');
-    if (!data) throw new Error('empty data');
+  buildBaseTransactionPayload(payloadArr) {
+    if (!payloadArr || !Array.isArray(payloadArr) || !payloadArr.length) throw new Error('empty payload');
+    const actions = [];
 
+    // eslint-disable-next-line no-restricted-syntax
+    for (const p of payloadArr) {
+      if (!p.actionName) throw new Error('empty actionName');
+      if (!p.data) throw new Error('empty data');
+      actions.push({
+        account: Vue.prototype.$constants.CONTRACT_NAME,
+        name: p.actionName,
+        authorization: [{
+          actor: Vue.prototype.$store.getters['userService/getAccountName'],
+          permission: Vue.prototype.$store.getters['userService/getAccountPermission'],
+        }],
+        data: p.data,
+      });
+    }
     return {
-      actions: [
-        {
-          account: Vue.prototype.$constants.CONTRACT_NAME,
-          name: actionName,
-          authorization: [{
-            actor: Vue.prototype.$store.getters['userService/getAccountName'],
-            permission: Vue.prototype.$store.getters['userService/getAccountPermission'],
-          }],
-          data,
-        },
-      ],
+      actions,
     };
   },
 };
