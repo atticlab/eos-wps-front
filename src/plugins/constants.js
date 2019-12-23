@@ -87,6 +87,9 @@ const constants = {
   ],
   CONTRACT_NAME: 'wpswpswpswps',
   EOS_ORACLE: 'eosdtorclize',
+  VOTE_YES: 'yes',
+  VOTE_NO: 'no',
+  VOTE_ABSTAIN: 'abstain',
 
   // Examples of data
   AVAILABLE_BUDGET: '50000.0000 EOS',

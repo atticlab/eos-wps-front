@@ -122,6 +122,7 @@
                 class="mb-4"
                 block
                 color="success"
+                @click="handleVote($constants.VOTE_YES)"
               >
                 {{ $t('proposalPage.upvote') }}
               </v-btn>
@@ -129,6 +130,7 @@
                 class="mb-4"
                 block
                 color="blue darken-3 white--text"
+                @click="handleVote($constants.VOTE_ABSTAIN)"
               >
                 {{ $t('proposalPage.abstain') }}
               </v-btn>
@@ -136,6 +138,7 @@
                 class="mb-4"
                 block
                 color="error"
+                @click="handleVote($constants.VOTE_NO)"
               >
                 {{ $t('proposalPage.downvote') }}
               </v-btn>
@@ -183,6 +186,11 @@
   import BudgetOverview from '@/components/proposal-tabs/BudgetOverview.vue';
   import TimelineOverview from '@/components/proposal-tabs/TimelineOverview.vue';
   import proposalParsed from '@/mixins/proposalParsed';
+  import voteProposal from '@/mixins/voteProposal';
+  import sendDeposit from '@/mixins/sendDeposit';
+  import refund from '@/mixins/refund';
+  import activateProposal from '@/mixins/activateProposal';
+  import cancelProposalDraft from '@/mixins/cancelProposalDraft';
 
   export default {
     name: 'Proposal',
@@ -191,7 +199,14 @@
       BudgetOverview,
       TimelineOverview,
     },
-    mixins: [proposalParsed],
+    mixins: [
+      proposalParsed,
+      voteProposal,
+      sendDeposit,
+      refund,
+      activateProposal,
+      cancelProposalDraft,
+    ],
     data() {
       return {
         proposalId: this.$route.params.slug,
@@ -231,17 +246,64 @@
       },
     },
     methods: {
-      transfer() {
-        alert('Transfer');
+      async transfer() {
+        try {
+          const txId = await this.$_sendDeposit();
+          console.log(txId);
+        } catch (e) {
+          // TODO: handle err
+          console.error('transfer', e);
+        }
       },
-      refund() {
-        alert('Refund');
+      async refund() {
+        try {
+          const txId = await this.$_refund();
+          console.log(txId);
+        } catch (e) {
+          // TODO: handle err
+          console.error('refund', e);
+        }
       },
-      activateProposal() {
-        alert('Published!');
+      async activateProposal() {
+        try {
+          const txId = await this.$_activateProposal({
+            proposalName: this.proposalId,
+            // TODO: add ui element
+            next: 0,
+          });
+          console.log(txId);
+        } catch (e) {
+          // TODO: handle err
+          console.error('activateProposal', e);
+        }
       },
-      deleteProposal() {
-        alert('Deleted!');
+      async deleteProposal() {
+        try {
+          const txId = await this.$_cancelProposalDraft({
+            proposalName: this.proposalId,
+          });
+          console.log(txId);
+        } catch (e) {
+          // TODO: handle err
+          console.error('activateProposal', e);
+        }
+      },
+      async handleVote(voteType) {
+        if (!voteType || (![this.$constants.VOTE_ABSTAIN, this.$constants.VOTE_YES,
+          this.$constants.VOTE_NO].includes(voteType))) {
+          alert('wrong Vote type');
+        }
+
+        try {
+          const txId = await this.$_voteProposal({
+            proposalName: this.proposalId,
+            vote: voteType,
+          });
+          console.log(txId);
+        } catch (e) {
+          // TODO: handle err
+          console.error('handleVote', e);
+        }
       },
     },
   };

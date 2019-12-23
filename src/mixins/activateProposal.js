@@ -32,6 +32,7 @@ export default {
             data: {
               proposer: this.getAccountName,
               proposal_name: data.proposalName,
+              next: parseInt(data.next, 10), // activate proposal at the next period
             },
           }]),
         );
