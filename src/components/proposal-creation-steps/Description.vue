@@ -16,6 +16,7 @@
     <v-btn
       color="success"
       class="mr-2"
+      :disabled="isModifyProposalDraftLoading"
       @click="modify"
     >
       {{ $t('proposalCreationPage.continue') }}

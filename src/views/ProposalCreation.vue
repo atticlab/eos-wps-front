@@ -21,9 +21,9 @@
           </v-stepper-step>
           <v-divider />
           <v-stepper-step
-            :complete="isBudgetDataAvailable"
+            :complete="isOverviewAvailable"
             :step="2"
-            :editable="isBudgetDataAvailable"
+            :editable="isOverviewAvailable"
           >
             {{ $t('proposalCreationPage.description') }}
           </v-stepper-step>
@@ -49,12 +49,14 @@
             <Description
               :proposal-initial="$_proposalParsed"
               @step="setCurrentStep"
+              @is-draft-modified="setIsDraftModified"
             />
           </v-stepper-content>
 
           <v-stepper-content step="3">
             <TimelineEditable
               :proposal-initial="$_proposalParsed"
+              @is-draft-modified="setIsDraftModified"
             />
           </v-stepper-content>
         </v-stepper-items>
@@ -82,16 +84,16 @@
       return {
         currentStep: 1,
         proposal: {},
+        isDraftModified: false,
       };
     },
     computed: {
       proposalId() {
         return this.$route.params.slug ? this.$route.params.slug : '';
       },
-      isBudgetDataAvailable() {
+      isOverviewAvailable() {
         if (!this.$_proposalParsed || Object.keys(this.$_proposalParsed).length === 0) return false;
-        return !!(this.$_proposalParsed.proposal_json.budget_data
-          && this.$_proposalParsed.proposal_json.budget_data.length !== 0);
+        return !!(this.$_proposalParsed.proposal_json.overview);
       },
       isMilestonesAvailable() {
         if (!this.$_proposalParsed || Object.keys(this.$_proposalParsed).length === 0) return false;
@@ -123,10 +125,18 @@
           this.$_getDraftProposalByProposalName(this.proposalId);
         }
       },
+      isDraftModified() {
+        if (this.proposalId) {
+          this.$_getDraftProposalByProposalName(this.proposalId);
+        }
+      },
     },
     methods: {
       setCurrentStep(stepNumber) {
         this.currentStep = stepNumber;
+      },
+      setIsDraftModified(bool) {
+        this.isDraftModified = bool;
       },
     },
   };

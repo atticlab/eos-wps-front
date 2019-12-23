@@ -331,8 +331,8 @@
         default: false,
       },
       budgetDataInit: {
-        type: Array,
-        default: () => [],
+        type: String,
+        default: '',
       },
       eosPrice: {
         type: Number,
@@ -341,7 +341,9 @@
     },
     data() {
       return {
-        budgetData: [...this.budgetDataInit],
+        // budgetData: [...this.budgetDataInit],
+        // budgetData: JSON.parse(this.budgetDataInit),
+        budgetData: [],
         // eosPrice: this.$constants.EOS_RATE,
         dialogEdit: false,
         dialogDelete: false,
@@ -486,7 +488,9 @@
       },
       budgetDataInit: {
         handler(val) {
-          this.budgetData = [...val];
+          // this.budgetData = [...val];
+          console.log(val);
+          this.budgetData = this.$helpers.copyDeep(JSON.parse(val));
         },
       },
       totalBudget: {

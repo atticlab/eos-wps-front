@@ -143,6 +143,7 @@
         </div>
 
         <BudgetTable
+          v-if="!isExistingProposalWithoutBudgets"
           :is-editable="true"
           :budget-data-init="budgetData"
           :eos-price="eosPrice"
@@ -255,6 +256,7 @@
   import createProposalDraft from '@/mixins/createProposalDraft';
   import getEosPrice from '@/mixins/getEosPrice';
   import isProposalExist from '@/mixins/isProposalExist';
+  import modifyProposalDraft from '@/mixins/modifyProposalDraft';
 
   export default {
     name: 'Setup',
@@ -266,6 +268,7 @@
       createProposalDraft,
       getEosPrice,
       isProposalExist,
+      modifyProposalDraft,
     ],
     validations: {
       setupData: {
@@ -454,15 +457,20 @@
       //
       //   return this.eosRate30SMA;
       // },
+      isExistingProposalWithoutBudgets() {
+        return Boolean(this.proposalId && !this.proposal.proposal_json.budgets);
+      },
       monthlyBudget() {
         if (!this.setupData.duration || !this.eosPrice) return 0;
+        if (this.isExistingProposalWithoutBudgets) return this.proposal.monthly_budget;
+
         const totalBudgetInEos = this.totalBudget * this.eosPrice;
         return `${(totalBudgetInEos / this.setupData.duration)
           .toFixed(this.$constants.EOS_MAX_DIGITS)} EOS`;
       },
       budgetData() {
-        if (!this.proposal || Object.keys(this.proposal).length === 0) return [];
-        return this.proposal.proposal_json.budget_data;
+        if (!this.proposal || Object.keys(this.proposal).length === 0) return '';
+        return this.proposal.proposal_json.budgets;
       },
       proposalId() {
         return this.$route.params.slug ? this.$route.params.slug : '';
@@ -584,9 +592,52 @@
           this.changeCurrentStep(2);
         }
       },
-      modify() {
-        alert('Modify');
-        this.changeCurrentStep(2);
+      async modify() {
+        if (!this.validateAll()) {
+          this.showErrorMsg({
+            title: this.$t('notifications.error'),
+            message: this.$t('notifications.fillFields'),
+          });
+          return;
+        }
+
+        if (!this.setupData.duration) {
+          this.showErrorMsg({
+            title: this.$t('notifications.error'),
+            message: this.$t('notifications.durationErr'),
+          });
+          return;
+        }
+
+        if (!this.monthlyBudget || this.monthlyBudget.split(' ')[0] < 100) {
+          this.showErrorMsg({
+            title: this.$t('notifications.error'),
+            message: this.$t('notifications.budgetErr'),
+          });
+          return;
+        }
+
+        const proposalAdditionalInfo = this.$helpers.restructureProposalAdditionalInfo({
+          summary: this.setupData.summary,
+          category: this.setupData.category,
+          budgets: JSON.stringify(this.budgetItemsNew),
+        });
+
+        if (this.setupData.img) proposalAdditionalInfo.img = this.setupData.img;
+        if (this.setupData.video) proposalAdditionalInfo.video = this.setupData.video;
+
+        const payload = {
+          proposalName: this.setupData.proposal_name,
+          title: this.setupData.title,
+          monthlyBudget: this.monthlyBudget,
+          duration: this.setupData.duration,
+          proposalJson: proposalAdditionalInfo,
+        };
+
+
+        if (await this.$_modifyProposalDraft(payload)) {
+          this.changeCurrentStep(2);
+        }
       },
     },
   };

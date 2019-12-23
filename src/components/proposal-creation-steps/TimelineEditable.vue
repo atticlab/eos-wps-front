@@ -274,6 +274,7 @@
     <v-btn
       class="mb-2 mb-sm-0 mr-2"
       color="success"
+      :disabled="isModifyProposalDraftLoading"
       @click="modify"
     >
       {{ $t('proposalCreationPage.saveDraft') }}
@@ -405,6 +406,14 @@
         // eslint-disable-next-line no-unused-expressions
         val || this.closeDialogDelete();
       },
+      proposalInitial: {
+        immediate: true,
+        handler(val) {
+          if (this.proposalId) {
+            this.proposal = this.$helpers.copyDeep(val);
+          }
+        },
+      },
       $route: {
         immediate: true,
         handler() {
@@ -418,7 +427,7 @@
         deep: true,
         handler(val) {
           if (!val || Object.keys(val).length === 0) return;
-          this.milestones = val.proposal_json.milestones || [];
+          this.milestones = JSON.parse(val.proposal_json.milestones) || [];
         },
       },
     },
@@ -475,8 +484,8 @@
         }
 
         const proposalAdditionalInfo = this.$helpers.copyDeep(this.proposal.proposal_json);
-        proposalAdditionalInfo.milestones = JSON.stringify(this.$helpers.copyDeep(this.milestones));
 
+        proposalAdditionalInfo.milestones = JSON.stringify(this.$helpers.copyDeep(this.milestones));
         const proposalAdditionalInfoRestructured = this.$helpers.restructureProposalAdditionalInfo(
           proposalAdditionalInfo,
         );
@@ -489,6 +498,7 @@
 
         if (await this.$_modifyProposalDraft(payload)) {
           this.$emit('is-draft-modified', true);
+          this.$router.push('/proposals/drafts');
         }
 
         return null;
