@@ -8,6 +8,7 @@ export default {
   methods: {
     async $_getEosPrice() {
       const table = 'orarates';
+      const indexPosition = 1;
 
       try {
         this.isSettingsLoading = true;
@@ -18,6 +19,7 @@ export default {
                                   this.$constants.EOS_ORACLE,
                                   null,
                                   null,
+                                  indexPosition,
                                 );
         const result = response.rows;
         if (!result || !result.length) {

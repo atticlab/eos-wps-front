@@ -11,6 +11,7 @@ export default {
       let response = null;
       const depositsTable = 'deposits';
       const result = [];
+      const indexPosition = 1;
 
       try {
         this.isDepositsLoading = true;
@@ -23,6 +24,7 @@ export default {
               this.$constants.CONTRACT_NAME,
               lowerBound,
               null,
+              indexPosition,
             );
           /* eslint-enable */
           result.push(...response.rows);

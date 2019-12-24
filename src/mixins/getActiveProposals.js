@@ -7,10 +7,13 @@ export default {
   },
   methods: {
     async $_getActiveProposals() {
-      let lowerBound = '';
+      let lowerBound = 'active';
+      const upperBound = lowerBound;
       let response = null;
       const proposalsTable = 'proposals';
       const result = [];
+      // status
+      const indexPosition = 2;
 
       try {
         this.isActiveProposalsLoading = true;
@@ -22,7 +25,8 @@ export default {
               this.$constants.CONTRACT_NAME,
               this.$constants.CONTRACT_NAME,
               lowerBound,
-              null,
+              upperBound,
+              indexPosition,
             );
           /* eslint-enable */
           result.push(...response.rows);
