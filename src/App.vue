@@ -161,6 +161,16 @@
       </v-toolbar-items>
     </v-app-bar>
 
+    <v-alert
+      v-show="isScatterInitLoading"
+      transition="scale-transition"
+      border-top
+      type="info"
+      :class="{ 'alert-scatter': true }"
+    >
+      {{ $t('notifications.scatterInit') }}
+    </v-alert>
+
     <v-content>
       <router-view />
     </v-content>
@@ -170,11 +180,34 @@
     >
       <span class="white--text">&copy; 2019</span>
     </v-footer>
+
+    <v-snackbar
+      v-if="!isScatterInitLoading"
+      v-model="isScatterNotConnected"
+      color="info"
+      :timeout="30000"
+      :top="true"
+      :multi-line="true"
+      class="text-center"
+    >
+      {{ $t('notifications.scatterIsNotConnected') }}
+      <v-btn
+        color="red"
+        text
+        @click="SET_IS_SCATTER_NOT_CONNECTED(false)"
+      >
+        <v-icon>
+          mdi-close
+        </v-icon>
+      </v-btn>
+    </v-snackbar>
   </v-app>
 </template>
 
 <script>
-  import { mapActions, mapGetters } from 'vuex';
+  import {
+ mapState, mapActions, mapGetters, mapMutations,
+} from 'vuex';
   import ActionType from '@/store/constants';
   import getProducers from '@/mixins/getProducers';
   import getEosPrice from '@/mixins/getEosPrice';
@@ -188,6 +221,10 @@
       };
     },
     computed: {
+      ...mapState({
+        isScatterInitLoading: state => state.userService.isScatterInitLoading,
+        isScatterNotConnected: state => state.userService.isScatterNotConnected,
+      }),
       ...mapGetters('userService', {
         getAccountNameWithAuthority: 'getAccountNameWithAuthority',
       }),
@@ -198,6 +235,9 @@
       this[ActionType.SCATTER_INIT]();
     },
     methods: {
+      ...mapMutations('userService', [
+        ActionType.SET_IS_SCATTER_NOT_CONNECTED,
+      ]),
       ...mapActions('userService', [
         ActionType.SCATTER_INIT,
         ActionType.SCATTER_LOGOUT,
@@ -212,4 +252,12 @@
 
 <style lang="scss">
   @import '~@/assets/scss/main';
+
+  .alert-scatter {
+    margin-top: 64px;
+    width: 100%;
+    text-align: center;
+    position: fixed !important;
+    z-index: 2;
+  }
 </style>

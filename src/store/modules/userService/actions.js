@@ -9,6 +9,8 @@ ScatterJS.plugins(new ScatterEOS());
 export default {
   [ActionType.SCATTER_INIT]: async ({ commit }) => {
     try {
+      commit(ActionType.SET_IS_SCATTER_INIT_LOADING, true);
+
       const connected = await ScatterJS.connect(config.appName, { network: config.eos });
       if (!connected) {
         throw new Error('Scatter not connected');
@@ -26,7 +28,10 @@ export default {
       return true;
     } catch (e) {
       console.error('ActionType.SCATTER_INIT', e);
+      commit(ActionType.SET_IS_SCATTER_NOT_CONNECTED, true);
       throw e;
+    } finally {
+      commit(ActionType.SET_IS_SCATTER_INIT_LOADING, false);
     }
   },
   [ActionType.SCATTER_LOGOUT]: ({ commit }) => {

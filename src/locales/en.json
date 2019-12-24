@@ -134,7 +134,9 @@
     "proposalNameExists": "A proposal with the same name already exists! Try another one",
     "unexpectedError": "Unexpected error",
     "cancelledAction": "You cancelled the action",
-    "insufficientRam": "Insufficient RAM"
+    "insufficientRam": "Insufficient RAM",
+    "scatterInit": "Scatter is being initialized...",
+    "scatterIsNotConnected": "Scatter is not connected. Please install/open Scatter plugin or desktop application and refresh this page."
   },
   "proposalStatuses": {
     "passing": "Passing",
