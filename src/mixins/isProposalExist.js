@@ -8,6 +8,7 @@ export default {
     async $_isProposalExist(candidateName) {
       const proposalsTable = 'proposals';
       const draftsTable = 'drafts';
+      const indexPosition = 1;
 
       if (!candidateName) {
         throw new Error('$_isProposalExist empty candidateName');
@@ -21,6 +22,7 @@ export default {
           this.$constants.CONTRACT_NAME,
           candidateName,
           candidateName,
+          indexPosition,
         )];
         if (this.getAccountName) {
           promiseArr.push(this.$independentEosApi
@@ -30,6 +32,7 @@ export default {
               this.getAccountName,
               candidateName,
               candidateName,
+              indexPosition,
             ));
         }
         const [activeProposal, draftProposal] = await Promise.all(promiseArr);
