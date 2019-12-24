@@ -341,10 +341,7 @@
     },
     data() {
       return {
-        // budgetData: [...this.budgetDataInit],
-        // budgetData: JSON.parse(this.budgetDataInit),
         budgetData: [],
-        // eosPrice: this.$constants.EOS_RATE,
         dialogEdit: false,
         dialogDelete: false,
         headers: this.$constants.BUDGET_HEADERS,
@@ -488,7 +485,6 @@
       },
       budgetDataInit: {
         handler(val) {
-          // this.budgetData = [...val];
           this.budgetData = this.$helpers.copyDeep(JSON.parse(val));
         },
       },

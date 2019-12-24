@@ -480,10 +480,11 @@
       },
       async modify() {
         if (this.milestones.length === 0) {
-          return this.showErrorMsg({
+          this.showErrorMsg({
             title: this.$t('notifications.error'),
             message: this.$t('notifications.milestonesEmpty'),
           });
+          return;
         }
 
         const proposalAdditionalInfo = this.$helpers.copyDeep(this.proposal.proposal_json);
@@ -503,8 +504,6 @@
           this.$emit('is-draft-modified', true);
           this.$router.push('/proposals/drafts');
         }
-
-        return null;
       },
     },
   };
