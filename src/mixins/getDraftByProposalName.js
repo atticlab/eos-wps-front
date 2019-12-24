@@ -42,6 +42,7 @@ export default {
         return this.proposalDraft;
       } catch (e) {
         console.error('$_getDraftProposalByProposalName', e);
+        this.$errorsHandler.handleError(e);
         return {};
       } finally {
         this.isDraftProposalByProposalNameLoading = false;

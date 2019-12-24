@@ -155,7 +155,9 @@
 
         <v-tab-item background-color="tile">
           <Overview
-            :overview="proposalFullInfo.proposal_json.overview"
+            :overview="proposalFullInfo.proposal_json.overview
+              ? proposalFullInfo.proposal_json.overview
+              : ''"
             :proposer="proposalFullInfo.proposer"
             :hash="proposalFullInfo.proposal_json.hash"
             :category="proposalFullInfo.proposal_json.category"
@@ -183,6 +185,7 @@
   import BudgetOverview from '@/components/proposal-tabs/BudgetOverview.vue';
   import TimelineOverview from '@/components/proposal-tabs/TimelineOverview.vue';
   import proposalParsed from '@/mixins/proposalParsed';
+  import getDraftByProposalName from '@/mixins/getDraftByProposalName';
 
   export default {
     name: 'Proposal',
@@ -191,7 +194,7 @@
       BudgetOverview,
       TimelineOverview,
     },
-    mixins: [proposalParsed],
+    mixins: [proposalParsed, getDraftByProposalName],
     data() {
       return {
         proposalId: this.$route.params.slug,
@@ -219,11 +222,13 @@
     watch: {
       $route: {
         immediate: true,
-        handler() {
+        async handler() {
           // Request either active proposal or draft
-          this.proposal = this.isDraft
-                              ? this.$constants.PROPOSAL_DRAFT
-                              : this.$constants.PROPOSAL_ACTIVE;
+          if (this.isDraft) {
+            await this.$_getDraftProposalByProposalName(this.proposalId);
+          } else {
+            this.proposal = this.$constants.PROPOSAL_ACTIVE;
+          }
           // get votes
           // eslint-disable-next-line prefer-destructuring
           this.vote = this.$constants.VOTES[0];

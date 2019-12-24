@@ -200,7 +200,7 @@
         {{ `$${item.subtotal}` }}
       </div>
       <div class="body-2 font-weight-bold indigo--text">
-        {{ `${(item.subtotal * eosRate).toFixed($constants.EOS_MAX_DIGITS)} EOS` }}
+        {{ `${(item.subtotal * eosPrice).toFixed($constants.EOS_MAX_DIGITS)} EOS` }}
       </div>
     </template>
     <template
@@ -239,7 +239,7 @@
           </div>
           <div class="body-1 font-weight-bold indigo--text">
             {{ $t('proposalPage.eosConversionRate') }}:
-            {{ `$${eosRate}` }}
+            {{ `$${eosPrice}` }}
           </div>
         </div>
 
@@ -260,7 +260,7 @@
           </div>
           <div class="body-1 font-weight-bold indigo--text">
             {{ $t('proposalPage.eosConversionRate') }}:
-            {{ `$${eosRate}` }}
+            {{ `$${eosPrice}` }}
           </div>
         </td>
         <td />
@@ -331,14 +331,17 @@
         default: false,
       },
       budgetDataInit: {
-        type: Array,
-        default: () => [],
+        type: String,
+        default: '',
+      },
+      eosPrice: {
+        type: Number,
+        default: 0,
       },
     },
     data() {
       return {
-        budgetData: [...this.budgetDataInit],
-        eosRate: this.$constants.EOS_RATE,
+        budgetData: [],
         dialogEdit: false,
         dialogDelete: false,
         headers: this.$constants.BUDGET_HEADERS,
@@ -375,7 +378,7 @@
         }, 0);
       },
       totalBudgetEos() {
-        return this.totalBudget * this.eosRate;
+        return this.totalBudget * this.eosPrice;
       },
       budgetHeaders() {
         if (this.isEditable) return this.headers;
@@ -482,7 +485,7 @@
       },
       budgetDataInit: {
         handler(val) {
-          this.budgetData = [...val];
+          this.budgetData = this.$helpers.copyDeep(JSON.parse(val));
         },
       },
       totalBudget: {

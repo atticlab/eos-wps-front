@@ -2,7 +2,7 @@ export default {
   data() {
     return {
       isEosPriceLoading: false,
-      eosPrice: {},
+      eosPrice: null,
     };
   },
   methods: {

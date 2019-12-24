@@ -81,6 +81,17 @@
                   {{ $t('common.months') }}
                 </div>
               </div>
+              <div
+                v-if="!isDraft"
+                class="mb-3 mr-sm-2"
+              >
+                <div class="mb-3 font-weight-bold">
+                  {{ $t('common.payments') }}:
+                </div>
+                <div>
+                  {{ payments }}
+                </div>
+              </div>
               <div v-if="!isDraft">
                 <div class="mb-3 font-weight-bold">
                   {{ $t('common.votes') }}:

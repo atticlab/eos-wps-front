@@ -274,7 +274,8 @@
     <v-btn
       class="mb-2 mb-sm-0 mr-2"
       color="success"
-      @click="saveDraft"
+      :disabled="isModifyProposalDraftLoading"
+      @click="modify"
     >
       {{ $t('proposalCreationPage.saveDraft') }}
     </v-btn>
@@ -286,10 +287,11 @@
   import {
  required, minLength, maxLength, helpers,
 } from 'vuelidate/lib/validators';
+  import modifyProposalDraft from '@/mixins/modifyProposalDraft';
 
   export default {
     name: 'TimelineEditable',
-    mixins: [validationMixin],
+    mixins: [validationMixin, modifyProposalDraft],
     validations: {
       editedItem: {
         title: {
@@ -365,7 +367,8 @@
         !this.$v.editedItem.title.maxLength
         && errors.push(this.$t('validationMessages.maxLength', { numberOfChars: 30 }));
         // eslint-disable-next-line no-unused-expressions
-        !this.$v.editedItem.title.latinNoSpecials && errors.push(this.$t('validationMessages.latinNoSpecialsRegex'));
+        !this.$v.editedItem.title.latinNoSpecials
+        && errors.push(this.$t('validationMessages.latinNoSpecialsRegex'));
         // eslint-disable-next-line no-unused-expressions
         !this.$v.editedItem.title.notOnlySpaces
         && errors.push(this.$t('validationMessages.notOnlySpaces'));
@@ -404,6 +407,14 @@
         // eslint-disable-next-line no-unused-expressions
         val || this.closeDialogDelete();
       },
+      proposalInitial: {
+        immediate: true,
+        handler(val) {
+          if (this.proposalId) {
+            this.proposal = this.$helpers.copyDeep(val);
+          }
+        },
+      },
       $route: {
         immediate: true,
         handler() {
@@ -417,7 +428,9 @@
         deep: true,
         handler(val) {
           if (!val || Object.keys(val).length === 0) return;
-          this.milestones = val.proposal_json.milestones;
+          this.milestones = val.proposal_json.milestones
+                            ? JSON.parse(val.proposal_json.milestones)
+                            : [];
         },
       },
     },
@@ -465,14 +478,32 @@
         }
         this.closeDialogEdit();
       },
-      saveDraft() {
+      async modify() {
         if (this.milestones.length === 0) {
-          return this.showErrorMsg({
+          this.showErrorMsg({
             title: this.$t('notifications.error'),
             message: this.$t('notifications.milestonesEmpty'),
           });
+          return;
         }
-        return alert('Saved!');
+
+        const proposalAdditionalInfo = this.$helpers.copyDeep(this.proposal.proposal_json);
+
+        proposalAdditionalInfo.milestones = JSON.stringify(this.$helpers.copyDeep(this.milestones));
+        const proposalAdditionalInfoRestructured = this.$helpers.restructureProposalAdditionalInfo(
+          proposalAdditionalInfo,
+        );
+
+        const payload = {
+          proposalName: this.proposal.proposal_name,
+          title: this.proposal.title,
+          proposalJson: proposalAdditionalInfoRestructured,
+        };
+
+        if (await this.$_modifyProposalDraft(payload)) {
+          this.$emit('is-draft-modified', true);
+          this.$router.push('/proposals/drafts');
+        }
       },
     },
   };
