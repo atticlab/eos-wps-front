@@ -31,7 +31,6 @@ export default {
             .getTableRows(
               draftsTable,
               this.$constants.CONTRACT_NAME,
-              // this.$constants.CONTRACT_NAME,
               this.getAccountName,
               lowerBound,
               null
