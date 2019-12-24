@@ -632,21 +632,23 @@
           return;
         }
 
-        const proposalAdditionalInfo = this.$helpers.restructureProposalAdditionalInfo({
+        const proposalAdditionalInfo = {
           summary: this.setupData.summary,
           category: this.setupData.category,
           budgets: JSON.stringify(this.budgetItemsNew),
-        });
-
+        };
         if (this.setupData.img) proposalAdditionalInfo.img = this.setupData.img;
         if (this.setupData.video) proposalAdditionalInfo.video = this.setupData.video;
+
+        const proposalAdditionalInfoRestructured = this.$helpers
+          .restructureProposalAdditionalInfo(proposalAdditionalInfo);
 
         const payload = {
           proposalName: this.setupData.proposal_name,
           title: this.setupData.title,
           monthlyBudget: this.monthlyBudget,
           duration: this.setupData.duration,
-          proposalJson: proposalAdditionalInfo,
+          proposalJson: proposalAdditionalInfoRestructured,
         };
 
         if (await this.$_isProposalExist(payload.proposalName)) {
@@ -699,8 +701,8 @@
         const proposalAdditionalInfo = this.$helpers.copyDeep(this.proposal.proposal_json);
         proposalAdditionalInfo.summary = this.setupData.summary;
         proposalAdditionalInfo.category = this.setupData.category;
-        if (this.setupData.img) proposalAdditionalInfo.img = this.setupData.img;
-        if (this.setupData.video) proposalAdditionalInfo.video = this.setupData.video;
+        proposalAdditionalInfo.img = this.setupData.img;
+        proposalAdditionalInfo.video = this.setupData.video;
 
         const proposalAdditionalInfoRestructured = this.$helpers
           .restructureProposalAdditionalInfo(proposalAdditionalInfo);
