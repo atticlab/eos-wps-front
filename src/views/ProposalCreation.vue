@@ -37,7 +37,22 @@
           </v-stepper-step>
         </v-stepper-header>
 
-        <v-stepper-items>
+        <div
+          v-show="isDraftProposalByProposalNameLoading"
+          :class="{
+            'd-flex': isDraftProposalByProposalNameLoading,
+            'justify-center': true,
+          }"
+        >
+          <v-progress-circular
+            :size="70"
+            :width="7"
+            color="primary"
+            indeterminate
+          />
+        </div>
+
+        <v-stepper-items v-show="!isDraftProposalByProposalNameLoading">
           <v-stepper-content step="1">
             <Setup
               :proposal-initial="$_proposalParsed"
@@ -83,7 +98,6 @@
     data() {
       return {
         currentStep: 1,
-        proposal: {},
         isDraftModified: false,
       };
     },
@@ -112,11 +126,10 @@
         immediate: true,
         handler() {
           if (this.proposalId) {
-            // get proposal from the contract
-            // this.proposal = this.$constants.PROPOSAL_DRAFT;
             this.$_getDraftProposalByProposalName(this.proposalId);
           } else {
-            this.proposal = {};
+            // proposalDraft is in the getDraftByProposalName mixin
+            this.proposalDraft = {};
           }
         },
       },

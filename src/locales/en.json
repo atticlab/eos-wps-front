@@ -98,6 +98,7 @@
     "multiMonth": "Multi-month",
     "requestedEosPerMonth": "Requested EOS per month",
     "monthlyEosBudget": "Monthly EOS budget",
+    "addMonthlyBudget": "Add your monthly budget in EOS",
     "editProposal": "Edit proposal",
     "removeProposal": "Remove proposal",
     "chooseDuration": "Choose a duration of payments",
@@ -132,7 +133,8 @@
     "milestonesEmpty": "Add at least one timeline item",
     "proposalNameExists": "A proposal with the same name already exists! Try another one",
     "unexpectedError": "Unexpected error",
-    "cancelledAction": "You cancelled the action"
+    "cancelledAction": "You cancelled the action",
+    "insufficientRam": "Insufficient RAM"
   },
   "proposalStatuses": {
     "passing": "Passing",

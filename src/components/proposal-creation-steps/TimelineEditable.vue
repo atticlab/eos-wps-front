@@ -367,7 +367,8 @@
         !this.$v.editedItem.title.maxLength
         && errors.push(this.$t('validationMessages.maxLength', { numberOfChars: 30 }));
         // eslint-disable-next-line no-unused-expressions
-        !this.$v.editedItem.title.latinNoSpecials && errors.push(this.$t('validationMessages.latinNoSpecialsRegex'));
+        !this.$v.editedItem.title.latinNoSpecials
+        && errors.push(this.$t('validationMessages.latinNoSpecialsRegex'));
         // eslint-disable-next-line no-unused-expressions
         !this.$v.editedItem.title.notOnlySpaces
         && errors.push(this.$t('validationMessages.notOnlySpaces'));
@@ -427,7 +428,9 @@
         deep: true,
         handler(val) {
           if (!val || Object.keys(val).length === 0) return;
-          this.milestones = JSON.parse(val.proposal_json.milestones) || [];
+          this.milestones = val.proposal_json.milestones
+                            ? JSON.parse(val.proposal_json.milestones)
+                            : [];
         },
       },
     },

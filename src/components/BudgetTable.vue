@@ -489,7 +489,6 @@
       budgetDataInit: {
         handler(val) {
           // this.budgetData = [...val];
-          console.log(val);
           this.budgetData = this.$helpers.copyDeep(JSON.parse(val));
         },
       },

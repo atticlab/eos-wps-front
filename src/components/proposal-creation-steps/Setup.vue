@@ -151,6 +151,28 @@
           @budget-data-new="setBudgetItemsNew"
         />
 
+        <div
+          v-else
+          class="mb-4"
+        >
+          <label
+            for="monthlyBudget"
+            class="title d-block mb-2"
+          >
+            {{ $t('proposalCreationPage.monthlyEosBudget') }}
+          </label>
+          <v-text-field
+            id="monthlyBudget"
+            v-model.number="setupData.monthlyBudgetAlt"
+            :error-messages="monthlyBudgetErrors"
+            :label="$t('proposalCreationPage.addMonthlyBudget')"
+            prefix="EOS"
+            @input="validateSingleField('monthlyBudgetAlt')"
+            @blur="validateSingleField('monthlyBudgetAlt')"
+            @keypress="$helpers.isNumberDecimalOnly($event)"
+          />
+        </div>
+
         <div>
           <!--      <div class="mb-12">-->
           <!--        <h2 class="font-weight-regular mb-6">-->
@@ -181,7 +203,6 @@
               {{ $t('common.paymentsDuration') }}
             </h2>
 
-
             <v-select
               v-model="setupData.duration"
               :items="$constants.DURATIONS_OF_PAYMENTS"
@@ -203,7 +224,10 @@
           </div>
         </div>
 
-        <div class="d-flex justify-end my-12">
+        <div
+          v-if="!isExistingProposalWithoutBudgets"
+          class="d-flex justify-end my-12"
+        >
           <div class="pr-3">
             <h2 class="title required">
               {{ $t('proposalCreationPage.monthlyEosBudget') }}
@@ -223,6 +247,30 @@
             </div>
           </div>
         </div>
+
+        <div
+          v-else
+          class="d-flex justify-end my-12"
+        >
+          <div class="pr-3">
+            <h2 class="title required">
+              {{ $t('proposalCreationPage.monthlyEosBudget') }}
+            </h2>
+            <div
+              :class="{
+                'font-weight-bold title': true,
+                'green--text': monthlyBudgetAltEos
+                  ? monthlyBudgetAltEos.split(' ')[0] >= 100
+                  : false,
+                'red--text text-underline': monthlyBudgetAltEos
+                  ? monthlyBudgetAltEos.split(' ')[0] < 100
+                  : true,
+              }"
+            >
+              {{ monthlyBudgetAltEos }}
+            </div>
+          </div>
+        </div>
       </v-card>
     </v-form>
 
@@ -239,6 +287,7 @@
       v-else
       color="success"
       class="mr-2"
+      :disabled="isModifyProposalDraftLoading"
       @click="modify"
     >
       {{ $t('proposalCreationPage.continue') }}
@@ -250,7 +299,7 @@
   import { validationMixin } from 'vuelidate';
   import {
     required, minLength, maxLength, helpers, numeric, minValue,
-    maxValue, url,
+    maxValue, url, decimal,
   } from 'vuelidate/lib/validators';
   import BudgetTable from '@/components/BudgetTable.vue';
   import createProposalDraft from '@/mixins/createProposalDraft';
@@ -311,6 +360,9 @@
           minValue: minValue(1),
           maxValue: maxValue(6),
         },
+        monthlyBudgetAlt: {
+          decimal,
+        },
       },
     },
     notifications: {
@@ -336,11 +388,11 @@
           img: '',
           video: '',
           duration: 1,
+          monthlyBudgetAlt: 0,
         },
         proposal: {},
         totalBudget: 0,
         budgetItemsNew: [],
-        // eosPrice: this.$constants.EOS_RATE,
       };
     },
     computed: {
@@ -447,6 +499,16 @@
 
         return errors;
       },
+      monthlyBudgetErrors() {
+        const errors = [];
+        if (!this.$v.setupData.monthlyBudgetAlt.$dirty) return errors;
+
+        // eslint-disable-next-line no-unused-expressions
+        !this.$v.setupData.monthlyBudgetAlt.decimal
+        && errors.push(this.$t('validationMessages.onlyNumbersDecimals'));
+
+        return errors;
+      },
       // eosRate30SMA() {
       //   // the average of all of the prices for a coin for the last month
       //   return (2 * 31) / 31;
@@ -458,7 +520,8 @@
       //   return this.eosRate30SMA;
       // },
       isExistingProposalWithoutBudgets() {
-        return Boolean(this.proposalId && !this.proposal.proposal_json.budgets);
+        return Boolean(this.proposalId && this.proposal.proposal_json
+        && !this.proposal.proposal_json.budgets);
       },
       monthlyBudget() {
         if (!this.setupData.duration || !this.eosPrice) return 0;
@@ -467,6 +530,13 @@
         const totalBudgetInEos = this.totalBudget * this.eosPrice;
         return `${(totalBudgetInEos / this.setupData.duration)
           .toFixed(this.$constants.EOS_MAX_DIGITS)} EOS`;
+      },
+      monthlyBudgetAltEos() {
+        if (!this.setupData.duration || !this.eosPrice) return 0;
+        if (!this.isExistingProposalWithoutBudgets) return 0;
+
+        return `${(this.setupData.monthlyBudgetAlt * this.setupData.duration)
+                  .toFixed(this.$constants.EOS_MAX_DIGITS)} EOS`;
       },
       budgetData() {
         if (!this.proposal || Object.keys(this.proposal).length === 0) return '';
@@ -515,6 +585,7 @@
           this.setupData.category = val.proposal_json.category;
           this.setupData.img = val.proposal_json.img || '';
           this.setupData.video = val.proposal_json.video || '';
+          this.setupData.monthlyBudgetAlt = Number(val.monthly_budget.split(' ')[0]);
           return null;
         },
       },
@@ -609,7 +680,15 @@
           return;
         }
 
-        if (!this.monthlyBudget || this.monthlyBudget.split(' ')[0] < 100) {
+        if (this.isExistingProposalWithoutBudgets) {
+          if (!this.monthlyBudgetAltEos || this.monthlyBudgetAltEos.split(' ')[0] < 100) {
+            this.showErrorMsg({
+              title: this.$t('notifications.error'),
+              message: this.$t('notifications.budgetErr'),
+            });
+            return;
+          }
+        } else if (!this.monthlyBudget || this.monthlyBudget.split(' ')[0] < 100) {
           this.showErrorMsg({
             title: this.$t('notifications.error'),
             message: this.$t('notifications.budgetErr'),
@@ -617,21 +696,23 @@
           return;
         }
 
-        const proposalAdditionalInfo = this.$helpers.restructureProposalAdditionalInfo({
-          summary: this.setupData.summary,
-          category: this.setupData.category,
-          budgets: JSON.stringify(this.budgetItemsNew),
-        });
-
+        const proposalAdditionalInfo = this.$helpers.copyDeep(this.proposal.proposal_json);
+        proposalAdditionalInfo.summary = this.setupData.summary;
+        proposalAdditionalInfo.category = this.setupData.category;
         if (this.setupData.img) proposalAdditionalInfo.img = this.setupData.img;
         if (this.setupData.video) proposalAdditionalInfo.video = this.setupData.video;
+
+        const proposalAdditionalInfoRestructured = this.$helpers
+          .restructureProposalAdditionalInfo(proposalAdditionalInfo);
 
         const payload = {
           proposalName: this.setupData.proposal_name,
           title: this.setupData.title,
-          monthlyBudget: this.monthlyBudget,
+          monthlyBudget: this.isExistingProposalWithoutBudgets
+                         ? this.monthlyBudgetAltEos
+                         : this.monthlyBudget,
           duration: this.setupData.duration,
-          proposalJson: proposalAdditionalInfo,
+          proposalJson: proposalAdditionalInfoRestructured,
         };
 
 
