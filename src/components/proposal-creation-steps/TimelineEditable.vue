@@ -14,6 +14,7 @@
         :headers="headers"
         :items="milestones"
         :hide-default-footer="true"
+        :items-per-page="$constants.MAX_TABLE_ITEMS"
       >
         <template v-slot:top>
           <v-toolbar
@@ -26,6 +27,7 @@
             >
               <template v-slot:activator="{ on }">
                 <v-btn
+                  v-if="milestones.length < $constants.MAX_TABLE_ITEMS"
                   color="primary"
                   dark
                   class="ml-auto mb-2"
@@ -483,6 +485,14 @@
           this.showErrorMsg({
             title: this.$t('notifications.error'),
             message: this.$t('notifications.milestonesEmpty'),
+          });
+          return;
+        }
+
+        if (this.milestones.length > this.$constants.MAX_TABLE_ITEMS) {
+          this.showErrorMsg({
+            title: this.$t('notifications.error'),
+            message: this.$t('notifications.tooManyItems'),
           });
           return;
         }

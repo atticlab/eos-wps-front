@@ -16,4 +16,7 @@ export default {
   [ActionType.SET_IS_SCATTER_NOT_CONNECTED]: (state, data) => {
     state.isScatterNotConnected = data;
   },
+  [ActionType.SET_ROUTE_TO]: (state, data) => {
+    state.routeTo = data;
+  },
 };

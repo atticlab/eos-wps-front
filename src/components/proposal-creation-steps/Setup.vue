@@ -632,6 +632,14 @@
           return;
         }
 
+        if (this.budgetItemsNew.length > this.$constants.MAX_TABLE_ITEMS) {
+          this.showErrorMsg({
+            title: this.$t('notifications.error'),
+            message: this.$t('notifications.tooManyItems'),
+          });
+          return;
+        }
+
         const proposalAdditionalInfo = {
           summary: this.setupData.summary,
           category: this.setupData.category,

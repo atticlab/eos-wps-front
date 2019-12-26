@@ -8,6 +8,7 @@ const state = {
   isBp: false,
   isScatterInitLoading: true,
   isScatterNotConnected: false,
+  routeTo: null,
 };
 
 /* eslint-disable */
