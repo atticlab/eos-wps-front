@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import ActionType from '../store/constants';
+// import ActionType from '../store/constants';
 
 // route level code-splitting
 // this generates a separate chunk (about.[hash].js) for this route
@@ -79,7 +79,7 @@ const router = new VueRouter({
 router.beforeEach(async (to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (!Vue.prototype.$store.getters['userService/getAccountNameWithAuthority']) {
-      await Vue.prototype.$store.dispatch(`userService/${ActionType.DEFINE_ROUTE_TO}`, to);
+      // await Vue.prototype.$store.dispatch(`userService/${ActionType.DEFINE_ROUTE_TO}`, to);
       return next({
         path: '/',
       });

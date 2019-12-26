@@ -231,20 +231,20 @@
       }),
     },
     watch: {
-      getAccountNameWithAuthority: {
-        immediate: true,
-        handler(val) {
-          if (!val) return;
-          if (this.routeTo && this.routeTo.meta.requiresAuth) {
-            this.$router.push({ path: this.routeTo.path });
-          }
-        },
-      },
+      // getAccountNameWithAuthority: {
+      //   immediate: true,
+      //   handler(val) {
+      //     if (!val) return;
+      //     if (this.routeTo && this.routeTo.meta.requiresAuth) {
+      //       this.$router.push({ path: this.routeTo.path });
+      //     }
+      //   },
+      // },
     },
     async created() {
       this.$_getProducers();
       this.$_getEosPrice();
-      this[ActionType.SCATTER_INIT]();
+      // this[ActionType.SCATTER_INIT]();
     },
     methods: {
       ...mapMutations('userService', [

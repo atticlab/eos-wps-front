@@ -186,6 +186,7 @@
   import TimelineOverview from '@/components/proposal-tabs/TimelineOverview.vue';
   import proposalParsed from '@/mixins/proposalParsed';
   import getDraftByProposalName from '@/mixins/getDraftByProposalName';
+  import isProposalExist from '@/mixins/isProposalExist';
 
   export default {
     name: 'Proposal',
@@ -194,7 +195,7 @@
       BudgetOverview,
       TimelineOverview,
     },
-    mixins: [proposalParsed, getDraftByProposalName],
+    mixins: [proposalParsed, getDraftByProposalName, isProposalExist],
     data() {
       return {
         proposalId: this.$route.params.slug,
@@ -224,6 +225,11 @@
         immediate: true,
         async handler() {
           // Request either active proposal or draft
+          if (!await this.$_isProposalExist(this.proposalId)) {
+            this.$router.push({ name: 'Not found' });
+            return;
+          }
+
           if (this.isDraft) {
             await this.$_getDraftProposalByProposalName(this.proposalId);
           } else {
