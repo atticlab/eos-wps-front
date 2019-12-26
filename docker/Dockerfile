@@ -1,7 +1,6 @@
 FROM node:dubnium as build
 
 ENV HOME "/app"
-ENV NODE_ENV "production"
 
 WORKDIR ${HOME}
 COPY . /${HOME}
