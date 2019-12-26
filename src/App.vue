@@ -234,10 +234,9 @@
       getAccountNameWithAuthority: {
         immediate: true,
         handler(val) {
-          if (val) {
-            if (this.routeTo && this.routeTo.meta.requiresAuth) {
-              this.$router.push({ path: this.routeTo.path });
-            }
+          if (!val) return;
+          if (this.routeTo && this.routeTo.meta.requiresAuth) {
+            this.$router.push({ path: this.routeTo.path });
           }
         },
       },
