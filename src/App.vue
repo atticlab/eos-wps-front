@@ -224,12 +224,24 @@
       ...mapState({
         isScatterInitLoading: state => state.userService.isScatterInitLoading,
         isScatterNotConnected: state => state.userService.isScatterNotConnected,
+        routeTo: state => state.userService.routeTo,
       }),
       ...mapGetters('userService', {
         getAccountNameWithAuthority: 'getAccountNameWithAuthority',
       }),
     },
-    async mounted() {
+    watch: {
+      getAccountNameWithAuthority: {
+        immediate: true,
+        handler(val) {
+          if (!val) return;
+          if (this.routeTo && this.routeTo.meta.requiresAuth) {
+            this.$router.push({ path: this.routeTo.path });
+          }
+        },
+      },
+    },
+    async created() {
       this.$_getProducers();
       this.$_getEosPrice();
       this[ActionType.SCATTER_INIT]();

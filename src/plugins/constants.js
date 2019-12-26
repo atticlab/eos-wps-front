@@ -87,6 +87,7 @@ const constants = {
   ],
   CONTRACT_NAME: 'wpswpswpswps',
   EOS_ORACLE: 'eosdtorclize',
+  MAX_TABLE_ITEMS: 15,
 
   // Examples of data
   AVAILABLE_BUDGET: '50000.0000 EOS',

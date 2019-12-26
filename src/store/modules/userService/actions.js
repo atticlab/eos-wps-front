@@ -43,4 +43,7 @@ export default {
     commit(ActionType.SET_IS_BP, false);
   },
   [ActionType.SET_IS_BP]: ({ commit }, data) => commit(ActionType.SET_IS_BP, data),
+  [ActionType.DEFINE_ROUTE_TO]: ({ commit }, data) => {
+    commit(ActionType.SET_ROUTE_TO, data);
+  },
 };

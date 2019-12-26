@@ -136,7 +136,8 @@
     "cancelledAction": "You cancelled the action",
     "insufficientRam": "Insufficient RAM",
     "scatterInit": "Scatter is being initialized...",
-    "scatterIsNotConnected": "Scatter is not connected. Please install/open Scatter plugin or desktop application and refresh this page."
+    "scatterIsNotConnected": "Scatter is not connected. Please install/open Scatter plugin or desktop application and refresh this page.",
+    "tooManyItems": "Too many items. The number cannot be more than 15"
   },
   "proposalStatuses": {
     "passing": "Passing",

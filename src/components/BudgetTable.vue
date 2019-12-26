@@ -4,6 +4,7 @@
     :items="budgetData"
     :hide-default-footer="true"
     class="table"
+    :items-per-page="$constants.MAX_TABLE_ITEMS"
   >
     <template v-slot:top>
       <v-toolbar
@@ -17,6 +18,7 @@
         >
           <template v-slot:activator="{ on }">
             <v-btn
+              v-if="budgetData.length < $constants.MAX_TABLE_ITEMS"
               color="primary"
               dark
               class="ml-auto mb-2"
@@ -485,7 +487,11 @@
       },
       budgetDataInit: {
         handler(val) {
-          this.budgetData = this.$helpers.copyDeep(JSON.parse(val));
+          if (val) {
+            this.budgetData = this.$helpers.copyDeep(JSON.parse(val));
+          } else {
+            this.budgetData = [];
+          }
         },
       },
       totalBudget: {
