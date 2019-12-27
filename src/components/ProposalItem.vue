@@ -52,11 +52,11 @@
                 </div>
                 <div
                   :class="{'font-weight-bold text-capitalize': true,
-                           'red--text': status === $t('proposalStatuses.notPassing'),
-                           'green--text': status === $t('proposalStatuses.passing')
+                           'red--text': statusByVotes === $t('proposalStatuses.notPassing'),
+                           'green--text': statusByVotes === $t('proposalStatuses.passing')
                   }"
                 >
-                  {{ status }}
+                  {{ statusByVotes }}
                 </div>
               </div>
               <div
@@ -79,6 +79,17 @@
                 <div>
                   {{ duration }}
                   {{ $t('common.months') }}
+                </div>
+              </div>
+              <div
+                v-if="!isDraft"
+                class="mb-3 mr-sm-2"
+              >
+                <div class="mb-3 font-weight-bold">
+                  {{ $t('common.payments') }}:
+                </div>
+                <div>
+                  {{ payments }}
                 </div>
               </div>
               <div v-if="!isDraft">
@@ -146,7 +157,7 @@
         type: String,
         default: '0.0000 EOS',
       },
-      status: {
+      statusByVotes: {
         type: String,
         default: 'No data',
       },

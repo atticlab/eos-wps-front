@@ -8,6 +8,7 @@ export default {
   methods: {
     async $_getState() {
       const stateTable = 'state';
+      const indexPosition = 1;
 
       try {
         this.isStateLoading = true;
@@ -18,6 +19,7 @@ export default {
                                   this.$constants.CONTRACT_NAME,
                                   null,
                                   null,
+                                  indexPosition,
                                 );
         const result = response.rows;
         if (!result || !result.length) {

@@ -1,0 +1,17 @@
+version: '3.5'
+services:
+  frontend:
+    restart: always
+    container_name: wps.frontend
+    ports:
+      - "80:80"
+    build:
+      context: .
+      dockerfile:
+        ./docker/Dockerfile
+    volumes:
+      - .:/app
+      - ./logs/nginx/:/logs
+    logging:
+      options:
+        max-size: 50m

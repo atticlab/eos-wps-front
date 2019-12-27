@@ -1,6 +1,7 @@
 import Eos from 'eosjs';
 import ScatterJS from '@scatterjs/core';
 import ScatterEOS from '@scatterjs/eosjs';
+import router from '../../../router';
 import ActionType from '../../constants';
 import config from '@/config';
 
@@ -9,6 +10,8 @@ ScatterJS.plugins(new ScatterEOS());
 export default {
   [ActionType.SCATTER_INIT]: async ({ commit }) => {
     try {
+      commit(ActionType.SET_IS_SCATTER_INIT_LOADING, true);
+
       const connected = await ScatterJS.connect(config.appName, { network: config.eos });
       if (!connected) {
         throw new Error('Scatter not connected');
@@ -26,16 +29,26 @@ export default {
       return true;
     } catch (e) {
       console.error('ActionType.SCATTER_INIT', e);
+      commit(ActionType.SET_IS_SCATTER_NOT_CONNECTED, true);
       throw e;
+    } finally {
+      commit(ActionType.SET_IS_SCATTER_INIT_LOADING, false);
     }
   },
-  [ActionType.SCATTER_LOGOUT]: ({ commit }) => {
+  [ActionType.SCATTER_LOGOUT]: ({ commit, dispatch }, data) => {
     if (ScatterJS && ScatterJS.scatter && ScatterJS.scatter.logout) {
       ScatterJS.scatter.logout();
     }
     commit(ActionType.SET_EOS, null);
     commit(ActionType.SET_EOS_ACCOUNT, null);
     commit(ActionType.SET_IS_BP, false);
+    dispatch(ActionType.DEFINE_ROUTE_TO, null);
+    if (data !== 'ProposalsActive') {
+      router.push({ name: 'ProposalsActive' });
+    }
   },
   [ActionType.SET_IS_BP]: ({ commit }, data) => commit(ActionType.SET_IS_BP, data),
+  [ActionType.DEFINE_ROUTE_TO]: ({ commit }, data) => {
+    commit(ActionType.SET_ROUTE_TO, data);
+  },
 };

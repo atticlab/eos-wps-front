@@ -90,6 +90,7 @@ const constants = {
   VOTE_YES: 'yes',
   VOTE_NO: 'no',
   VOTE_ABSTAIN: 'abstain',
+  MAX_TABLE_ITEMS: 15,
 
   // Examples of data
   AVAILABLE_BUDGET: '50000.0000 EOS',

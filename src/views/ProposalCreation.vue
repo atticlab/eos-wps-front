@@ -21,9 +21,9 @@
           </v-stepper-step>
           <v-divider />
           <v-stepper-step
-            :complete="isBudgetDataAvailable"
+            :complete="isOverviewAvailable"
             :step="2"
-            :editable="isBudgetDataAvailable"
+            :editable="isOverviewAvailable"
           >
             {{ $t('proposalCreationPage.description') }}
           </v-stepper-step>
@@ -37,7 +37,22 @@
           </v-stepper-step>
         </v-stepper-header>
 
-        <v-stepper-items>
+        <div
+          v-show="isDraftProposalByProposalNameLoading"
+          :class="{
+            'd-flex': isDraftProposalByProposalNameLoading,
+            'justify-center': true,
+          }"
+        >
+          <v-progress-circular
+            :size="70"
+            :width="7"
+            color="primary"
+            indeterminate
+          />
+        </div>
+
+        <v-stepper-items v-show="!isDraftProposalByProposalNameLoading">
           <v-stepper-content step="1">
             <Setup
               :proposal-initial="$_proposalParsed"
@@ -49,12 +64,14 @@
             <Description
               :proposal-initial="$_proposalParsed"
               @step="setCurrentStep"
+              @is-draft-modified="setIsDraftModified"
             />
           </v-stepper-content>
 
           <v-stepper-content step="3">
             <TimelineEditable
               :proposal-initial="$_proposalParsed"
+              @is-draft-modified="setIsDraftModified"
             />
           </v-stepper-content>
         </v-stepper-items>
@@ -68,6 +85,8 @@
   import Description from '@/components/proposal-creation-steps/Description.vue';
   import TimelineEditable from '@/components/proposal-creation-steps/TimelineEditable.vue';
   import proposalParsed from '@/mixins/proposalParsed';
+  import getDraftByProposalName from '@/mixins/getDraftByProposalName';
+  import isProposalExist from '@/mixins/isProposalExist';
 
   export default {
     name: 'ProposalCreation',
@@ -76,26 +95,25 @@
       Description,
       TimelineEditable,
     },
-    mixins: [proposalParsed],
+    mixins: [proposalParsed, getDraftByProposalName, isProposalExist],
     data() {
       return {
         currentStep: 1,
-        proposal: {},
+        isDraftModified: false,
       };
     },
     computed: {
       proposalId() {
         return this.$route.params.slug ? this.$route.params.slug : '';
       },
-      isBudgetDataAvailable() {
+      isOverviewAvailable() {
         if (!this.$_proposalParsed || Object.keys(this.$_proposalParsed).length === 0) return false;
-        return !!(this.$_proposalParsed.proposal_json.budget_data
-          && this.$_proposalParsed.proposal_json.budget_data.length !== 0);
+        return !!(this.$_proposalParsed.proposal_json.overview);
       },
       isMilestonesAvailable() {
         if (!this.$_proposalParsed || Object.keys(this.$_proposalParsed).length === 0) return false;
         return !!(this.$_proposalParsed.proposal_json.milestones
-               && this.$_proposalParsed.proposal_json.milestones.length !== 0);
+          && this.$_proposalParsed.proposal_json.milestones.length !== 0);
       },
     },
     watch: {
@@ -107,19 +125,45 @@
       },
       $route: {
         immediate: true,
-        handler() {
-          if (this.proposalId) {
-            // get proposal from the contract
-            this.proposal = this.$constants.PROPOSAL_DRAFT;
-          } else {
-            this.proposal = {};
+        async handler() {
+          if (!this.proposalId) {
+            // proposalDraft is in the getDraftByProposalName mixin
+            this.proposalDraft = {};
+            return;
           }
+          if (!await this.$_isProposalExist(this.proposalId)) {
+            this.$router.push({ name: 'Not found' });
+            return;
+          }
+
+          this.$_getDraftProposalByProposalName(this.proposalId);
         },
+      },
+      async currentStep() {
+        if (!this.proposalId) return;
+        if (!await this.$_isProposalExist(this.proposalId)) {
+          this.$router.push({ name: 'Not found' });
+          return;
+        }
+
+        this.$_getDraftProposalByProposalName(this.proposalId);
+      },
+      async isDraftModified() {
+        if (!this.proposalId) return;
+        if (!await this.$_isProposalExist(this.proposalId)) {
+          this.$router.push({ name: 'Not found' });
+          return;
+        }
+
+        this.$_getDraftProposalByProposalName(this.proposalId);
       },
     },
     methods: {
       setCurrentStep(stepNumber) {
         this.currentStep = stepNumber;
+      },
+      setIsDraftModified(bool) {
+        this.isDraftModified = bool;
       },
     },
   };

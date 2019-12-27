@@ -22,6 +22,7 @@ export default {
       let response = null;
       const producersTable = 'producers';
       const result = [];
+      const indexPosition = 1;
 
       try {
         this.isProducersLoading = true;
@@ -33,6 +34,7 @@ export default {
               'eosio',
               lowerBound,
             null,
+            indexPosition,
             );
           /* eslint-enable */
           result.push(...response.rows);

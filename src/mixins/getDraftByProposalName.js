@@ -15,6 +15,7 @@ export default {
   methods: {
     async $_getDraftProposalByProposalName(proposalName) {
       const draftsTable = 'drafts';
+      const indexPosition = 1;
 
       if (!this.getAccountName) {
         // TODO: notify about err
@@ -33,6 +34,7 @@ export default {
                                    this.getAccountName,
                                    proposalName,
                                    proposalName,
+                                   indexPosition,
                                  );
         const result = response.rows;
         if (!result || !result.length) {
@@ -42,6 +44,7 @@ export default {
         return this.proposalDraft;
       } catch (e) {
         console.error('$_getDraftProposalByProposalName', e);
+        this.$errorsHandler.handleError(e);
         return {};
       } finally {
         this.isDraftProposalByProposalNameLoading = false;

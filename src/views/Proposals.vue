@@ -42,21 +42,21 @@
           <h2 class="font-weight-regular green--text mb-6">
             {{ $t('common.passingProposals') }}
           </h2>
+          <!--          :available-budget="proposal.available_budget"-->
+          <!--          :payments="proposal.payments"-->
+          <!--          :status-by-votes="proposal.statusByVotes"-->
+          <!--          :votes="proposal.total_net_votes"-->
           <ProposalItem
             v-for="(proposal, index) in passingProposals"
             :key="index"
             :proposal-name="proposal.proposal_name"
             :title="proposal.title"
             :proposer="proposal.proposer"
-            :available-budget="proposal.available_budget"
             :img="proposal.proposal_json.img"
             :category="proposal.proposal_json.category"
             :summary="proposal.proposal_json.summary"
             :budget="proposal.total_budget"
             :duration="proposal.duration"
-            :payments="proposal.payments"
-            :status="proposal.status"
-            :votes="proposal.total_net_votes"
             :is-draft="proposal.isDraft"
           />
         </div>
@@ -80,7 +80,7 @@
             :budget="proposal.total_budget"
             :duration="proposal.duration"
             :payments="proposal.payments"
-            :status="proposal.status"
+            :status-by-votes="proposal.statusByVotes"
             :votes="proposal.total_net_votes"
             :is-draft="proposal.isDraft"
           />
@@ -101,7 +101,7 @@
           :budget="proposal.total_budget"
           :duration="proposal.duration"
           :payments="proposal.payments"
-          :status="proposal.status"
+          :status-by-votes="proposal.statusByVotes"
           :votes="proposal.total_net_votes"
           :is-draft="isDrafts"
         />
@@ -159,26 +159,26 @@
       },
       proposalsFullInfo() {
         if (!this.proposalsParsed || this.proposalsParsed.length === 0
-          || !this.proposalsVotes || this.proposalsVotes.length === 0
+          // || !this.proposalsVotes || this.proposalsVotes.length === 0
           || !this.proposalsSettings || Object.keys(this.proposalsSettings).length === 0
           || this.isDrafts) return [];
 
         const proposalsParsedCopy = this.$helpers.copyDeep(this.proposalsParsed);
 
         // Add total_net_votes to proposals
-        let proposalWithVotes = [];
-        this.proposalsVotes.forEach((vote) => {
-          proposalWithVotes = proposalsParsedCopy
-            .map(proposal => this.$helpers.mergeVoteWithProposal(
-            vote,
-            proposal,
-          ));
-        });
+        // let proposalWithVotes = [];
+        // this.proposalsVotes.forEach((vote) => {
+        //   proposalWithVotes = proposalsParsedCopy
+        //     .map(proposal => this.$helpers.mergeVoteWithProposal(
+        //     vote,
+        //     proposal,
+        //   ));
+        // });
 
         // Add statuses to proposals
-        const proposalsWithStatuses = proposalWithVotes.map((proposal) => {
+        const proposalsWithStatuses = proposalsParsedCopy.map((proposal) => {
           // eslint-disable-next-line no-param-reassign
-          proposal.status = this.defineStatus(
+          proposal.statusByVotes = this.defineStatus(
             proposal.total_net_votes,
             this.proposalsSettings.vote_margin,
           );
@@ -200,18 +200,18 @@
       passingProposals() {
         if (!this.proposalsFullInfo && this.proposalsFullInfo.length === 0) return [];
 
-        return this.proposalsFullInfo.filter(proposal => proposal.status
+        return this.proposalsFullInfo.filter(proposal => proposal.statusByVotes
           === this.$t('proposalStatuses.passing'));
       },
       notPassingProposals() {
         if (!this.proposalsFullInfo && this.proposalsFullInfo.length === 0) return [];
 
-        return this.proposalsFullInfo.filter(proposal => proposal.status
+        return this.proposalsFullInfo.filter(proposal => proposal.statusByVotes
           === this.$t('proposalStatuses.notPassing'));
       },
       isAllDataLoading() {
         return this.isActiveProposalsLoading
-          && this.isVotesLoading
+          // && this.isVotesLoading
           && this.isSettingsLoading;
       },
     },
@@ -222,7 +222,7 @@
           // Request either active proposals or drafts
           this.proposalsType = this.getLastPartOfRoute(val.path);
           if (this.proposalsType === 'active') {
-            this.$_getVotes();
+            // this.$_getVotes();
             this.$_getSettings();
             this.$_getActiveProposals();
           } else {

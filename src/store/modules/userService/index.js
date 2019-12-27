@@ -6,6 +6,9 @@ const state = {
   eosAccount: null,
   scatter: null,
   isBp: false,
+  isScatterInitLoading: true,
+  isScatterNotConnected: false,
+  routeTo: null,
 };
 
 /* eslint-disable */

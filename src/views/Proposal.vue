@@ -158,7 +158,9 @@
 
         <v-tab-item background-color="tile">
           <Overview
-            :overview="proposalFullInfo.proposal_json.overview"
+            :overview="proposalFullInfo.proposal_json.overview
+              ? proposalFullInfo.proposal_json.overview
+              : ''"
             :proposer="proposalFullInfo.proposer"
             :hash="proposalFullInfo.proposal_json.hash"
             :category="proposalFullInfo.proposal_json.category"
@@ -191,6 +193,8 @@
   import refund from '@/mixins/refund';
   import activateProposal from '@/mixins/activateProposal';
   import cancelProposalDraft from '@/mixins/cancelProposalDraft';
+  import getDraftByProposalName from '@/mixins/getDraftByProposalName';
+  import isProposalExist from '@/mixins/isProposalExist';
 
   export default {
     name: 'Proposal',
@@ -206,6 +210,8 @@
       refund,
       activateProposal,
       cancelProposalDraft,
+      getDraftByProposalName,
+      isProposalExist,
     ],
     data() {
       return {
@@ -234,11 +240,18 @@
     watch: {
       $route: {
         immediate: true,
-        handler() {
+        async handler() {
           // Request either active proposal or draft
-          this.proposal = this.isDraft
-                              ? this.$constants.PROPOSAL_DRAFT
-                              : this.$constants.PROPOSAL_ACTIVE;
+          if (!await this.$_isProposalExist(this.proposalId)) {
+            this.$router.push({ name: 'Not found' });
+            return;
+          }
+
+          if (this.isDraft) {
+            await this.$_getDraftProposalByProposalName(this.proposalId);
+          } else {
+            this.proposal = this.$constants.PROPOSAL_ACTIVE;
+          }
           // get votes
           // eslint-disable-next-line prefer-destructuring
           this.vote = this.$constants.VOTES[0];

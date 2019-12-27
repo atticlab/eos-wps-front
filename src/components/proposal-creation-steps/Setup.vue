@@ -71,6 +71,7 @@
           v-model="setupData.category"
           :error-messages="categoryErrors"
           required
+          :menu-props="{ offsetY:true }"
           :items="$constants.PROPOSAL_CATEGORIES"
           :label="$t('proposalCreationPage.chooseCategory')"
           @input="validateSingleField('category')"
@@ -132,16 +133,45 @@
       <v-card
         class="mb-12 border--grey pa-4"
       >
-        <h2 class="title mb-6">
-          {{ $t('proposalCreationPage.buildBudget') }}
-        </h2>
+        <div class="mb-6">
+          <h2 class="title mb-1">
+            {{ $t('proposalCreationPage.buildBudget') }}
+          </h2>
+          <p class="orange--text">
+            {{ $t('proposalCreationPage.budgetEos') }}
+          </p>
+        </div>
 
         <BudgetTable
+          v-if="!isExistingProposalWithoutBudgets"
           :is-editable="true"
           :budget-data-init="budgetData"
+          :eos-price="eosPrice"
           @total-budget="setTotalBudget"
           @budget-data-new="setBudgetItemsNew"
         />
+
+        <div
+          v-else
+          class="mb-4"
+        >
+          <label
+            for="monthlyBudget"
+            class="title d-block mb-2"
+          >
+            {{ $t('proposalCreationPage.monthlyEosBudget') }}
+          </label>
+          <v-text-field
+            id="monthlyBudget"
+            v-model.number="setupData.monthlyBudgetAlt"
+            :error-messages="monthlyBudgetErrors"
+            :label="$t('proposalCreationPage.addMonthlyBudget')"
+            prefix="EOS"
+            @input="validateSingleField('monthlyBudgetAlt')"
+            @blur="validateSingleField('monthlyBudgetAlt')"
+            @keypress="$helpers.isNumberDecimalOnly($event)"
+          />
+        </div>
 
         <div>
           <!--      <div class="mb-12">-->
@@ -156,7 +186,7 @@
           <!--          <v-btn>-->
           <!--            <div class="d-flex flex-column">-->
           <!--              <span>{{ $t('proposalCreationPage.spotPrice') }}</span>-->
-          <!--              <span>{{ `($${eosRate})` }}</span>-->
+          <!--              <span>{{ `($${eosPrice})` }}</span>-->
           <!--            </div>-->
           <!--          </v-btn>-->
           <!--          <v-btn>-->
@@ -173,13 +203,11 @@
               {{ $t('common.paymentsDuration') }}
             </h2>
 
-
             <v-select
               v-model="setupData.duration"
               :items="$constants.DURATIONS_OF_PAYMENTS"
               :label="$t('proposalCreationPage.chooseDuration')"
               required
-              type="number"
               :error-messages="durationErrors"
               dense
               :menu-props="{ offsetY:true }"
@@ -196,13 +224,50 @@
           </div>
         </div>
 
-        <div class="d-flex justify-end my-12">
-          <div>
-            <h2 class="title">
-              {{ $t('proposalCreationPage.requestedEosPerMonth') }}
+        <div
+          v-if="!isExistingProposalWithoutBudgets"
+          class="d-flex justify-end my-12"
+        >
+          <div class="pr-3">
+            <h2 class="title required">
+              {{ $t('proposalCreationPage.monthlyEosBudget') }}
             </h2>
-            <div class="font-weight-bold indigo--text title">
+            <div
+              :class="{
+                'font-weight-bold title': true,
+                'green--text': monthlyBudget
+                  ? monthlyBudget.split(' ')[0] >= 100
+                  : false,
+                'red--text text-underline': monthlyBudget
+                  ? monthlyBudget.split(' ')[0] < 100
+                  : true,
+              }"
+            >
               {{ monthlyBudget }}
+            </div>
+          </div>
+        </div>
+
+        <div
+          v-else
+          class="d-flex justify-end my-12"
+        >
+          <div class="pr-3">
+            <h2 class="title required">
+              {{ $t('proposalCreationPage.monthlyEosBudget') }}
+            </h2>
+            <div
+              :class="{
+                'font-weight-bold title': true,
+                'green--text': monthlyBudgetAltEos
+                  ? monthlyBudgetAltEos.split(' ')[0] >= 100
+                  : false,
+                'red--text text-underline': monthlyBudgetAltEos
+                  ? monthlyBudgetAltEos.split(' ')[0] < 100
+                  : true,
+              }"
+            >
+              {{ monthlyBudgetAltEos }}
             </div>
           </div>
         </div>
@@ -213,6 +278,7 @@
       v-if="!proposalId"
       color="success"
       class="mr-2"
+      :disabled="isCreateProposalDraftLoading"
       @click="propose"
     >
       {{ $t('proposalCreationPage.continue') }}
@@ -221,6 +287,7 @@
       v-else
       color="success"
       class="mr-2"
+      :disabled="isModifyProposalDraftLoading"
       @click="modify"
     >
       {{ $t('proposalCreationPage.continue') }}
@@ -232,16 +299,26 @@
   import { validationMixin } from 'vuelidate';
   import {
     required, minLength, maxLength, helpers, numeric, minValue,
-    maxValue, url,
+    maxValue, url, decimal,
   } from 'vuelidate/lib/validators';
   import BudgetTable from '@/components/BudgetTable.vue';
+  import createProposalDraft from '@/mixins/createProposalDraft';
+  import getEosPrice from '@/mixins/getEosPrice';
+  import isProposalExist from '@/mixins/isProposalExist';
+  import modifyProposalDraft from '@/mixins/modifyProposalDraft';
 
   export default {
     name: 'Setup',
     components: {
       BudgetTable,
     },
-    mixins: [validationMixin],
+    mixins: [
+      validationMixin,
+      createProposalDraft,
+      getEosPrice,
+      isProposalExist,
+      modifyProposalDraft,
+    ],
     validations: {
       setupData: {
         proposal_name: {
@@ -275,17 +352,16 @@
           url,
         },
         video: {
-          allowedVideoUrls: helpers.regex('allowedVideoUrls',
-          // /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)?
-          // |http(?:s?):\/\/(?:www\.)
-          // ?youku.com?|http(?:s?):\/\/(?:www\.)?tudou.com?|http(?:s?):\/\/(?:www\.)?iqiyi.com?/),
-          /youtu(?:be\.com\/watch\?v=|\.be\/)?|youku.com?|tudou.com?|iqiyi.com?/),
+          url,
         },
         duration: {
           required,
           numeric,
           minValue: minValue(1),
           maxValue: maxValue(6),
+        },
+        monthlyBudgetAlt: {
+          decimal,
         },
       },
     },
@@ -297,7 +373,8 @@
     props: {
       proposalInitial: {
         type: Object,
-        default: () => {},
+        default: () => {
+        },
       },
     },
     data() {
@@ -305,17 +382,17 @@
         componentKey: 0,
         setupData: {
           proposal_name: null,
-          title: null,
-          summary: null,
-          category: null,
-          img: null,
-          video: null,
+          title: '',
+          summary: '',
+          category: '',
+          img: '',
+          video: '',
           duration: 1,
+          monthlyBudgetAlt: 0,
         },
         proposal: {},
         totalBudget: 0,
         budgetItemsNew: [],
-        eosRate: this.$constants.EOS_RATE,
       };
     },
     computed: {
@@ -399,7 +476,7 @@
         if (!this.$v.setupData.video.$dirty) return errors;
 
         // eslint-disable-next-line no-unused-expressions
-        !this.$v.setupData.video.allowedVideoUrls && errors.push(this.$t('validationMessages.allowedVideo'));
+        !this.$v.setupData.video.url && errors.push(this.$t('validationMessages.urlString'));
 
         return errors;
       },
@@ -422,34 +499,67 @@
 
         return errors;
       },
+      monthlyBudgetErrors() {
+        const errors = [];
+        if (!this.$v.setupData.monthlyBudgetAlt.$dirty) return errors;
+
+        // eslint-disable-next-line no-unused-expressions
+        !this.$v.setupData.monthlyBudgetAlt.decimal
+        && errors.push(this.$t('validationMessages.onlyNumbersDecimals'));
+
+        return errors;
+      },
       // eosRate30SMA() {
       //   // the average of all of the prices for a coin for the last month
       //   return (2 * 31) / 31;
       // },
       // selectedConversionRate() {
       //   // button groups set numbers to the data
-      //   if (this.conversionRateOption === 0) return this.eosRate;
+      //   if (this.conversionRateOption === 0) return this.eosPrice;
       //
       //   return this.eosRate30SMA;
       // },
+      isExistingProposalWithoutBudgets() {
+        return Boolean(this.proposalId && this.proposal.proposal_json
+        && !this.proposal.proposal_json.budgets);
+      },
       monthlyBudget() {
-        const totalBudgetInEos = this.totalBudget * this.eosRate;
-        if (!this.setupData.duration) return 0;
+        if (!this.setupData.duration || !this.eosPrice) return 0;
+        if (this.isExistingProposalWithoutBudgets) return this.proposal.monthly_budget;
+
+        const totalBudgetInEos = this.totalBudget * this.eosPrice;
         return `${(totalBudgetInEos / this.setupData.duration)
           .toFixed(this.$constants.EOS_MAX_DIGITS)} EOS`;
       },
+      monthlyBudgetAltEos() {
+        if (!this.setupData.duration || !this.eosPrice) return 0;
+        if (!this.isExistingProposalWithoutBudgets) return 0;
+
+        return `${(this.setupData.monthlyBudgetAlt * this.setupData.duration)
+                  .toFixed(this.$constants.EOS_MAX_DIGITS)} EOS`;
+      },
       budgetData() {
-        if (!this.proposal || Object.keys(this.proposal).length === 0) return [];
-        return this.proposal.proposal_json.budget_data;
+        if (!this.proposal || Object.keys(this.proposal).length === 0) return '';
+        return this.proposal.proposal_json.budgets;
       },
       proposalId() {
         return this.$route.params.slug ? this.$route.params.slug : '';
       },
     },
     watch: {
+      proposalInitial: {
+        immediate: true,
+        handler(val) {
+          if (this.proposalId) {
+            this.proposal = this.$helpers.copyDeep(val);
+          }
+        },
+      },
       $route: {
         immediate: true,
         handler() {
+          this.$_getEosPrice();
+
           if (this.proposalId) {
             this.proposal = this.$helpers.copyDeep(this.proposalInitial);
           } else {
@@ -471,10 +581,11 @@
           if (!val || Object.keys(val).length === 0) return {};
           this.setupData.proposal_name = val.proposal_name;
           this.setupData.title = val.title;
-          this.setupData.summary = val.proposal_json.summary || null;
+          this.setupData.summary = val.proposal_json.summary || '';
           this.setupData.category = val.proposal_json.category;
-          this.setupData.img = val.proposal_json.img || null;
-          this.setupData.video = val.proposal_json.video || null;
+          this.setupData.img = val.proposal_json.img || '';
+          this.setupData.video = val.proposal_json.video || '';
+          this.setupData.monthlyBudgetAlt = Number(val.monthly_budget.split(' ')[0]);
           return null;
         },
       },
@@ -496,7 +607,7 @@
         this.$v.$touch();
         return !this.$v.setupData.$anyError;
       },
-      propose() {
+      async propose() {
         if (!this.validateAll()) {
           this.showErrorMsg({
             title: this.$t('notifications.error'),
@@ -521,12 +632,103 @@
           return;
         }
 
-        this.$router.push(`proposal-editor/${this.setupData.proposal_name}`);
-        this.changeCurrentStep(2);
+        if (this.budgetItemsNew.length > this.$constants.MAX_TABLE_ITEMS) {
+          this.showErrorMsg({
+            title: this.$t('notifications.error'),
+            message: this.$t('notifications.tooManyItems'),
+          });
+          return;
+        }
+
+        const proposalAdditionalInfo = {
+          summary: this.setupData.summary,
+          category: this.setupData.category,
+          budgets: JSON.stringify(this.budgetItemsNew),
+        };
+        if (this.setupData.img) proposalAdditionalInfo.img = this.setupData.img;
+        if (this.setupData.video) proposalAdditionalInfo.video = this.setupData.video;
+
+        const proposalAdditionalInfoRestructured = this.$helpers
+          .restructureProposalAdditionalInfo(proposalAdditionalInfo);
+
+        const payload = {
+          proposalName: this.setupData.proposal_name,
+          title: this.setupData.title,
+          monthlyBudget: this.monthlyBudget,
+          duration: this.setupData.duration,
+          proposalJson: proposalAdditionalInfoRestructured,
+        };
+
+        if (await this.$_isProposalExist(payload.proposalName)) {
+          this.showErrorMsg({
+            title: this.$t('notifications.error'),
+            message: this.$t('notifications.proposalNameExists'),
+          });
+
+          return;
+        }
+
+        if (await this.$_createProposalDraft(payload)) {
+          this.$router.push(`proposal-editor/${this.setupData.proposal_name}`);
+          this.changeCurrentStep(2);
+        }
       },
-      modify() {
-        alert('Modify');
-        this.changeCurrentStep(2);
+      async modify() {
+        if (!this.validateAll()) {
+          this.showErrorMsg({
+            title: this.$t('notifications.error'),
+            message: this.$t('notifications.fillFields'),
+          });
+          return;
+        }
+
+        if (!this.setupData.duration) {
+          this.showErrorMsg({
+            title: this.$t('notifications.error'),
+            message: this.$t('notifications.durationErr'),
+          });
+          return;
+        }
+
+        if (this.isExistingProposalWithoutBudgets) {
+          if (!this.monthlyBudgetAltEos || this.monthlyBudgetAltEos.split(' ')[0] < 100) {
+            this.showErrorMsg({
+              title: this.$t('notifications.error'),
+              message: this.$t('notifications.budgetErr'),
+            });
+            return;
+          }
+        } else if (!this.monthlyBudget || this.monthlyBudget.split(' ')[0] < 100) {
+          this.showErrorMsg({
+            title: this.$t('notifications.error'),
+            message: this.$t('notifications.budgetErr'),
+          });
+          return;
+        }
+
+        const proposalAdditionalInfo = this.$helpers.copyDeep(this.proposal.proposal_json);
+        proposalAdditionalInfo.summary = this.setupData.summary;
+        proposalAdditionalInfo.category = this.setupData.category;
+        proposalAdditionalInfo.img = this.setupData.img;
+        proposalAdditionalInfo.video = this.setupData.video;
+
+        const proposalAdditionalInfoRestructured = this.$helpers
+          .restructureProposalAdditionalInfo(proposalAdditionalInfo);
+
+        const payload = {
+          proposalName: this.setupData.proposal_name,
+          title: this.setupData.title,
+          monthlyBudget: this.isExistingProposalWithoutBudgets
+                         ? this.monthlyBudgetAltEos
+                         : this.monthlyBudget,
+          duration: this.setupData.duration,
+          proposalJson: proposalAdditionalInfoRestructured,
+        };
+
+
+        if (await this.$_modifyProposalDraft(payload)) {
+          this.changeCurrentStep(2);
+        }
       },
     },
   };

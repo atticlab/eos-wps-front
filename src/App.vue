@@ -121,7 +121,7 @@
 
           <v-list>
             <v-list-item
-              @click="SCATTER_LOGOUT"
+              @click="SCATTER_LOGOUT($route.name)"
             >
               <v-list-item-title>
                 {{ $t('common.signOut') }}
@@ -161,7 +161,35 @@
       </v-toolbar-items>
     </v-app-bar>
 
-    <v-content>
+    <!--    <v-alert-->
+    <!--      v-show="isScatterInitLoading"-->
+    <!--      transition="scale-transition"-->
+    <!--      border-top-->
+    <!--      type="info"-->
+    <!--      :class="{ 'alert-scatter': true }"-->
+    <!--    >-->
+    <!--      {{ $t('notifications.scatterInit') }}-->
+    <!--    </v-alert>-->
+
+    <v-overlay v-if="isScatterInitLoading">
+      <v-alert
+        transition="scale-transition"
+        border-top
+        type="info"
+        :class="{ 'alert-scatter': true }"
+      >
+        {{ $t('notifications.scatterInit') }}
+      </v-alert>
+
+      <v-progress-circular
+        :size="70"
+        :width="7"
+        color="primary"
+        indeterminate
+      />
+    </v-overlay>
+
+    <v-content v-else>
       <router-view />
     </v-content>
 
@@ -170,37 +198,75 @@
     >
       <span class="white--text">&copy; 2019</span>
     </v-footer>
+
+    <v-snackbar
+      v-if="!isScatterInitLoading"
+      v-model="isScatterNotConnected"
+      color="info"
+      :timeout="30000"
+      :top="true"
+      :multi-line="true"
+      class="text-center"
+    >
+      {{ $t('notifications.scatterIsNotConnected') }}
+      <v-btn
+        color="red"
+        text
+        @click="SET_IS_SCATTER_NOT_CONNECTED(false)"
+      >
+        <v-icon>
+          mdi-close
+        </v-icon>
+      </v-btn>
+    </v-snackbar>
   </v-app>
 </template>
 
 <script>
-  import { mapActions, mapGetters } from 'vuex';
+  import {
+ mapState, mapActions, mapGetters, mapMutations,
+} from 'vuex';
   import ActionType from '@/store/constants';
-  import getProducers from '@/mixins/getProducers';
-  import getEosPrice from '@/mixins/getEosPrice';
 
   export default {
     name: 'App',
-    mixins: [getProducers, getEosPrice],
     data() {
       return {
         drawer: false,
       };
     },
     computed: {
+      ...mapState({
+        isScatterInitLoading: state => state.userService.isScatterInitLoading,
+        isScatterNotConnected: state => state.userService.isScatterNotConnected,
+        routeTo: state => state.userService.routeTo,
+      }),
       ...mapGetters('userService', {
         getAccountNameWithAuthority: 'getAccountNameWithAuthority',
       }),
     },
-    async mounted() {
-      this.$_getProducers();
-      this.$_getEosPrice();
+    watch: {
+      getAccountNameWithAuthority: {
+        immediate: true,
+        handler(val) {
+          if (!val) return;
+          if (this.routeTo && this.routeTo.meta.requiresAuth) {
+            this.$router.push({ path: this.routeTo.path });
+          }
+        },
+      },
+    },
+    async created() {
       this[ActionType.SCATTER_INIT]();
     },
     methods: {
+      ...mapMutations('userService', [
+        ActionType.SET_IS_SCATTER_NOT_CONNECTED,
+      ]),
       ...mapActions('userService', [
         ActionType.SCATTER_INIT,
         ActionType.SCATTER_LOGOUT,
+        ActionType.DEFINE_ROUTE_TO,
       ]),
     },
   };
@@ -212,4 +278,15 @@
 
 <style lang="scss">
   @import '~@/assets/scss/main';
+
+  .alert-scatter {
+    /*margin-top: 64px;*/
+    width: 100%;
+    text-align: center;
+    position: fixed !important;
+    z-index: 2;
+
+    left: 0;
+    top: 0;
+  }
 </style>

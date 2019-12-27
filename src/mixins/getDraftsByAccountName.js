@@ -18,6 +18,7 @@ export default {
       let response = null;
       const draftsTable = 'drafts';
       const result = [];
+      const indexPosition = 1;
 
       if (!this.getAccountName) {
         // TODO: notify about err
@@ -31,10 +32,10 @@ export default {
             .getTableRows(
               draftsTable,
               this.$constants.CONTRACT_NAME,
-              // this.$constants.CONTRACT_NAME,
               this.getAccountName,
               lowerBound,
-              null
+              null,
+              indexPosition,
             );
           /* eslint-enable */
           result.push(...response.rows);
