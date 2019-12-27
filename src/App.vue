@@ -171,7 +171,10 @@
     <!--      {{ $t('notifications.scatterInit') }}-->
     <!--    </v-alert>-->
 
-    <v-overlay v-if="isScatterInitLoading">
+    <v-overlay
+      v-if="isScatterInitLoading"
+      color="primary"
+    >
       <v-alert
         transition="scale-transition"
         border-top

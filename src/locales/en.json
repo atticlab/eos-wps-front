@@ -137,7 +137,28 @@
     "insufficientRam": "Insufficient RAM",
     "scatterInit": "Scatter is being initialized...",
     "scatterIsNotConnected": "Scatter is not connected. Please install/open Scatter plugin or desktop application and refresh this page.",
-    "tooManyItems": "Too many items. The number cannot be more than 15"
+    "tooManyItems": "Too many items. The number cannot be more than 15",
+
+    "txNetUsage": "Transaction exceeded the current network usage limit imposed on the transaction",
+    "blockNetUsage": "Transaction network usage is too much for the remaining allowable usage of the current block",
+    "txCpuExceeded": "Transaction exceeded the current CPU usage limit imposed on the transaction",
+    "blockCpuExceeded": "Transaction CPU usage is too much for the remaining allowable usage of the current block",
+    "expiredTx": "Transaction is expired",
+    "deadlineException": "Transaction took too long",
+    "overdrawnBalance": "Balance is overdrawn",
+    "ramUsage": "Account using more than allotted RAM usage",
+    "txDuplicate": "Duplicate signature included",
+    "greyListNetUsage": "Transaction exceeded the current greylisted account network usage limit",
+    "greyListCpuUsage": "Transaction exceeded the current greylisted account CPU usage limit",
+    "unsatisfiedAuthorization": "Provided keys, permissions, and delays do not satisfy declared authorizations",
+    "missingAuth": "Missing required authority",
+    "irrelevantAuth": "Irrelevant authority included",
+    "insufficientDelay": "Insufficient delay",
+    "invalidPermission": "Invalid permission",
+
+
+    "cpuExceeded": "Exceeded the current CPU",
+    "ramExceeded": "RAM usage is exceeded"
   },
   "proposalStatuses": {
     "passing": "Passing",
