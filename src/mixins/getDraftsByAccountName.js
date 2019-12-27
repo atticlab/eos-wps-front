@@ -51,6 +51,7 @@ export default {
         return this.proposals;
       } catch (e) {
         console.error('$_getDraftProposalByAccountName', e);
+        this.$errorsHandler.handleError(e);
         return [];
       } finally {
         this.isDraftProposalByAccountNameLoading = false;

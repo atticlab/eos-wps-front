@@ -30,6 +30,7 @@
   import { validationMixin } from 'vuelidate';
   import { required, maxLength } from 'vuelidate/lib/validators';
   import modifyProposalDraft from '@/mixins/modifyProposalDraft';
+  import notification from '@/mixins/notification';
 
   // require styles
   // eslint-disable-next-line import/no-extraneous-dependencies
@@ -44,16 +45,11 @@
 
   export default {
     name: 'Description',
-    mixins: [validationMixin, modifyProposalDraft],
+    mixins: [validationMixin, modifyProposalDraft, notification],
     validations: {
       text: {
         required,
         maxLength: maxLength(12000),
-      },
-    },
-    notifications: {
-      showErrorMsg: {
-        type: 'error',
       },
     },
     props: {
@@ -111,10 +107,7 @@
       },
       async modify() {
         if (!this.validateAll()) {
-          this.showErrorMsg({
-            title: this.$t('notifications.error'),
-            message: this.$t('notifications.overviewEmpty'),
-          });
+          this.showErrorMsg(this.$t('notifications.overviewEmpty'));
           return;
         }
 

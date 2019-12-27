@@ -256,7 +256,7 @@
         },
       },
     },
-    async created() {
+    created() {
       this[ActionType.SCATTER_INIT]();
     },
     methods: {

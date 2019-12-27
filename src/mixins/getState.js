@@ -30,6 +30,7 @@ export default {
         return this.proposalState;
       } catch (e) {
         console.error('$_getState', e);
+        this.$errorsHandler.handleError(e);
         return {};
       } finally {
         this.isStateLoading = false;

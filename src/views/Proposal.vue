@@ -22,7 +22,8 @@
           lg="8"
         >
           <div
-            :style="{ 'background-image': proposalFullInfo.proposal_json.img
+            :style="{ 'background-image': proposalFullInfo.proposal_json &&
+              proposalFullInfo.proposal_json.img
               ? `url(${proposalFullInfo.proposal_json.img})`
               : `url(${$constants.PROPOSAL_IMAGE_STUB_URL})`}"
             class="proposal__img"
@@ -116,12 +117,13 @@
             </v-card>
 
             <template
-              v-if="isUserBp && !isDraft"
+              v-if="isBp && !isDraft"
             >
               <v-btn
                 class="mb-4"
                 block
                 color="success"
+                @click="handleVote($constants.VOTE_YES)"
               >
                 {{ $t('proposalPage.upvote') }}
               </v-btn>
@@ -129,6 +131,7 @@
                 class="mb-4"
                 block
                 color="blue darken-3 white--text"
+                @click="handleVote($constants.VOTE_ABSTAIN)"
               >
                 {{ $t('proposalPage.abstain') }}
               </v-btn>
@@ -136,6 +139,7 @@
                 class="mb-4"
                 block
                 color="error"
+                @click="handleVote($constants.VOTE_NO)"
               >
                 {{ $t('proposalPage.downvote') }}
               </v-btn>
@@ -155,13 +159,13 @@
 
         <v-tab-item background-color="tile">
           <Overview
-            :overview="proposalFullInfo.proposal_json.overview
+            :overview="proposalFullInfo.proposal_json && proposalFullInfo.proposal_json.overview
               ? proposalFullInfo.proposal_json.overview
               : ''"
             :proposer="proposalFullInfo.proposer"
-            :hash="proposalFullInfo.proposal_json.hash"
-            :category="proposalFullInfo.proposal_json.category"
-            :created="proposalFullInfo.proposal_json.created"
+            :hash="proposalFullInfo.proposal_json && proposalFullInfo.proposal_json.hash"
+            :category="proposalFullInfo.proposal_json && proposalFullInfo.proposal_json.category"
+            :created="proposalFullInfo.proposal_json && proposalFullInfo.proposal_json.created"
           />
         </v-tab-item>
         <v-tab-item>
@@ -169,11 +173,15 @@
             :monthly-budget="proposalFullInfo.monthly_budget"
             :total-budget="proposalFullInfo.total_budget"
             :duration="proposalFullInfo.duration"
-            :budget-data="proposalFullInfo.proposal_json.budget_data"
+            :budget-data="proposalFullInfo.proposal_json &&
+              proposalFullInfo.proposal_json.budgets"
           />
         </v-tab-item>
         <v-tab-item>
-          <TimelineOverview :milestones="proposalFullInfo.proposal_json.milestones" />
+          <TimelineOverview
+            :milestones-raw="proposalFullInfo.proposal_json &&
+              proposalFullInfo.proposal_json.milestones"
+          />
         </v-tab-item>
       </v-tabs>
     </v-container>
@@ -181,12 +189,22 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex';
   import Overview from '@/components/proposal-tabs/Overview.vue';
   import BudgetOverview from '@/components/proposal-tabs/BudgetOverview.vue';
   import TimelineOverview from '@/components/proposal-tabs/TimelineOverview.vue';
   import proposalParsed from '@/mixins/proposalParsed';
+  import voteProposal from '@/mixins/voteProposal';
+  import sendDeposit from '@/mixins/sendDeposit';
+  import refund from '@/mixins/refund';
+  import activateProposal from '@/mixins/activateProposal';
+  import cancelProposalDraft from '@/mixins/cancelProposalDraft';
   import getDraftByProposalName from '@/mixins/getDraftByProposalName';
   import isProposalExist from '@/mixins/isProposalExist';
+  import getActiveProposalByProposalName from '@/mixins/getActiveProposalByProposalName';
+  import getState from '@/mixins/getState';
+  import getVotesByProposalName from '@/mixins/getVotesByProposalName';
+  import notification from '@/mixins/notification';
 
   export default {
     name: 'Proposal',
@@ -195,7 +213,20 @@
       BudgetOverview,
       TimelineOverview,
     },
-    mixins: [proposalParsed, getDraftByProposalName, isProposalExist],
+    mixins: [
+      proposalParsed,
+      voteProposal,
+      sendDeposit,
+      refund,
+      activateProposal,
+      cancelProposalDraft,
+      getDraftByProposalName,
+      isProposalExist,
+      getActiveProposalByProposalName,
+      getState,
+      getVotesByProposalName,
+      notification,
+    ],
     data() {
       return {
         proposalId: this.$route.params.slug,
@@ -204,9 +235,9 @@
       };
     },
     computed: {
-      isUserBp() {
-        return true;
-      },
+      ...mapState({
+        isBp: state => state.userService.isBp,
+      }),
       isDraft() {
         return this.$route.path.includes('draft');
       },
@@ -231,28 +262,66 @@
           }
 
           if (this.isDraft) {
-            await this.$_getDraftProposalByProposalName(this.proposalId);
+            this.$_getDraftProposalByProposalName(this.proposalId);
           } else {
-            this.proposal = this.$constants.PROPOSAL_ACTIVE;
+            this.$_getActiveProposalByProposalName(this.proposalId);
           }
+
           // get votes
+          // await this.$_getVotesByProposalName(this.proposalId);
           // eslint-disable-next-line prefer-destructuring
           this.vote = this.$constants.VOTES[0];
         },
       },
     },
     methods: {
-      transfer() {
-        alert('Transfer');
+      async transfer() {
+        try {
+          console.log(await this.$_sendDeposit());
+          this.showSuccessMsg(this.$t('notifications.sentDeposit'));
+        } catch {} // eslint-disable-line no-empty
       },
-      refund() {
-        alert('Refund');
+      async refund() {
+        try {
+          console.log(await this.$_refund());
+          this.showSuccessMsg(this.$t('notifications.sentRefund'));
+        } catch {} // eslint-disable-line no-empty
       },
-      activateProposal() {
-        alert('Published!');
+      async activateProposal() {
+        try {
+          const state = await this.$_getState();
+          console.log(await this.$_activateProposal({
+            proposalName: this.proposalId,
+            // TODO: add ui element
+            // can be current_voting_period or next_voting_period
+            startVotingPeriod: state.current_voting_period,
+          }));
+          this.showSuccessMsg(this.$t('notifications.proposalActivated'));
+        } catch {} // eslint-disable-line no-empty
       },
-      deleteProposal() {
-        alert('Deleted!');
+      async deleteProposal() {
+        try {
+          console.log(await this.$_cancelProposalDraft({
+            proposalName: this.proposalId,
+          }));
+          this.showSuccessMsg(this.$t('notifications.proposalDeleted'));
+          this.$router.push({ name: 'ProposalsDrafts' });
+        } catch {} // eslint-disable-line no-empty
+      },
+      async handleVote(voteType) {
+        if (!voteType || (![this.$constants.VOTE_ABSTAIN, this.$constants.VOTE_YES,
+          this.$constants.VOTE_NO].includes(voteType))) {
+          this.showErrorMsg(this.$t('notifications.wrongVoteType'));
+          return;
+        }
+
+        try {
+          console.log(await this.$_voteProposal({
+            proposalName: this.proposalId,
+            vote: voteType,
+          }));
+          this.showSuccessMsg(this.$t('notifications.sentVote'));
+        } catch {} // eslint-disable-line no-empty
       },
     },
   };

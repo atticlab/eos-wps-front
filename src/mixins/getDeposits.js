@@ -39,6 +39,7 @@ export default {
         return this.proposalsDeposits;
       } catch (e) {
         console.error('$_getDeposits', e);
+        this.$errorsHandler.handleError(e);
         return [];
       } finally {
         this.isDepositsLoading = false;

@@ -49,6 +49,7 @@ export default {
         return this.producers;
       } catch (e) {
         console.error('$_getProducers', e);
+        this.$errorsHandler.handleError(e);
         return [];
       } finally {
         this.isProducersLoading = false;

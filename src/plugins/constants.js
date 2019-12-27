@@ -87,6 +87,9 @@ const constants = {
   ],
   CONTRACT_NAME: 'wpswpswpswps',
   EOS_ORACLE: 'eosdtorclize',
+  VOTE_YES: 'yes',
+  VOTE_NO: 'no',
+  VOTE_ABSTAIN: 'abstain',
   MAX_TABLE_ITEMS: 15,
 
   // Examples of data
@@ -137,7 +140,7 @@ const constants = {
             talk to the DIF.</strong></p>`,
         },
         {
-          key: 'budget_data',
+          key: 'budgets',
           value: [
             {
               title: 'Budget title',
@@ -219,7 +222,7 @@ const constants = {
             talk to the DIF.</strong></p>`,
         },
         {
-          key: 'budget_data',
+          key: 'budgets',
           value: [
             {
               title: 'Budget title',
@@ -299,7 +302,7 @@ const constants = {
             talk to the DIF.</strong></p>`,
       },
       {
-        key: 'budget_data',
+        key: 'budgets',
         value: [
           {
             title: 'Budget title',
@@ -379,7 +382,7 @@ const constants = {
             talk to the DIF.</strong></p>`,
       },
       {
-        key: 'budget_data',
+        key: 'budgets',
         value: [
           {
             title: 'Budget title',

@@ -486,6 +486,7 @@
         },
       },
       budgetDataInit: {
+        immediate: true,
         handler(val) {
           if (val) {
             this.budgetData = this.$helpers.copyDeep(JSON.parse(val));

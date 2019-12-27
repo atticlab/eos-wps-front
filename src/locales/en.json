@@ -126,6 +126,7 @@
   },
   "notifications": {
     "error": "Error",
+    "success": "Success",
     "fillFields": "Fill all the fields correctly",
     "durationErr": "Duration must be at least 1 month and at most 6 months",
     "budgetErr": "Monthly budget must be at least 100 EOS",
@@ -137,7 +138,14 @@
     "insufficientRam": "Insufficient RAM",
     "scatterInit": "Scatter is being initialized...",
     "scatterIsNotConnected": "Scatter is not connected. Please install/open Scatter plugin or desktop application and refresh this page.",
-    "tooManyItems": "Too many items. The number cannot be more than 15"
+    "tooManyItems": "Too many items. The number cannot be more than 15",
+    "sentDeposit": "Deposit has been sent",
+    "sentRefund": "Refund has been sent",
+    "proposalActivated": "Proposal activated",
+    "proposalDeleted": "Proposal deleted",
+    "sentVote": "Vote has been sent",
+    "wrongVoteType": "Wrong vote type",
+    "mustLogin": "You should log in"
   },
   "proposalStatuses": {
     "passing": "Passing",

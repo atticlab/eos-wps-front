@@ -74,7 +74,10 @@
 
     <v-row>
       <v-col>
-        <BudgetTable :budget-data-init="budgetData" />
+        <BudgetTable
+          :budget-data-init="budgetData"
+          :eos-price="eosPrice"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -82,12 +85,14 @@
 
 <script>
   import BudgetTable from '@/components/BudgetTable.vue';
+  import getEosPrice from '@/mixins/getEosPrice';
 
   export default {
     name: 'BudgetOverview',
     components: {
       BudgetTable,
     },
+    mixins: [getEosPrice],
     props: {
       monthlyBudget: {
         type: String,
@@ -102,9 +107,12 @@
         default: 1,
       },
       budgetData: {
-        type: Array,
-        default: () => [],
+        type: String,
+        default: '',
       },
+    },
+    mounted() {
+      this.$_getEosPrice();
     },
   };
 </script>

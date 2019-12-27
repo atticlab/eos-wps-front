@@ -127,8 +127,8 @@
         immediate: true,
         async handler() {
           if (!this.proposalId) {
-            // proposalDraft is in the getDraftByProposalName mixin
-            this.proposalDraft = {};
+            // proposal is in the getDraftByProposalName mixin
+            this.proposal = {};
             return;
           }
           if (!await this.$_isProposalExist(this.proposalId)) {
