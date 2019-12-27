@@ -39,6 +39,7 @@ export default {
         return this.proposalsVotes;
       } catch (e) {
         console.error('$_getVotes', e);
+        this.$errorsHandler.handleError(e);
         return [];
       } finally {
         this.isVotesLoading = false;

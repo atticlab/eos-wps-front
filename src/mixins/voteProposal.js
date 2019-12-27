@@ -40,6 +40,7 @@ export default {
       } catch (e) {
         // TODO: notify about err
         console.error('$_voteProposal', e);
+        this.$errorsHandler.handleError(e);
         return null;
       } finally {
         this.isVoteProposalLoading = false;

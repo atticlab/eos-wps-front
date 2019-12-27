@@ -31,6 +31,7 @@ export default {
       } catch (e) {
         // TODO: notify about err
         console.error('$_sendDeposit', e);
+        this.$errorsHandler.handleError(e);
         return null;
       } finally {
         this.isSendDepositLoading = false;

@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex';
 export default {
   data() {
     return {
-      proposalDraft: {},
+      proposal: {},
       isDraftProposalByProposalNameLoading: false,
     };
   },
@@ -38,10 +38,11 @@ export default {
                                  );
         const result = response.rows;
         if (!result || !result.length) {
-          return {};
+          this.proposal = {};
+          return this.proposal;
         }
-        this.proposalDraft = this.$helpers.copyDeep(result[0]);
-        return this.proposalDraft;
+        this.proposal = this.$helpers.copyDeep(result[0]);
+        return this.proposal;
       } catch (e) {
         console.error('$_getDraftProposalByProposalName', e);
         this.$errorsHandler.handleError(e);

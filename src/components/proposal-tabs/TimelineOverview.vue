@@ -61,9 +61,9 @@
       TimelineItem,
     },
     props: {
-      milestones: {
-        type: Array,
-        default: () => [],
+      milestonesRaw: {
+        type: String,
+        default: '',
       },
     },
     data() {
@@ -77,11 +77,27 @@
       },
       milestonesInProgress() {
         return this.milestones.filter(milestone => milestone.startsAt < this.today
-          && milestone.endsAt > this.today);
+         && milestone.endsAt > this.today);
       },
       milestonesScheduled() {
         return this.milestones.filter(milestone => milestone.startsAt > this.today
           && milestone.endsAt > this.today);
+      },
+      milestones() {
+        let parsed = [];
+        try {
+          parsed = JSON.parse(this.milestonesRaw);
+        } catch (e) {
+          // TODO: handle err
+          console.error('cant parse milestonesRaw');
+        }
+
+        // eslint-disable-next-line no-restricted-syntax
+        for (const p of parsed) {
+          p.endsAt = new Date(p.endsAt);
+          p.startsAt = new Date(p.startsAt);
+        }
+        return parsed;
       },
     },
   };

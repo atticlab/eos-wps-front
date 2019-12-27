@@ -24,11 +24,11 @@
         required: true,
       },
       startsAt: {
-        type: Number,
+        type: Date,
         required: true,
       },
       endsAt: {
-        type: Number,
+        type: Date,
         default: 0,
       },
     },

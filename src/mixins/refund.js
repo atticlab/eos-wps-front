@@ -34,6 +34,7 @@ export default {
       } catch (e) {
         // TODO: notify about err
         console.error('$_refund', e);
+        this.$errorsHandler.handleError(e);
         return null;
       } finally {
         this.isRefundLoading = false;

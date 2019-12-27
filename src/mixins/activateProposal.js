@@ -32,14 +32,14 @@ export default {
             data: {
               proposer: this.getAccountName,
               proposal_name: data.proposalName,
-              next: parseInt(data.next, 10), // activate proposal at the next period
+              start_voting_period: data.startVotingPeriod, // activate for the current period
             },
           }]),
         );
         return res.transaction_id;
       } catch (e) {
-        // TODO: notify about err
         console.error('$_modifyProposal', e);
+        this.$errorsHandler.handleError(e);
         return null;
       } finally {
         this.isActivateProposalLoading = false;

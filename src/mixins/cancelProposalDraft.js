@@ -17,7 +17,6 @@ export default {
   methods: {
     async $_cancelProposalDraft(data) {
       if (!this.eos) {
-        // TODO: notify about err
         throw new Error('eos don\'t inited');
       }
       if (!data || !Object.keys(data).length) {
@@ -37,8 +36,8 @@ export default {
         );
         return res.transaction_id;
       } catch (e) {
-        // TODO: notify about err
         console.error('$_cancelProposalDraft', e);
+        this.$errorsHandler.handleError(e);
         return null;
       } finally {
         this.isCancelProposalDraftLoading = false;

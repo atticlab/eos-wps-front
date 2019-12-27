@@ -43,6 +43,7 @@ export default {
       } catch (e) {
         // TODO: notify about err
         console.error('$_isProposalExist', e);
+        this.$errorsHandler.handleError(e);
         return false;
       } finally {
         this.isProposalExistLoading = false;

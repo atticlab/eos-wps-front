@@ -333,8 +333,8 @@
         default: false,
       },
       budgetDataInit: {
-        type: String,
-        default: '',
+        type: Array,
+        default: () => [],
       },
       eosPrice: {
         type: Number,

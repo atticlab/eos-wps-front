@@ -22,7 +22,8 @@
           lg="8"
         >
           <div
-            :style="{ 'background-image': proposalFullInfo.proposal_json.img
+            :style="{ 'background-image': proposalFullInfo.proposal_json &&
+              proposalFullInfo.proposal_json.img
               ? `url(${proposalFullInfo.proposal_json.img})`
               : `url(${$constants.PROPOSAL_IMAGE_STUB_URL})`}"
             class="proposal__img"
@@ -116,7 +117,7 @@
             </v-card>
 
             <template
-              v-if="isUserBp && !isDraft"
+              v-if="isBp && !isDraft"
             >
               <v-btn
                 class="mb-4"
@@ -158,13 +159,13 @@
 
         <v-tab-item background-color="tile">
           <Overview
-            :overview="proposalFullInfo.proposal_json.overview
+            :overview="proposalFullInfo.proposal_json && proposalFullInfo.proposal_json.overview
               ? proposalFullInfo.proposal_json.overview
               : ''"
             :proposer="proposalFullInfo.proposer"
-            :hash="proposalFullInfo.proposal_json.hash"
-            :category="proposalFullInfo.proposal_json.category"
-            :created="proposalFullInfo.proposal_json.created"
+            :hash="proposalFullInfo.proposal_json && proposalFullInfo.proposal_json.hash"
+            :category="proposalFullInfo.proposal_json && proposalFullInfo.proposal_json.category"
+            :created="proposalFullInfo.proposal_json && proposalFullInfo.proposal_json.created"
           />
         </v-tab-item>
         <v-tab-item>
@@ -172,11 +173,15 @@
             :monthly-budget="proposalFullInfo.monthly_budget"
             :total-budget="proposalFullInfo.total_budget"
             :duration="proposalFullInfo.duration"
-            :budget-data="proposalFullInfo.proposal_json.budget_data"
+            :budget-data="proposalFullInfo.proposal_json &&
+              proposalFullInfo.proposal_json.budget_data"
           />
         </v-tab-item>
         <v-tab-item>
-          <TimelineOverview :milestones="proposalFullInfo.proposal_json.milestones" />
+          <TimelineOverview
+            :milestones-raw="proposalFullInfo.proposal_json &&
+              proposalFullInfo.proposal_json.milestones"
+          />
         </v-tab-item>
       </v-tabs>
     </v-container>
@@ -184,6 +189,7 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex';
   import Overview from '@/components/proposal-tabs/Overview.vue';
   import BudgetOverview from '@/components/proposal-tabs/BudgetOverview.vue';
   import TimelineOverview from '@/components/proposal-tabs/TimelineOverview.vue';
@@ -195,6 +201,9 @@
   import cancelProposalDraft from '@/mixins/cancelProposalDraft';
   import getDraftByProposalName from '@/mixins/getDraftByProposalName';
   import isProposalExist from '@/mixins/isProposalExist';
+  import getActiveProposalByProposalName from '@/mixins/getActiveProposalByProposalName';
+  import getState from '@/mixins/getState';
+  import getVotesByProposalName from '@/mixins/getVotesByProposalName';
 
   export default {
     name: 'Proposal',
@@ -212,6 +221,9 @@
       cancelProposalDraft,
       getDraftByProposalName,
       isProposalExist,
+      getActiveProposalByProposalName,
+      getState,
+      getVotesByProposalName,
     ],
     data() {
       return {
@@ -221,9 +233,9 @@
       };
     },
     computed: {
-      isUserBp() {
-        return true;
-      },
+      ...mapState({
+        isBp: state => state.userService.isBp,
+      }),
       isDraft() {
         return this.$route.path.includes('draft');
       },
@@ -247,22 +259,28 @@
             return;
           }
 
-          if (this.isDraft) {
-            await this.$_getDraftProposalByProposalName(this.proposalId);
-          } else {
-            this.proposal = this.$constants.PROPOSAL_ACTIVE;
-          }
+          this.getProposal();
+
           // get votes
+          // await this.$_getVotesByProposalName(this.proposalId);
           // eslint-disable-next-line prefer-destructuring
           this.vote = this.$constants.VOTES[0];
         },
       },
     },
     methods: {
+      getProposal() {
+        if (this.isDraft) {
+          this.$_getDraftProposalByProposalName(this.proposalId);
+        } else {
+          this.$_getActiveProposalByProposalName(this.proposalId);
+        }
+      },
       async transfer() {
         try {
           const txId = await this.$_sendDeposit();
           console.log(txId);
+          // TODO: notify user
         } catch (e) {
           // TODO: handle err
           console.error('transfer', e);
@@ -272,6 +290,7 @@
         try {
           const txId = await this.$_refund();
           console.log(txId);
+          // TODO: notify user
         } catch (e) {
           // TODO: handle err
           console.error('refund', e);
@@ -279,12 +298,15 @@
       },
       async activateProposal() {
         try {
+          const state = await this.$_getState();
           const txId = await this.$_activateProposal({
             proposalName: this.proposalId,
             // TODO: add ui element
-            next: 0,
+            // can be current_voting_period or next_voting_period
+            startVotingPeriod: state.current_voting_period,
           });
           console.log(txId);
+          // TODO: notify user
         } catch (e) {
           // TODO: handle err
           console.error('activateProposal', e);
@@ -296,6 +318,7 @@
             proposalName: this.proposalId,
           });
           console.log(txId);
+          this.$router.push({ name: 'ProposalsDrafts' });
         } catch (e) {
           // TODO: handle err
           console.error('activateProposal', e);
@@ -304,7 +327,9 @@
       async handleVote(voteType) {
         if (!voteType || (![this.$constants.VOTE_ABSTAIN, this.$constants.VOTE_YES,
           this.$constants.VOTE_NO].includes(voteType))) {
+          // TODO: handle err
           alert('wrong Vote type');
+          return;
         }
 
         try {
@@ -313,6 +338,7 @@
             vote: voteType,
           });
           console.log(txId);
+          // TODO: notify user
         } catch (e) {
           // TODO: handle err
           console.error('handleVote', e);

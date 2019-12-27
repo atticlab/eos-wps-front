@@ -41,8 +41,8 @@ export default {
         );
         return response.transaction_id;
       } catch (e) {
-        this.$errorsHandler.handleError(e);
         console.error('$_createProposal', e);
+        this.$errorsHandler.handleError(e);
         return null;
       } finally {
         this.isCreateProposalDraftLoading = false;

@@ -59,6 +59,7 @@
             :duration="proposal.duration"
             :is-draft="proposal.isDraft"
           />
+          <!--      TODO: no data component -->
         </div>
 
         <v-divider class="my-12" />
@@ -84,6 +85,7 @@
             :votes="proposal.total_net_votes"
             :is-draft="proposal.isDraft"
           />
+          <!--      TODO: no data component -->
         </div>
       </template>
 
@@ -106,6 +108,7 @@
           :is-draft="isDrafts"
         />
       </template>
+      <!--      TODO: no data component -->
     </v-container>
   </div>
 </template>

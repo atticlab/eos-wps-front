@@ -12,8 +12,7 @@ export default {
       let response = null;
       const proposalsTable = 'proposals';
       const result = [];
-      // status
-      const indexPosition = 2;
+      const indexPosition = 2; // status
 
       try {
         this.isActiveProposalsLoading = true;
@@ -42,6 +41,7 @@ export default {
         return this.proposals;
       } catch (e) {
         console.error('$_getActiveProposals', e);
+        this.$errorsHandler.handleError(e);
         return [];
       } finally {
         this.isActiveProposalsLoading = false;
