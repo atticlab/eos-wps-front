@@ -333,8 +333,8 @@
         default: false,
       },
       budgetDataInit: {
-        type: Array,
-        default: () => [],
+        type: String,
+        default: '',
       },
       eosPrice: {
         type: Number,
@@ -486,6 +486,7 @@
         },
       },
       budgetDataInit: {
+        immediate: true,
         handler(val) {
           if (val) {
             this.budgetData = this.$helpers.copyDeep(JSON.parse(val));

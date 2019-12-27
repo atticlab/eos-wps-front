@@ -140,7 +140,7 @@ const constants = {
             talk to the DIF.</strong></p>`,
         },
         {
-          key: 'budget_data',
+          key: 'budgets',
           value: [
             {
               title: 'Budget title',
@@ -222,7 +222,7 @@ const constants = {
             talk to the DIF.</strong></p>`,
         },
         {
-          key: 'budget_data',
+          key: 'budgets',
           value: [
             {
               title: 'Budget title',
@@ -302,7 +302,7 @@ const constants = {
             talk to the DIF.</strong></p>`,
       },
       {
-        key: 'budget_data',
+        key: 'budgets',
         value: [
           {
             title: 'Budget title',
@@ -382,7 +382,7 @@ const constants = {
             talk to the DIF.</strong></p>`,
       },
       {
-        key: 'budget_data',
+        key: 'budgets',
         value: [
           {
             title: 'Budget title',

@@ -174,7 +174,7 @@
             :total-budget="proposalFullInfo.total_budget"
             :duration="proposalFullInfo.duration"
             :budget-data="proposalFullInfo.proposal_json &&
-              proposalFullInfo.proposal_json.budget_data"
+              proposalFullInfo.proposal_json.budgets"
           />
         </v-tab-item>
         <v-tab-item>
