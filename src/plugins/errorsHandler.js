@@ -12,6 +12,9 @@ const getUserFriendlyErrorMsg = (msg) => {
   if (msg === 'signature_rejected') {
     return i18n.t('notifications.cancelledAction');
   }
+  if (msg === 'notifications.mustLogin') {
+    return i18n.t(msg);
+  }
 
   return i18n.t('notifications.unexpectedError');
 };
@@ -27,6 +30,9 @@ const errorsHandler = {
     }
     if (err.type) {
       errMsg = err.type;
+    }
+    if (err.message === 'notifications.mustLogin') {
+      errMsg = err.message;
     }
 
     return VueNotifications.error({ title: errTitle, message: getUserFriendlyErrorMsg(errMsg) });

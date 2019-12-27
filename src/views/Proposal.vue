@@ -204,6 +204,7 @@
   import getActiveProposalByProposalName from '@/mixins/getActiveProposalByProposalName';
   import getState from '@/mixins/getState';
   import getVotesByProposalName from '@/mixins/getVotesByProposalName';
+  import notification from '@/mixins/notification';
 
   export default {
     name: 'Proposal',
@@ -224,6 +225,7 @@
       getActiveProposalByProposalName,
       getState,
       getVotesByProposalName,
+      notification,
     ],
     data() {
       return {
@@ -259,7 +261,11 @@
             return;
           }
 
-          this.getProposal();
+          if (this.isDraft) {
+            this.$_getDraftProposalByProposalName(this.proposalId);
+          } else {
+            this.$_getActiveProposalByProposalName(this.proposalId);
+          }
 
           // get votes
           // await this.$_getVotesByProposalName(this.proposalId);
@@ -269,80 +275,53 @@
       },
     },
     methods: {
-      getProposal() {
-        if (this.isDraft) {
-          this.$_getDraftProposalByProposalName(this.proposalId);
-        } else {
-          this.$_getActiveProposalByProposalName(this.proposalId);
-        }
-      },
       async transfer() {
         try {
-          const txId = await this.$_sendDeposit();
-          console.log(txId);
-          // TODO: notify user
-        } catch (e) {
-          // TODO: handle err
-          console.error('transfer', e);
-        }
+          console.log(await this.$_sendDeposit());
+          this.showSuccessMsg(this.$t('notifications.sentDeposit'));
+        } catch {} // eslint-disable-line no-empty
       },
       async refund() {
         try {
-          const txId = await this.$_refund();
-          console.log(txId);
-          // TODO: notify user
-        } catch (e) {
-          // TODO: handle err
-          console.error('refund', e);
-        }
+          console.log(await this.$_refund());
+          this.showSuccessMsg(this.$t('notifications.sentRefund'));
+        } catch {} // eslint-disable-line no-empty
       },
       async activateProposal() {
         try {
           const state = await this.$_getState();
-          const txId = await this.$_activateProposal({
+          console.log(await this.$_activateProposal({
             proposalName: this.proposalId,
             // TODO: add ui element
             // can be current_voting_period or next_voting_period
             startVotingPeriod: state.current_voting_period,
-          });
-          console.log(txId);
-          // TODO: notify user
-        } catch (e) {
-          // TODO: handle err
-          console.error('activateProposal', e);
-        }
+          }));
+          this.showSuccessMsg(this.$t('notifications.proposalActivated'));
+        } catch {} // eslint-disable-line no-empty
       },
       async deleteProposal() {
         try {
-          const txId = await this.$_cancelProposalDraft({
+          console.log(await this.$_cancelProposalDraft({
             proposalName: this.proposalId,
-          });
-          console.log(txId);
+          }));
+          this.showSuccessMsg(this.$t('notifications.proposalDeleted'));
           this.$router.push({ name: 'ProposalsDrafts' });
-        } catch (e) {
-          // TODO: handle err
-          console.error('activateProposal', e);
-        }
+        } catch {} // eslint-disable-line no-empty
       },
       async handleVote(voteType) {
         if (!voteType || (![this.$constants.VOTE_ABSTAIN, this.$constants.VOTE_YES,
           this.$constants.VOTE_NO].includes(voteType))) {
-          // TODO: handle err
-          alert('wrong Vote type');
+          this.showErrorMsg(this.$t('notifications.wrongVoteType'));
           return;
         }
 
         try {
-          const txId = await this.$_voteProposal({
+          console.log(await this.$_voteProposal({
             proposalName: this.proposalId,
             vote: voteType,
-          });
-          console.log(txId);
-          // TODO: notify user
-        } catch (e) {
-          // TODO: handle err
-          console.error('handleVote', e);
-        }
+          }));
+          this.showSuccessMsg(this.$t('notifications.sentVote'));
+        } catch {} // eslint-disable-line no-empty
       },
     },
   };

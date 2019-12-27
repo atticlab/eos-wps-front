@@ -9,6 +9,7 @@ export default {
   computed: {
     ...mapState({
       eos: state => state.userService.eos,
+      eosAccount: state => state.userService.eosAccount,
     }),
     ...mapGetters('userService', {
       getAccountName: 'getAccountName',
@@ -16,15 +17,14 @@ export default {
   },
   methods: {
     async $_modifyProposalDraft(data) {
-      if (!this.eos) {
-        // TODO: notify about err
-        throw new Error('eos don\'t inited');
-      }
       if (!data || !Object.keys(data).length) {
         throw new Error('empty data');
       }
 
       try {
+        if (!this.eosAccount) {
+          throw new Error('notifications.mustLogin');
+        }
         this.isModifyProposalDraftLoading = true;
         const payload = [
           {

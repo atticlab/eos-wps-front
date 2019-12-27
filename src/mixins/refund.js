@@ -9,6 +9,7 @@ export default {
   computed: {
     ...mapState({
       eos: state => state.userService.eos,
+      eosAccount: state => state.userService.eosAccount,
     }),
     ...mapGetters('userService', {
       getAccountName: 'getAccountName',
@@ -16,11 +17,11 @@ export default {
   },
   methods: {
     async $_refund() {
-      if (!this.eos) {
-        // TODO: notify about err
-        throw new Error('eos don\'t inited');
-      }
       try {
+        if (!this.eosAccount) {
+          throw new Error('notifications.mustLogin');
+        }
+
         this.isRefundLoading = true;
         const res = await this.eos.transaction(
           this.$helpers.buildBaseTransactionPayload([{
@@ -35,7 +36,7 @@ export default {
         // TODO: notify about err
         console.error('$_refund', e);
         this.$errorsHandler.handleError(e);
-        return null;
+        throw e;
       } finally {
         this.isRefundLoading = false;
       }
