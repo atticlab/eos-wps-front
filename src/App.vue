@@ -121,7 +121,7 @@
 
           <v-list>
             <v-list-item
-              @click="SCATTER_LOGOUT"
+              @click="SCATTER_LOGOUT($route.name)"
             >
               <v-list-item-title>
                 {{ $t('common.signOut') }}
@@ -161,17 +161,35 @@
       </v-toolbar-items>
     </v-app-bar>
 
-    <v-alert
-      v-show="isScatterInitLoading"
-      transition="scale-transition"
-      border-top
-      type="info"
-      :class="{ 'alert-scatter': true }"
-    >
-      {{ $t('notifications.scatterInit') }}
-    </v-alert>
+    <!--    <v-alert-->
+    <!--      v-show="isScatterInitLoading"-->
+    <!--      transition="scale-transition"-->
+    <!--      border-top-->
+    <!--      type="info"-->
+    <!--      :class="{ 'alert-scatter': true }"-->
+    <!--    >-->
+    <!--      {{ $t('notifications.scatterInit') }}-->
+    <!--    </v-alert>-->
 
-    <v-content>
+    <v-overlay v-if="isScatterInitLoading">
+      <v-alert
+        transition="scale-transition"
+        border-top
+        type="info"
+        :class="{ 'alert-scatter': true }"
+      >
+        {{ $t('notifications.scatterInit') }}
+      </v-alert>
+
+      <v-progress-circular
+        :size="70"
+        :width="7"
+        color="primary"
+        indeterminate
+      />
+    </v-overlay>
+
+    <v-content v-else>
       <router-view />
     </v-content>
 
@@ -209,12 +227,9 @@
  mapState, mapActions, mapGetters, mapMutations,
 } from 'vuex';
   import ActionType from '@/store/constants';
-  import getProducers from '@/mixins/getProducers';
-  import getEosPrice from '@/mixins/getEosPrice';
 
   export default {
     name: 'App',
-    mixins: [getProducers, getEosPrice],
     data() {
       return {
         drawer: false,
@@ -231,20 +246,18 @@
       }),
     },
     watch: {
-      // getAccountNameWithAuthority: {
-      //   immediate: true,
-      //   handler(val) {
-      //     if (!val) return;
-      //     if (this.routeTo && this.routeTo.meta.requiresAuth) {
-      //       this.$router.push({ path: this.routeTo.path });
-      //     }
-      //   },
-      // },
+      getAccountNameWithAuthority: {
+        immediate: true,
+        handler(val) {
+          if (!val) return;
+          if (this.routeTo && this.routeTo.meta.requiresAuth) {
+            this.$router.push({ path: this.routeTo.path });
+          }
+        },
+      },
     },
     async created() {
-      this.$_getProducers();
-      this.$_getEosPrice();
-      // this[ActionType.SCATTER_INIT]();
+      this[ActionType.SCATTER_INIT]();
     },
     methods: {
       ...mapMutations('userService', [
@@ -253,6 +266,7 @@
       ...mapActions('userService', [
         ActionType.SCATTER_INIT,
         ActionType.SCATTER_LOGOUT,
+        ActionType.DEFINE_ROUTE_TO,
       ]),
     },
   };
@@ -266,10 +280,13 @@
   @import '~@/assets/scss/main';
 
   .alert-scatter {
-    margin-top: 64px;
+    /*margin-top: 64px;*/
     width: 100%;
     text-align: center;
     position: fixed !important;
     z-index: 2;
+
+    left: 0;
+    top: 0;
   }
 </style>
