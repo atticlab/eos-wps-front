@@ -39,7 +39,7 @@ export default {
         );
         return res.transaction_id;
       } catch (e) {
-        console.log('$_modifyProposal', e);
+        console.error('$_modifyProposal', e);
         this.$errorsHandler.handleError(e);
         throw e;
       } finally {

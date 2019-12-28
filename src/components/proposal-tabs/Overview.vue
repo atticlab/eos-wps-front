@@ -6,7 +6,13 @@
         md="7"
         lg="8"
       >
-        <div v-html="overview" />
+        <div
+          v-if="overview !== $t('noDataTexts.noOverview')"
+          v-html="overview"
+        />
+        <div v-else>
+          {{ overview }}
+        </div>
       </v-col>
       <v-col
         order="first"
@@ -88,23 +94,27 @@
     props: {
       overview: {
         type: String,
-        default: '',
-        // default: this.$t('common.noData'),
+        default() {
+          return this.$t('noDataTexts.noOverview');
+        },
       },
       proposer: {
         type: String,
-        default: 'No data',
-        // default: this.$t('common.noData'),
+        default() {
+          return this.$t('noDataTexts.noProposer');
+        },
       },
       hash: {
         type: String,
-        default: 'No data',
-        // default: this.$t('common.noData'),
+        default() {
+          return this.$t('noDataTexts.noHash');
+        },
       },
       category: {
         type: String,
-        default: 'No data',
-        // default: this.$t('common.noData'),
+        default() {
+          return this.$t('noDataTexts.noCategory');
+        },
       },
       created: {
         type: String,

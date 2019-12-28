@@ -42,24 +42,28 @@
           <h2 class="font-weight-regular green--text mb-6">
             {{ $t('common.passingProposals') }}
           </h2>
-          <!--          :available-budget="proposal.available_budget"-->
-          <!--          :payments="proposal.payments"-->
-          <!--          :status-by-votes="proposal.statusByVotes"-->
-          <!--          :votes="proposal.total_net_votes"-->
-          <ProposalItem
-            v-for="(proposal, index) in passingProposals"
-            :key="index"
-            :proposal-name="proposal.proposal_name"
-            :title="proposal.title"
-            :proposer="proposal.proposer"
-            :img="proposal.proposal_json.img"
-            :category="proposal.proposal_json.category"
-            :summary="proposal.proposal_json.summary"
-            :budget="proposal.total_budget"
-            :duration="proposal.duration"
-            :is-draft="proposal.isDraft"
-          />
-          <!--      TODO: no data component -->
+          <template v-if="passingProposals && passingProposals.length !== 0">
+            <ProposalItem
+              v-for="(proposal, index) in passingProposals"
+              :key="index"
+              :proposal-name="proposal.proposal_name"
+              :title="proposal.title"
+              :proposer="proposal.proposer"
+              :available-budget="proposal.available_budget"
+              :img="proposal.proposal_json.img"
+              :category="proposal.proposal_json.category"
+              :summary="proposal.proposal_json.summary"
+              :budget="proposal.total_budget"
+              :duration="proposal.duration"
+              :payments="proposal.payments"
+              :status-by-votes="proposal.statusByVotes"
+              :votes="proposal.total_net_votes"
+              :is-draft="proposal.isDraft"
+            />
+          </template>
+          <div v-else>
+            {{ $t('noDataTexts.nothingToDisplay') }}
+          </div>
         </div>
 
         <v-divider class="my-12" />
@@ -68,8 +72,35 @@
           <h2 class="font-weight-regular red--text mb-6">
             {{ $t('common.notPassingProposals') }}
           </h2>
+          <template v-if="notPassingProposals && notPassingProposals.length !== 0">
+            <ProposalItem
+              v-for="(proposal, index) in notPassingProposals"
+              :key="index"
+              :proposal-name="proposal.proposal_name"
+              :title="proposal.title"
+              :proposer="proposal.proposer"
+              :available-budget="proposal.available_budget"
+              :img="proposal.proposal_json.img"
+              :category="proposal.proposal_json.category"
+              :summary="proposal.proposal_json.summary"
+              :budget="proposal.total_budget"
+              :duration="proposal.duration"
+              :payments="proposal.payments"
+              :status-by-votes="proposal.statusByVotes"
+              :votes="proposal.total_net_votes"
+              :is-draft="proposal.isDraft"
+            />
+          </template>
+          <div v-else>
+            {{ $t('noDataTexts.nothingToDisplay') }}
+          </div>
+        </div>
+      </template>
+
+      <template v-else>
+        <template v-if="proposalsParsed && proposalsParsed.length !== 0">
           <ProposalItem
-            v-for="(proposal, index) in notPassingProposals"
+            v-for="(proposal, index) in proposalsParsed"
             :key="index"
             :proposal-name="proposal.proposal_name"
             :title="proposal.title"
@@ -83,32 +114,13 @@
             :payments="proposal.payments"
             :status-by-votes="proposal.statusByVotes"
             :votes="proposal.total_net_votes"
-            :is-draft="proposal.isDraft"
+            :is-draft="isDrafts"
           />
-          <!--      TODO: no data component -->
+        </template>
+        <div v-else>
+          {{ $t('noDataTexts.nothingToDisplay') }}
         </div>
       </template>
-
-      <template v-else>
-        <ProposalItem
-          v-for="(proposal, index) in proposalsParsed"
-          :key="index"
-          :proposal-name="proposal.proposal_name"
-          :title="proposal.title"
-          :proposer="proposal.proposer"
-          :available-budget="proposal.available_budget"
-          :img="proposal.proposal_json.img"
-          :category="proposal.proposal_json.category"
-          :summary="proposal.proposal_json.summary"
-          :budget="proposal.total_budget"
-          :duration="proposal.duration"
-          :payments="proposal.payments"
-          :status-by-votes="proposal.statusByVotes"
-          :votes="proposal.total_net_votes"
-          :is-draft="isDrafts"
-        />
-      </template>
-      <!--      TODO: no data component -->
     </v-container>
   </div>
 </template>

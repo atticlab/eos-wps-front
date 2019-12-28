@@ -150,5 +150,18 @@
   "proposalStatuses": {
     "passing": "Passing",
     "notPassing": "Not passing"
+  },
+  "noDataTexts": {
+    "noData": "No data",
+    "noOverview": "No overview is provided",
+    "noDesc": "No description is provided",
+    "noBudgetItems": "No budget details are provided",
+    "noTimeline": "No timeline milestones are provided",
+    "noProposer": "Proposer is unknown",
+    "noHash": "No hash is provided",
+    "noCategory": "No category is provided",
+    "noMonthlyBudget": "No monthly budget",
+    "noTotalBudget": "No total budget",
+    "nothingToDisplay": "Nothing to display yet"
   }
 }

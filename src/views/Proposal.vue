@@ -89,7 +89,7 @@
                       {{ proposalFullInfo.total_budget }}
                     </div>
                   </div>
-                  <div>
+                  <div v-if="!isDraft">
                     <div>{{ $t('common.payments') }}:</div>
                     <div class="font-weight-bold body-1">
                       {{ proposalFullInfo.payments }}
@@ -159,9 +159,7 @@
 
         <v-tab-item background-color="tile">
           <Overview
-            :overview="proposalFullInfo.proposal_json && proposalFullInfo.proposal_json.overview
-              ? proposalFullInfo.proposal_json.overview
-              : ''"
+            :overview="proposalFullInfo.proposal_json && proposalFullInfo.proposal_json.overview"
             :proposer="proposalFullInfo.proposer"
             :hash="proposalFullInfo.proposal_json && proposalFullInfo.proposal_json.hash"
             :category="proposalFullInfo.proposal_json && proposalFullInfo.proposal_json.category"
@@ -277,33 +275,34 @@
     methods: {
       async transfer() {
         try {
-          console.log(await this.$_sendDeposit());
+          await this.$_sendDeposit();
           this.showSuccessMsg(this.$t('notifications.sentDeposit'));
         } catch {} // eslint-disable-line no-empty
       },
       async refund() {
         try {
-          console.log(await this.$_refund());
+          await this.$_refund();
           this.showSuccessMsg(this.$t('notifications.sentRefund'));
         } catch {} // eslint-disable-line no-empty
       },
       async activateProposal() {
         try {
           const state = await this.$_getState();
-          console.log(await this.$_activateProposal({
+          await this.$_activateProposal({
             proposalName: this.proposalId,
             // TODO: add ui element
             // can be current_voting_period or next_voting_period
             startVotingPeriod: state.current_voting_period,
-          }));
+          });
           this.showSuccessMsg(this.$t('notifications.proposalActivated'));
         } catch {} // eslint-disable-line no-empty
       },
       async deleteProposal() {
         try {
-          console.log(await this.$_cancelProposalDraft({
+          await this.$_cancelProposalDraft({
             proposalName: this.proposalId,
-          }));
+          });
+          this.$eventBus.$emit('proposal-deleted', true);
           this.showSuccessMsg(this.$t('notifications.proposalDeleted'));
           this.$router.push({ name: 'ProposalsDrafts' });
         } catch {} // eslint-disable-line no-empty
@@ -316,10 +315,10 @@
         }
 
         try {
-          console.log(await this.$_voteProposal({
+          await this.$_voteProposal({
             proposalName: this.proposalId,
             vote: voteType,
-          }));
+          });
           this.showSuccessMsg(this.$t('notifications.sentVote'));
         } catch {} // eslint-disable-line no-empty
       },

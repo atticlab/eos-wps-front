@@ -75,9 +75,16 @@
     <v-row>
       <v-col>
         <BudgetTable
+          v-if="budgetData !== $t('noDataTexts.noBudgetItems')"
           :budget-data-init="budgetData"
           :eos-price="eosPrice"
         />
+        <div
+          v-else
+          class="text-center"
+        >
+          {{ budgetData }}
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -96,11 +103,15 @@
     props: {
       monthlyBudget: {
         type: String,
-        default: 'No data',
+        default() {
+          return this.$t('noDataTexts.noMonthlyBudget');
+        },
       },
       totalBudget: {
         type: String,
-        default: 'No data',
+        default() {
+          return this.$t('noDataTexts.noTotalBudget');
+        },
       },
       duration: {
         type: Number,
@@ -108,7 +119,9 @@
       },
       budgetData: {
         type: String,
-        default: '',
+        default() {
+          return this.$t('noDataTexts.noBudgetItems');
+        },
       },
     },
     mounted() {

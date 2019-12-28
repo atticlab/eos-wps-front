@@ -22,6 +22,9 @@ import './api/independentEosApi';
 // Constants
 import './plugins/constants';
 
+// Event bus
+import './plugins/eventBus';
+
 // Vuetify UI kit
 import vuetify from './plugins/vuetify';
 // import 'vuetify/dist/vuetify.min.css';
