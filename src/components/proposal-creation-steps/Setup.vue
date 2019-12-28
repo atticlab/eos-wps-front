@@ -651,6 +651,7 @@
         }
 
         if (await this.$_createProposalDraft(payload)) {
+          this.$eventBus.$emit('proposal-created', true);
           this.$router.push(`proposal-editor/${this.setupData.proposal_name}`);
           this.changeCurrentStep(2);
         }

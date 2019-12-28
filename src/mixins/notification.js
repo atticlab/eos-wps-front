@@ -15,9 +15,10 @@ export default {
       });
     },
     showErrorMsg(message) {
-      this.showSuccess({
+      this.showError({
         title: this.$t('notifications.error'),
         message,
+        timeout: 30000,
       });
     },
   },
