@@ -2,7 +2,7 @@ export default {
   data() {
     return {
       isEosPriceLoading: false,
-      eosPrice: null,
+      eosPrice: 0,
     };
   },
   methods: {
@@ -35,6 +35,7 @@ export default {
         return this.eosPrice;
       } catch (e) {
         console.error('$_getEosPrice', e);
+        this.$errorsHandler.handleError(e);
         return {};
       } finally {
         this.isSettingsLoading = false;

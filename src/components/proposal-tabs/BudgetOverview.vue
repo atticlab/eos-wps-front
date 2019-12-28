@@ -74,7 +74,17 @@
 
     <v-row>
       <v-col>
-        <BudgetTable :budget-data-init="budgetData" />
+        <BudgetTable
+          v-if="budgetData !== $t('noDataTexts.noBudgetItems')"
+          :budget-data-init="budgetData"
+          :eos-price="eosPrice"
+        />
+        <div
+          v-else
+          class="text-center"
+        >
+          {{ budgetData }}
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -82,29 +92,40 @@
 
 <script>
   import BudgetTable from '@/components/BudgetTable.vue';
+  import getEosPrice from '@/mixins/getEosPrice';
 
   export default {
     name: 'BudgetOverview',
     components: {
       BudgetTable,
     },
+    mixins: [getEosPrice],
     props: {
       monthlyBudget: {
         type: String,
-        default: 'No data',
+        default() {
+          return this.$t('noDataTexts.noMonthlyBudget');
+        },
       },
       totalBudget: {
         type: String,
-        default: 'No data',
+        default() {
+          return this.$t('noDataTexts.noTotalBudget');
+        },
       },
       duration: {
         type: Number,
         default: 1,
       },
       budgetData: {
-        type: Array,
-        default: () => [],
+        type: String,
+        default() {
+          return this.$t('noDataTexts.noBudgetItems');
+        },
       },
+    },
+    mounted() {
+      this.$_getEosPrice();
     },
   };
 </script>

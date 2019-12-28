@@ -290,10 +290,11 @@
  required, minLength, maxLength, helpers,
 } from 'vuelidate/lib/validators';
   import modifyProposalDraft from '@/mixins/modifyProposalDraft';
+  import notification from '@/mixins/notification';
 
   export default {
     name: 'TimelineEditable',
-    mixins: [validationMixin, modifyProposalDraft],
+    mixins: [validationMixin, modifyProposalDraft, notification],
     validations: {
       editedItem: {
         title: {
@@ -311,11 +312,6 @@
         endsAt: {
           required,
         },
-      },
-    },
-    notifications: {
-      showErrorMsg: {
-        type: 'error',
       },
     },
     props: {
@@ -482,18 +478,12 @@
       },
       async modify() {
         if (this.milestones.length === 0) {
-          this.showErrorMsg({
-            title: this.$t('notifications.error'),
-            message: this.$t('notifications.milestonesEmpty'),
-          });
+          this.showErrorMsg(this.$t('notifications.milestonesEmpty'));
           return;
         }
 
         if (this.milestones.length > this.$constants.MAX_TABLE_ITEMS) {
-          this.showErrorMsg({
-            title: this.$t('notifications.error'),
-            message: this.$t('notifications.tooManyItems'),
-          });
+          this.showErrorMsg(this.$t('notifications.tooManyItems'));
           return;
         }
 

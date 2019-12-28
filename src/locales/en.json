@@ -126,6 +126,7 @@
   },
   "notifications": {
     "error": "Error",
+    "success": "Success",
     "fillFields": "Fill all the fields correctly",
     "durationErr": "Duration must be at least 1 month and at most 6 months",
     "budgetErr": "Monthly budget must be at least 100 EOS",
@@ -138,6 +139,13 @@
     "scatterInit": "Scatter is being initialized...",
     "scatterIsNotConnected": "Scatter is not connected. Please install/open Scatter plugin or desktop application and refresh this page.",
     "tooManyItems": "Too many items. The number cannot be more than 15",
+    "sentDeposit": "Deposit has been sent",
+    "sentRefund": "Refund has been sent",
+    "proposalActivated": "Proposal activated",
+    "proposalDeleted": "Proposal deleted",
+    "sentVote": "Vote has been sent",
+    "wrongVoteType": "Wrong vote type",
+    "mustLogin": "You should log in",
 
     "txNetUsage": "Transaction exceeded the current network usage limit imposed on the transaction",
     "blockNetUsage": "Transaction network usage is too much for the remaining allowable usage of the current block",
@@ -163,5 +171,18 @@
   "proposalStatuses": {
     "passing": "Passing",
     "notPassing": "Not passing"
+  },
+  "noDataTexts": {
+    "noData": "No data",
+    "noOverview": "No overview is provided",
+    "noDesc": "No description is provided",
+    "noBudgetItems": "No budget details are provided",
+    "noTimeline": "No timeline milestones are provided",
+    "noProposer": "Proposer is unknown",
+    "noHash": "No hash is provided",
+    "noCategory": "No category is provided",
+    "noMonthlyBudget": "No monthly budget",
+    "noTotalBudget": "No total budget",
+    "nothingToDisplay": "Nothing to display yet"
   }
 }

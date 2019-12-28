@@ -67,6 +67,9 @@ const getUserFriendlyErrorMsg = (msg) => {
   if (msg.includes('overdrawn balance')) {
     return i18n.t('notifications.overdrawnBalance');
   }
+  if (msg === 'notifications.mustLogin') {
+    return i18n.t(msg);
+  }
   if (msg.includes('exceeded the current CPU')) {
     return i18n.t('notifications.cpuExceeded');
   }
@@ -89,6 +92,9 @@ const errorsHandler = {
     }
     if (err.name) {
       errMsg = err.name;
+    }
+    if (err.message === 'notifications.mustLogin') {
+      errMsg = err.message;
     }
 
     return VueNotifications.error({ title: errTitle, message: getUserFriendlyErrorMsg(errMsg) });

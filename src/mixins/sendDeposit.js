@@ -9,6 +9,7 @@ export default {
   computed: {
     ...mapState({
       eos: state => state.userService.eos,
+      eosAccount: state => state.userService.eosAccount,
     }),
     ...mapGetters('userService', {
       getAccountName: 'getAccountName',
@@ -16,11 +17,11 @@ export default {
   },
   methods: {
     async $_sendDeposit() {
-      if (!this.eos) {
-        // TODO: notify about err
-        throw new Error('eos don\'t inited');
-      }
       try {
+        if (!this.eosAccount) {
+          throw new Error('notifications.mustLogin');
+        }
+
         this.isSendDepositLoading = true;
         const response = await this.eos.transfer(
           this.getAccountName,
@@ -31,7 +32,8 @@ export default {
       } catch (e) {
         // TODO: notify about err
         console.error('$_sendDeposit', e);
-        return null;
+        this.$errorsHandler.handleError(e);
+        throw e;
       } finally {
         this.isSendDepositLoading = false;
       }

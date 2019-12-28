@@ -50,7 +50,7 @@
           </v-list-item-content>
         </v-list-item>
         <v-list-item
-          v-if="getAccountNameWithAuthority"
+          v-if="getAccountNameWithAuthority && proposals && proposals.length !== 0"
           :to="{ name: 'ProposalsDrafts' }"
         >
           <v-list-item-content>
@@ -142,7 +142,9 @@
         <v-divider vertical />
 
         <v-btn
-          v-if="getAccountNameWithAuthority"
+          v-if="getAccountNameWithAuthority
+            && proposals
+            && proposals.length !== 0"
           text
           :to="{ name: 'ProposalsDrafts' }"
         >
@@ -161,20 +163,7 @@
       </v-toolbar-items>
     </v-app-bar>
 
-    <!--    <v-alert-->
-    <!--      v-show="isScatterInitLoading"-->
-    <!--      transition="scale-transition"-->
-    <!--      border-top-->
-    <!--      type="info"-->
-    <!--      :class="{ 'alert-scatter': true }"-->
-    <!--    >-->
-    <!--      {{ $t('notifications.scatterInit') }}-->
-    <!--    </v-alert>-->
-
-    <v-overlay
-      v-if="isScatterInitLoading"
-      color="primary"
-    >
+    <v-overlay v-if="isScatterInitLoading">
       <v-alert
         transition="scale-transition"
         border-top
@@ -230,9 +219,11 @@
  mapState, mapActions, mapGetters, mapMutations,
 } from 'vuex';
   import ActionType from '@/store/constants';
+  import getDraftsByAccountName from '@/mixins/getDraftsByAccountName';
 
   export default {
     name: 'App',
+    mixins: [getDraftsByAccountName],
     data() {
       return {
         drawer: false,
@@ -253,14 +244,26 @@
         immediate: true,
         handler(val) {
           if (!val) return;
+          this.$_getDraftProposalByAccountName();
           if (this.routeTo && this.routeTo.meta.requiresAuth) {
             this.$router.push({ path: this.routeTo.path });
           }
         },
       },
     },
-    async created() {
+    created() {
       this[ActionType.SCATTER_INIT]();
+      this.$eventBus.$on('proposal-created', (val) => {
+        if (!val) return;
+        this.$_getDraftProposalByAccountName();
+      });
+      this.$eventBus.$on('proposal-deleted', async (val) => {
+        if (!val) return;
+        await this.$_getDraftProposalByAccountName();
+        if (!this.proposals || this.proposals.length === 0) {
+          this.$router.push({ name: 'ProposalsActive' });
+        }
+      });
     },
     methods: {
       ...mapMutations('userService', [

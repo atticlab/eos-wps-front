@@ -30,6 +30,7 @@ export default {
         return this.proposalsSettings;
       } catch (e) {
         console.error('$_getSettings', e);
+        this.$errorsHandler.handleError(e);
         return {};
       } finally {
         this.isSettingsLoading = false;

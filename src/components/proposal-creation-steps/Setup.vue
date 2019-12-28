@@ -306,6 +306,7 @@
   import getEosPrice from '@/mixins/getEosPrice';
   import isProposalExist from '@/mixins/isProposalExist';
   import modifyProposalDraft from '@/mixins/modifyProposalDraft';
+  import notification from '@/mixins/notification';
 
   export default {
     name: 'Setup',
@@ -318,6 +319,7 @@
       getEosPrice,
       isProposalExist,
       modifyProposalDraft,
+      notification,
     ],
     validations: {
       setupData: {
@@ -363,11 +365,6 @@
         monthlyBudgetAlt: {
           decimal,
         },
-      },
-    },
-    notifications: {
-      showErrorMsg: {
-        type: 'error',
       },
     },
     props: {
@@ -609,34 +606,22 @@
       },
       async propose() {
         if (!this.validateAll()) {
-          this.showErrorMsg({
-            title: this.$t('notifications.error'),
-            message: this.$t('notifications.fillFields'),
-          });
+          this.showErrorMsg(this.$t('notifications.fillFields'));
           return;
         }
 
         if (!this.setupData.duration) {
-          this.showErrorMsg({
-            title: this.$t('notifications.error'),
-            message: this.$t('notifications.durationErr'),
-          });
+          this.showErrorMsg(this.$t('notifications.durationErr'));
           return;
         }
 
         if (!this.monthlyBudget || this.monthlyBudget.split(' ')[0] < 100) {
-          this.showErrorMsg({
-            title: this.$t('notifications.error'),
-            message: this.$t('notifications.budgetErr'),
-          });
+          this.showErrorMsg(this.$t('notifications.budgetErr'));
           return;
         }
 
         if (this.budgetItemsNew.length > this.$constants.MAX_TABLE_ITEMS) {
-          this.showErrorMsg({
-            title: this.$t('notifications.error'),
-            message: this.$t('notifications.tooManyItems'),
-          });
+          this.showErrorMsg(this.$t('notifications.tooManyItems'));
           return;
         }
 
@@ -660,49 +645,35 @@
         };
 
         if (await this.$_isProposalExist(payload.proposalName)) {
-          this.showErrorMsg({
-            title: this.$t('notifications.error'),
-            message: this.$t('notifications.proposalNameExists'),
-          });
+          this.showErrorMsg(this.$t('notifications.proposalNameExists'));
 
           return;
         }
 
         if (await this.$_createProposalDraft(payload)) {
+          this.$eventBus.$emit('proposal-created', true);
           this.$router.push(`proposal-editor/${this.setupData.proposal_name}`);
           this.changeCurrentStep(2);
         }
       },
       async modify() {
         if (!this.validateAll()) {
-          this.showErrorMsg({
-            title: this.$t('notifications.error'),
-            message: this.$t('notifications.fillFields'),
-          });
+          this.showErrorMsg(this.$t('notifications.fillFields'));
           return;
         }
 
         if (!this.setupData.duration) {
-          this.showErrorMsg({
-            title: this.$t('notifications.error'),
-            message: this.$t('notifications.durationErr'),
-          });
+          this.showErrorMsg(this.$t('notifications.durationErr'));
           return;
         }
 
         if (this.isExistingProposalWithoutBudgets) {
           if (!this.monthlyBudgetAltEos || this.monthlyBudgetAltEos.split(' ')[0] < 100) {
-            this.showErrorMsg({
-              title: this.$t('notifications.error'),
-              message: this.$t('notifications.budgetErr'),
-            });
+            this.showErrorMsg(this.$t('notifications.budgetErr'));
             return;
           }
         } else if (!this.monthlyBudget || this.monthlyBudget.split(' ')[0] < 100) {
-          this.showErrorMsg({
-            title: this.$t('notifications.error'),
-            message: this.$t('notifications.budgetErr'),
-          });
+          this.showErrorMsg(this.$t('notifications.budgetErr'));
           return;
         }
 

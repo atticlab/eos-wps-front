@@ -1,5 +1,7 @@
 # eos-wps-frontend
 
+Interaction with the [eosio-wps](https://github.com/EOS-Nation/eosio-wps)
+
 ## Project setup
 ```
 npm install
