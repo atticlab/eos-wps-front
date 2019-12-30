@@ -524,7 +524,7 @@
         if (!this.setupData.duration || !this.eosPrice) return 0;
         if (this.isExistingProposalWithoutBudgets) return this.proposal.monthly_budget;
 
-        const totalBudgetInEos = this.totalBudget * this.eosPrice;
+        const totalBudgetInEos = this.totalBudget / this.eosPrice;
         return `${(totalBudgetInEos / this.setupData.duration)
           .toFixed(this.$constants.EOS_MAX_DIGITS)} EOS`;
       },
