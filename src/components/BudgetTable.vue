@@ -202,7 +202,7 @@
         {{ `$${item.subtotal}` }}
       </div>
       <div class="body-2 font-weight-bold indigo--text">
-        {{ `${(item.subtotal * eosPrice).toFixed($constants.EOS_MAX_DIGITS)} EOS` }}
+        {{ `${(item.subtotal / eosPrice).toFixed($constants.EOS_MAX_DIGITS)} EOS` }}
       </div>
     </template>
     <template
@@ -380,7 +380,7 @@
         }, 0);
       },
       totalBudgetEos() {
-        return this.totalBudget * this.eosPrice;
+        return this.totalBudget / this.eosPrice;
       },
       budgetHeaders() {
         if (this.isEditable) return this.headers;
