@@ -52,18 +52,6 @@ const helpers = {
     // May be changed to a more universal custom function in the future
     return JSON.parse(JSON.stringify(iterable));
   },
-  mergeVoteWithProposal(vote, proposal) {
-    const proposalCopy = proposal;
-
-    // Each vote object has the total_net_votes field
-    // For now only one field is added.
-    // Maybe in the future more fields will be needed
-    if (vote.proposal_name === proposalCopy.proposal_name) {
-      proposalCopy.total_net_votes = vote.total_net_votes;
-    }
-
-    return proposalCopy;
-  },
   // Build a payload for actions with the smart contract
   buildBaseTransactionPayload(payloadArr) {
     if (!payloadArr || !Array.isArray(payloadArr) || !payloadArr.length) throw new Error('empty payload');
