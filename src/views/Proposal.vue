@@ -236,7 +236,6 @@
       return {
         proposalId: this.$route.params.slug,
         proposal: {},
-        // vote: {},
       };
     },
     computed: {

@@ -134,7 +134,6 @@
       votesInitial: {
         type: Array,
         default() {
-          // return this.$t('noDataTexts.noVoters');
           return [];
         },
       },
