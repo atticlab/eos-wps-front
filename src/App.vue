@@ -252,7 +252,7 @@
       },
     },
     created() {
-      this[ActionType.SCATTER_INIT]();
+      // this[ActionType.SCATTER_INIT]();
       this.$eventBus.$on('proposal-created', (val) => {
         if (!val) return;
         this.$_getDraftProposalByAccountName();
