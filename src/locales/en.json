@@ -62,8 +62,6 @@
     "voters": "Voters",
     "voter": "Voter",
     "vote": "Vote",
-    "for": "For",
-    "against": "Against",
     "activateFor": "Activate for {votingPeriod}",
     "next": "next",
     "current": "current",
