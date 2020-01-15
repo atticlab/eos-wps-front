@@ -24,7 +24,7 @@
                    font-weight-bold
                    green--text"
               >
-                {{ votesByGroups.forVotes }}
+                {{ votesByGroups.yes }}
               </v-card-text>
             </v-card>
           </v-col>
@@ -47,7 +47,7 @@
                    font-weight-bold
                    red--text"
               >
-                {{ votesByGroups.againstVotes }}
+                {{ votesByGroups.no }}
               </v-card-text>
             </v-card>
           </v-col>
@@ -70,7 +70,7 @@
                    font-weight-bold
                    indigo--text"
               >
-                {{ votesByGroups.abstainVotes }}
+                {{ votesByGroups.abstain }}
               </v-card-text>
             </v-card>
           </v-col>
@@ -158,18 +158,18 @@
           || (!this.votesInitial[0].votes || this.votesInitial[0].votes.length === 0)) return null;
 
         const votesObj = {
-          forVotes: 0,
-          againstVotes: 0,
-          abstainVotes: 0,
+          yes: 0,
+          no: 0,
+          abstain: 0,
         };
 
         this.votesInitial[0].votes.forEach((item) => {
           // eslint-disable-next-line no-plusplus
-          if (item.value === 'yes') ++votesObj.forVotes;
+          if (item.value === 'yes') ++votesObj.yes;
           // eslint-disable-next-line no-plusplus
-          if (item.value === 'no') ++votesObj.againstVotes;
+          if (item.value === 'no') ++votesObj.no;
           // eslint-disable-next-line no-plusplus
-          if (item.value === 'abstain') ++votesObj.abstainVotes;
+          if (item.value === 'abstain') ++votesObj.abstain;
         });
 
         return votesObj;
