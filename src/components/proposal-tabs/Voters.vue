@@ -14,7 +14,7 @@
               color="pink darken-4 white--text"
             >
               <v-card-title class="justify-center pa-2">
-                {{ $t('proposalPage.for') }}:
+                {{ $t('common.yes') }}:
               </v-card-title>
               <v-card-text
                 class="white pt-4
@@ -37,7 +37,7 @@
               color="pink darken-4 white--text"
             >
               <v-card-title class="justify-center pa-2">
-                {{ $t('proposalPage.against') }}:
+                {{ $t('common.no') }}:
               </v-card-title>
               <v-card-text
                 class="white pt-4
