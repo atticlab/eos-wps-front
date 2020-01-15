@@ -40,14 +40,80 @@
               >
                 {{ $t('proposalPage.payFee') }}
               </v-btn>
-              <v-btn
-                block
-                class="mb-4"
-                color="blue darken-3 white--text"
-                @click="activateProposal"
+              <!--              <v-btn-->
+              <!--                block-->
+              <!--                class="mb-4"-->
+              <!--                color="blue darken-3 white&#45;&#45;text"-->
+              <!--                @click="activateProposal"-->
+              <!--              >-->
+              <!--                {{ $t('proposalPage.activate') }}-->
+              <!--              </v-btn>-->
+
+              <v-dialog
+                v-model="activationDialog"
+                width="600px"
               >
-                {{ $t('proposalPage.activate') }}
-              </v-btn>
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    block
+                    class="mb-4"
+                    color="blue darken-3 white--text"
+                    v-on="on"
+                  >
+                    {{ $t('proposalPage.activate') }}
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-card-title>
+                    <span class="headline">Proposal activation</span>
+                  </v-card-title>
+                  <v-card-text>
+                    <p class="body-1">
+                      {{ $t('proposalPage.sureToActivate') }}
+                    </p>
+                    <i18n
+                      path="proposalPage.currentVotingPeriodEndsIn"
+                      tag="p"
+                      class="warning--text body-1"
+                    >
+                      <template #daysTillEnd>
+                        {{ daysBeforeCurrentVotingPeriodExpires }}
+                      </template>
+                    </i18n>
+                  </v-card-text>
+                  <v-card-actions class="flex-wrap">
+                    <div class="ml-4">
+                      <v-btn
+                        class="mr-2 mb-4"
+                        color="green white--text"
+                        @click="activateProposal(false)"
+                      >
+                        <i18n path="proposalPage.activateFor">
+                          <template #votingPeriod>
+                            <span class="yellow--text">
+                              {{ $t('proposalPage.current') }}
+                            </span>
+                          </template>
+                        </i18n>
+                      </v-btn>
+                      <v-btn
+                        class="ml-0 mb-4"
+                        color="green white--text"
+                        @click="activateProposal(true)"
+                      >
+                        <i18n path="proposalPage.activateFor">
+                          <template #votingPeriod>
+                            <span class="yellow--text">
+                              {{ $t('proposalPage.next') }}
+                            </span>
+                          </template>
+                        </i18n>
+                      </v-btn>
+                    </div>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+
               <v-btn
                 block
                 class="mb-4"
@@ -236,6 +302,7 @@
       return {
         proposalId: this.$route.params.slug,
         proposal: {},
+        activationDialog: false,
       };
     },
     computed: {
@@ -244,6 +311,13 @@
       }),
       isDraft() {
         return this.$route.path.includes('draft');
+      },
+      daysBeforeCurrentVotingPeriodExpires() {
+        if (!this.proposalState) return null;
+        const nextPeriodDate = this.$moment.utc(this.proposalState.next_voting_period).startOf('day');
+        const todayDate = this.$moment.utc().startOf('day');
+
+        return nextPeriodDate.diff(todayDate, 'days');
       },
     },
     // Get a proposal if a user is already on the proposal page
@@ -258,6 +332,7 @@
           }
 
           if (this.isDraft) {
+            await this.$_getState();
             this.$_getDraftProposalByProposalName(this.proposalId);
           } else {
             this.$_getActiveProposalByProposalName(this.proposalId);
@@ -281,17 +356,22 @@
           this.showSuccessMsg(this.$t('notifications.sentRefund'));
         } catch {} // eslint-disable-line no-empty
       },
-      async activateProposal() {
+      async activateProposal(isNext = false) {
         try {
-          const state = await this.$_getState();
+          // const state = await this.$_getState();
           await this.$_activateProposal({
             proposalName: this.proposalId,
-            // TODO: add ui element
-            // can be current_voting_period or next_voting_period
-            startVotingPeriod: state.current_voting_period,
+            startVotingPeriod: isNext
+                               ? this.proposalState.next_voting_period
+                               : this.proposalState.current_voting_period,
           });
           this.showSuccessMsg(this.$t('notifications.proposalActivated'));
-        } catch {} // eslint-disable-line no-empty
+          this.$router.push({ name: 'ProposalsActive' });
+        } catch {
+          // TODO: handle errors
+        } finally {
+          this.activationDialog = false;
+        }
       },
       async deleteProposal() {
         try {

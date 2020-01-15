@@ -62,8 +62,11 @@
     "voters": "Voters",
     "voter": "Voter",
     "vote": "Vote",
-    "for": "For",
-    "against": "Against"
+    "activateFor": "Activate for {votingPeriod}",
+    "next": "next",
+    "current": "current",
+    "sureToActivate": "Are you sure you want to activate your proposal for the current voting period?",
+    "currentVotingPeriodEndsIn": "The current voting period ends in {daysTillEnd} days"
   },
   "proposalCreationPage": {
     "proposalCreation": "Proposal creation",
