@@ -366,6 +366,7 @@
                                : this.proposalState.current_voting_period,
           });
           this.showSuccessMsg(this.$t('notifications.proposalActivated'));
+          this.$router.push({ name: 'ProposalsActive' });
         } catch {
           // TODO: handle errors
         } finally {
