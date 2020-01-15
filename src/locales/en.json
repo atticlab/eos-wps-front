@@ -26,7 +26,9 @@
     "months": "month(s)",
     "passingProposals": "Passing proposals",
     "notPassingProposals": "Not passing proposals",
-    "paymentsDuration": "Duration of payments"
+    "paymentsDuration": "Duration of payments",
+    "yes": "Yes",
+    "no": "No"
   },
   "proposalItem": {
     "availableBudget": "Available budget",
@@ -55,7 +57,13 @@
     "activate": "Activate proposal",
     "refund": "Refund",
     "deleteProposal": "Delete proposal",
-    "payFee": "Pay deposit fee (100 EOS)"
+    "payFee": "Pay deposit fee (100 EOS)",
+    "videoLink": "Video link",
+    "voters": "Voters",
+    "voter": "Voter",
+    "vote": "Vote",
+    "for": "For",
+    "against": "Against"
   },
   "proposalCreationPage": {
     "proposalCreation": "Proposal creation",
@@ -162,6 +170,8 @@
     "noCategory": "No category is provided",
     "noMonthlyBudget": "No monthly budget",
     "noTotalBudget": "No total budget",
-    "nothingToDisplay": "Nothing to display yet"
+    "nothingToDisplay": "Nothing to display yet",
+    "noVideo": "No video",
+    "noVoters": "No voters"
   }
 }

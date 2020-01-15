@@ -180,16 +180,6 @@
 
         const proposalsParsedCopy = this.$helpers.copyDeep(this.proposalsParsed);
 
-        // Add total_net_votes to proposals
-        // let proposalWithVotes = [];
-        // this.proposalsVotes.forEach((vote) => {
-        //   proposalWithVotes = proposalsParsedCopy
-        //     .map(proposal => this.$helpers.mergeVoteWithProposal(
-        //     vote,
-        //     proposal,
-        //   ));
-        // });
-
         // Add statuses to proposals
         const proposalsWithStatuses = proposalsParsedCopy.map((proposal) => {
           // eslint-disable-next-line no-param-reassign

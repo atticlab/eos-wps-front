@@ -3,14 +3,14 @@
     <v-container class="container--custom">
       <div class="mb-12">
         <h1 class="display-1 font-weight-regular mb-3">
-          {{ proposalFullInfo.title }}
+          {{ $_proposalParsed.title }}
         </h1>
         <p class="font-weight-bold body-2 mb-0">
           <span class="text-uppercase">
             {{ $t('proposalPage.proposedBy') }}:
           </span>
           <span class="cyan--darken-2--bold">
-            {{ proposalFullInfo.proposer }}
+            {{ $_proposalParsed.proposer }}
           </span>
         </p>
       </div>
@@ -22,9 +22,9 @@
           lg="8"
         >
           <div
-            :style="{ 'background-image': proposalFullInfo.proposal_json &&
-              proposalFullInfo.proposal_json.img
-              ? `url(${proposalFullInfo.proposal_json.img})`
+            :style="{ 'background-image': $_proposalParsed.proposal_json &&
+              $_proposalParsed.proposal_json.img
+              ? `url(${$_proposalParsed.proposal_json.img})`
               : `url(${$constants.PROPOSAL_IMAGE_STUB_URL})`}"
             class="proposal__img"
           />
@@ -86,13 +86,13 @@
                   <div class="mr-3">
                     <div>{{ $t('common.requested') }}:</div>
                     <div class="font-weight-bold body-1">
-                      {{ proposalFullInfo.total_budget }}
+                      {{ $_proposalParsed.total_budget }}
                     </div>
                   </div>
                   <div v-if="!isDraft">
                     <div>{{ $t('common.payments') }}:</div>
                     <div class="font-weight-bold body-1">
-                      {{ proposalFullInfo.payments }}
+                      {{ $_proposalParsed.payouts }}
                     </div>
                   </div>
                 </div>
@@ -110,7 +110,7 @@
               <v-card-text class="white pt-4 word-break">
                 <div class="d-flex justify-space-around">
                   <div class="font-weight-bold body-1">
-                    {{ proposalFullInfo.total_net_votes }}
+                    {{ $_proposalParsed.total_net_votes }}
                   </div>
                 </div>
               </v-card-text>
@@ -156,30 +156,35 @@
         <v-tab>{{ $t('proposalPage.overview') }}</v-tab>
         <v-tab>{{ $t('common.budget') }}</v-tab>
         <v-tab>{{ $t('common.timeline') }}</v-tab>
+        <v-tab>{{ $t('proposalPage.voters') }}</v-tab>
 
         <v-tab-item background-color="tile">
           <Overview
-            :overview="proposalFullInfo.proposal_json && proposalFullInfo.proposal_json.overview"
-            :proposer="proposalFullInfo.proposer"
-            :hash="proposalFullInfo.proposal_json && proposalFullInfo.proposal_json.hash"
-            :category="proposalFullInfo.proposal_json && proposalFullInfo.proposal_json.category"
-            :created="proposalFullInfo.proposal_json && proposalFullInfo.proposal_json.created"
+            :overview="$_proposalParsed.proposal_json && $_proposalParsed.proposal_json.overview"
+            :proposer="$_proposalParsed.proposer"
+            :hash="$_proposalParsed.proposal_json && $_proposalParsed.proposal_json.hash"
+            :category="$_proposalParsed.proposal_json && $_proposalParsed.proposal_json.category"
+            :created="$_proposalParsed.proposal_json && $_proposalParsed.proposal_json.created"
+            :video="$_proposalParsed.proposal_json && $_proposalParsed.proposal_json.video"
           />
         </v-tab-item>
         <v-tab-item>
           <BudgetOverview
-            :monthly-budget="proposalFullInfo.monthly_budget"
-            :total-budget="proposalFullInfo.total_budget"
-            :duration="proposalFullInfo.duration"
-            :budget-data="proposalFullInfo.proposal_json &&
-              proposalFullInfo.proposal_json.budgets"
+            :monthly-budget="$_proposalParsed.monthly_budget"
+            :total-budget="$_proposalParsed.total_budget"
+            :duration="$_proposalParsed.duration"
+            :budget-data="$_proposalParsed.proposal_json &&
+              $_proposalParsed.proposal_json.budgets"
           />
         </v-tab-item>
         <v-tab-item>
           <TimelineOverview
-            :milestones-raw="proposalFullInfo.proposal_json &&
-              proposalFullInfo.proposal_json.milestones"
+            :milestones-raw="$_proposalParsed.proposal_json &&
+              $_proposalParsed.proposal_json.milestones"
           />
+        </v-tab-item>
+        <v-tab-item>
+          <Voters :votes-initial="votesByProposalName" />
         </v-tab-item>
       </v-tabs>
     </v-container>
@@ -191,6 +196,7 @@
   import Overview from '@/components/proposal-tabs/Overview.vue';
   import BudgetOverview from '@/components/proposal-tabs/BudgetOverview.vue';
   import TimelineOverview from '@/components/proposal-tabs/TimelineOverview.vue';
+  import Voters from '@/components/proposal-tabs/Voters.vue';
   import proposalParsed from '@/mixins/proposalParsed';
   import voteProposal from '@/mixins/voteProposal';
   import sendDeposit from '@/mixins/sendDeposit';
@@ -210,6 +216,7 @@
       Overview,
       BudgetOverview,
       TimelineOverview,
+      Voters,
     },
     mixins: [
       proposalParsed,
@@ -229,7 +236,6 @@
       return {
         proposalId: this.$route.params.slug,
         proposal: {},
-        vote: {},
       };
     },
     computed: {
@@ -238,14 +244,6 @@
       }),
       isDraft() {
         return this.$route.path.includes('draft');
-      },
-      proposalFullInfo() {
-        if (!this.$_proposalParsed
-          || Object.keys(this.$_proposalParsed).length === 0
-          || !this.vote
-          || Object.keys(this.vote).length === 0) return [];
-
-        return this.$helpers.mergeVoteWithProposal(this.vote, this.$_proposalParsed);
       },
     },
     // Get a proposal if a user is already on the proposal page
@@ -266,9 +264,7 @@
           }
 
           // get votes
-          // await this.$_getVotesByProposalName(this.proposalId);
-          // eslint-disable-next-line prefer-destructuring
-          this.vote = this.$constants.VOTES[0];
+          await this.$_getVotesByProposalName(this.proposalId);
         },
       },
     },
