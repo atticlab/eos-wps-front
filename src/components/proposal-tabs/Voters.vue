@@ -101,13 +101,27 @@
                       </span>
                     </td>
                     <td>
-                      <span
-                        :class="{ 'text-capitalize body-1 font-weight-bold': true,
-                                  'green--text': item.value === 'yes',
-                                  'red--text': item.value === 'no',}"
+                      <v-icon
+                        v-if="item.value === 'yes'"
+                        small
+                        color="green"
                       >
-                        {{ item.value }}
-                      </span>
+                        mdi-thumb-up
+                      </v-icon>
+                      <v-icon
+                        v-else-if="item.value === 'no'"
+                        small
+                        color="red"
+                      >
+                        mdi-thumb-down
+                      </v-icon>
+                      <v-icon
+                        v-else
+                        small
+                        color="indigo"
+                      >
+                        mdi-thumbs-up-down
+                      </v-icon>
                     </td>
                   </tr>
                 </tbody>

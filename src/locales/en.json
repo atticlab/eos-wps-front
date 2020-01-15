@@ -26,7 +26,9 @@
     "months": "month(s)",
     "passingProposals": "Passing proposals",
     "notPassingProposals": "Not passing proposals",
-    "paymentsDuration": "Duration of payments"
+    "paymentsDuration": "Duration of payments",
+    "yes": "Yes",
+    "no": "No"
   },
   "proposalItem": {
     "availableBudget": "Available budget",
