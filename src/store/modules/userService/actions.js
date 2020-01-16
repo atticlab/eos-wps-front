@@ -10,8 +10,6 @@ ScatterJS.plugins(new ScatterEOS());
 export default {
   [ActionType.SCATTER_INIT]: async ({ commit }) => {
     try {
-      commit(ActionType.SET_IS_SCATTER_INIT_LOADING, true);
-
       const connected = await ScatterJS.connect(config.appName, { network: config.eos });
       if (!connected) {
         throw new Error('Scatter not connected');
@@ -19,25 +17,42 @@ export default {
       if (ScatterJS.isExtension) {
         throw new Error('Web scatter not supported');
       }
-      commit(ActionType.SET_EOS, ScatterJS.eos(config.eos, Eos));
+      const { scatter } = ScatterJS;
+      commit(ActionType.SET_SCATTER, scatter);
+      commit(ActionType.SET_EOS, scatter.eos(config.eos, Eos));
+      if (scatter.identity) {
+        commit(ActionType.SET_EOS_ACCOUNT, scatter.account('eos'));
+      }
 
-      if (!await ScatterJS.scatter.login()) return new Error('no identity');
-
-      commit(ActionType.SET_EOS_ACCOUNT, ScatterJS.account('eos'));
       window.scatter = null;
       window.ScatterJS = null;
       return true;
     } catch (e) {
       console.error('ActionType.SCATTER_INIT', e);
+      throw e;
+    }
+  },
+  [ActionType.SCATTER_LOGIN]: async ({ commit, dispatch, state }) => {
+    try {
+      commit(ActionType.SET_IS_SCATTER_LOGIN_LOADING, true);
+
+      if (!state.scatter) {
+        await dispatch(ActionType.SCATTER_INIT);
+      }
+      if (!await state.scatter.login()) return new Error('no identity');
+      commit(ActionType.SET_EOS_ACCOUNT, state.scatter.account('eos'));
+      return true;
+    } catch (e) {
+      console.error('ActionType.SCATTER_LOGIN', e);
       commit(ActionType.SET_IS_SCATTER_NOT_CONNECTED, true);
       throw e;
     } finally {
-      commit(ActionType.SET_IS_SCATTER_INIT_LOADING, false);
+      commit(ActionType.SET_IS_SCATTER_LOGIN_LOADING, false);
     }
   },
-  [ActionType.SCATTER_LOGOUT]: ({ commit, dispatch }, data) => {
-    if (ScatterJS && ScatterJS.scatter && ScatterJS.scatter.logout) {
-      ScatterJS.scatter.logout();
+  [ActionType.SCATTER_LOGOUT]: ({ commit, dispatch, state }, data) => {
+    if (state.scatter && state.scatter.logout) {
+      state.scatter.logout();
     }
     commit(ActionType.SET_EOS, null);
     commit(ActionType.SET_EOS_ACCOUNT, null);

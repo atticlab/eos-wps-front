@@ -6,7 +6,7 @@ const state = {
   eosAccount: null,
   scatter: null,
   isBp: false,
-  isScatterInitLoading: false,
+  isScatterLoginLoading: false,
   isScatterNotConnected: false,
   routeTo: null,
 };

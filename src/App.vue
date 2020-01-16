@@ -12,7 +12,7 @@
               <v-btn
                 v-if="!getAccountNameWithAuthority"
                 color="primary"
-                @click="SCATTER_INIT"
+                @click="SCATTER_LOGIN"
               >
                 {{ $t('common.signInWithScatter') }}
               </v-btn>
@@ -102,7 +102,7 @@
         <v-btn
           v-if="!getAccountNameWithAuthority"
           text
-          @click="SCATTER_INIT"
+          @click="SCATTER_LOGIN"
         >
           {{ $t('common.signInWithScatter') }}
         </v-btn>
@@ -163,7 +163,7 @@
       </v-toolbar-items>
     </v-app-bar>
 
-    <v-overlay v-if="isScatterInitLoading">
+    <v-overlay v-if="isScatterLoginLoading">
       <v-alert
         transition="scale-transition"
         border-top
@@ -192,7 +192,7 @@
     </v-footer>
 
     <v-snackbar
-      v-if="!isScatterInitLoading"
+      v-if="!isScatterLoginLoading"
       v-model="isScatterNotConnected"
       color="info"
       :timeout="30000"
@@ -232,7 +232,7 @@
     },
     computed: {
       ...mapState({
-        isScatterInitLoading: state => state.userService.isScatterInitLoading,
+        isScatterLoginLoading: state => state.userService.isScatterLoginLoading,
         isScatterNotConnected: state => state.userService.isScatterNotConnected,
         routeTo: state => state.userService.routeTo,
       }),
@@ -253,7 +253,7 @@
       },
     },
     created() {
-      // this[ActionType.SCATTER_INIT]();
+      this[ActionType.SCATTER_INIT]();
       this.$_getProducers();
       this.$eventBus.$on('proposal-created', (val) => {
         if (!val) return;
@@ -274,6 +274,7 @@
       ...mapActions('userService', [
         ActionType.SCATTER_INIT,
         ActionType.SCATTER_LOGOUT,
+        ActionType.SCATTER_LOGIN,
         ActionType.DEFINE_ROUTE_TO,
       ]),
     },
