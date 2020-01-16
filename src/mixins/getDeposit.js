@@ -4,7 +4,7 @@ export default {
   data() {
     return {
       isDepositsLoading: false,
-      proposalsDeposits: [],
+      proposalDeposit: [],
     };
   },
   computed: {
@@ -36,8 +36,8 @@ export default {
           return [];
         }
 
-        this.proposalsDeposits = this.$helpers.copyDeep(result);
-        return this.proposalsDeposits;
+        this.proposalDeposit = this.$helpers.copyDeep(result[0]);
+        return this.proposalDeposit;
       } catch (e) {
         console.error('$_getDeposit', e);
         this.$errorsHandler.handleError(e);

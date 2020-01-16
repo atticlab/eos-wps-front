@@ -332,9 +332,9 @@
         return nextPeriodDate.diff(todayDate, 'days');
       },
       isMinDepositPaid() {
-        if (!this.proposalsDeposits || this.proposalsDeposits.length === 0) return 0;
+        if (!this.proposalDeposit || Object.keys(this.proposalDeposit).length === 0) return 0;
 
-        return Number(this.proposalsDeposits[0].balance.split(' ')[0])
+        return Number(this.proposalDeposit.balance.split(' ')[0])
           >= this.$constants.MIN_DEPOSIT;
       },
     },
