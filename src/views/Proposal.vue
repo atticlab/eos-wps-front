@@ -54,14 +54,6 @@
                 >
                   {{ $t('proposalPage.payFee') }}
                 </v-btn>
-                <!--              <v-btn-->
-                <!--                block-->
-                <!--                class="mb-4"-->
-                <!--                color="blue darken-3 white&#45;&#45;text"-->
-                <!--                @click="activateProposal"-->
-                <!--              >-->
-                <!--                {{ $t('proposalPage.activate') }}-->
-                <!--              </v-btn>-->
 
                 <v-dialog
                   v-if="isMinDepositPaid"
@@ -291,7 +283,7 @@
   import getActiveProposalByProposalName from '@/mixins/getActiveProposalByProposalName';
   import getState from '@/mixins/getState';
   import getVotesByProposalName from '@/mixins/getVotesByProposalName';
-  import getDeposits from '@/mixins/getDeposits';
+  import getDeposit from '@/mixins/getDeposit';
   import notification from '@/mixins/notification';
 
   export default {
@@ -314,7 +306,7 @@
       getActiveProposalByProposalName,
       getState,
       getVotesByProposalName,
-      getDeposits,
+      getDeposit,
       notification,
     ],
     data() {
@@ -362,7 +354,7 @@
 
             if (this.isDraft) {
               await this.$_getState();
-              await this.$_getDeposits();
+              await this.$_getDeposit();
               this.$_getDraftProposalByProposalName(this.proposalId);
             } else {
               this.$_getActiveProposalByProposalName(this.proposalId);
