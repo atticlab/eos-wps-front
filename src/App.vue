@@ -220,10 +220,11 @@
 } from 'vuex';
   import ActionType from '@/store/constants';
   import getDraftsByAccountName from '@/mixins/getDraftsByAccountName';
+  import getProducers from '@/mixins/getProducers';
 
   export default {
     name: 'App',
-    mixins: [getDraftsByAccountName],
+    mixins: [getDraftsByAccountName, getProducers],
     data() {
       return {
         drawer: false,
@@ -253,6 +254,7 @@
     },
     created() {
       // this[ActionType.SCATTER_INIT]();
+      this.$_getProducers();
       this.$eventBus.$on('proposal-created', (val) => {
         if (!val) return;
         this.$_getDraftProposalByAccountName();
