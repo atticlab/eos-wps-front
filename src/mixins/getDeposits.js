@@ -1,3 +1,5 @@
+import { mapGetters } from 'vuex';
+
 export default {
   data() {
     return {
@@ -5,9 +7,16 @@ export default {
       proposalsDeposits: [],
     };
   },
+  computed: {
+    ...mapGetters('userService', {
+      getAccountName: 'getAccountName',
+    }),
+  },
   methods: {
     async $_getDeposits() {
-      let lowerBound = '';
+      // let lowerBound = '';
+      let lowerBound = this.getAccountName;
+      const upperBound = this.getAccountName;
       let response = null;
       const depositsTable = 'deposits';
       const result = [];
@@ -23,7 +32,8 @@ export default {
               this.$constants.CONTRACT_NAME,
               this.$constants.CONTRACT_NAME,
               lowerBound,
-              null,
+              // null,
+              upperBound,
               indexPosition,
             );
           /* eslint-enable */
