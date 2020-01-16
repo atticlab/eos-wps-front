@@ -51,7 +51,7 @@ export default {
     }
   },
   [ActionType.SCATTER_LOGOUT]: ({ commit, dispatch, state }, data) => {
-    if (state.scatter && ScatterJS.scatter.logout) {
+    if (state.scatter && state.scatter.logout) {
       state.scatter.logout();
     }
     commit(ActionType.SET_EOS, null);
