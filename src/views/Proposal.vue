@@ -2,7 +2,7 @@
   <div class="py-12 proposal">
     <v-container class="container--custom">
       <div
-        v-if="isSomeDataLoading"
+        v-if="isDataLoading"
         class="d-flex justify-center"
       >
         <v-progress-circular
@@ -322,6 +322,7 @@
         proposalId: this.$route.params.slug,
         proposal: {},
         activationDialog: false,
+        isDataLoading: true,
       };
     },
     computed: {
@@ -344,46 +345,36 @@
         return Number(this.proposalsDeposits[0].balance.split(' ')[0])
           >= this.$constants.MIN_DEPOSIT;
       },
-      isSomeDataLoading() {
-        // return this.isProposalExistLoading
-        //        || this.isStateLoading
-        //        || this.isDepositsLoading
-        //        || this.isDraftProposalByProposalNameLoading
-        //        || this.isActiveProposalByProposalNameLoading
-        //        || this.isProposalVotesLoading;
-
-        return this.isDraftProposalByProposalNameLoading
-               || this.isActiveProposalByProposalNameLoading
-               || this.isProposalVotesLoading;
-      },
     },
     // Get a proposal if a user is already on the proposal page
     watch: {
-      isSomeDataLoading: {
-        immediate: true,
-        handler(val) {
-          console.log(val);
-        },
-      },
       $route: {
         immediate: true,
         async handler() {
-          // Request either active proposal or draft
-          if (!await this.$_isProposalExist(this.proposalId)) {
-            this.$router.push({ name: 'Not found' });
-            return;
-          }
+          try {
+            this.isDataLoading = true;
 
-          if (this.isDraft) {
-            await this.$_getState();
-            await this.$_getDeposits();
-            this.$_getDraftProposalByProposalName(this.proposalId);
-          } else {
-            this.$_getActiveProposalByProposalName(this.proposalId);
-          }
+            // Request either active proposal or draft
+            if (!await this.$_isProposalExist(this.proposalId)) {
+              this.$router.push({ name: 'Not found' });
+              return;
+            }
 
-          // get votes
-          await this.$_getVotesByProposalName(this.proposalId);
+            if (this.isDraft) {
+              await this.$_getState();
+              await this.$_getDeposits();
+              this.$_getDraftProposalByProposalName(this.proposalId);
+            } else {
+              this.$_getActiveProposalByProposalName(this.proposalId);
+            }
+
+            // get votes
+            await this.$_getVotesByProposalName(this.proposalId);
+          } catch (error) {
+            // No catch
+          } finally {
+            this.isDataLoading = false;
+          }
         },
       },
     },
