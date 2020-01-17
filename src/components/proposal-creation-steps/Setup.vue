@@ -307,6 +307,7 @@
   import isProposalExist from '@/mixins/isProposalExist';
   import modifyProposalDraft from '@/mixins/modifyProposalDraft';
   import notification from '@/mixins/notification';
+  import getSettings from '@/mixins/getSettings';
 
   export default {
     name: 'Setup',
@@ -320,6 +321,7 @@
       isProposalExist,
       modifyProposalDraft,
       notification,
+      getSettings,
     ],
     validations: {
       setupData: {
@@ -587,6 +589,9 @@
         },
       },
     },
+    created() {
+      this.$_getSettings();
+    },
     methods: {
       changeCurrentStep(val) {
         this.$emit('step', val);
@@ -617,6 +622,15 @@
 
         if (!this.monthlyBudget || this.monthlyBudget.split(' ')[0] < 100) {
           this.showErrorMsg(this.$t('notifications.budgetErr'));
+          return;
+        }
+
+        if (Number(this.monthlyBudget.split(' ')[0])
+          > Number(this.proposalsSettings.max_monthly_budget.split(' ')[0])) {
+          this.showErrorMsg(this.$t(
+            'notifications.budgetErrMax',
+            { maxMonthlyBudget: this.proposalsSettings.max_monthly_budget },
+            ));
           return;
         }
 
@@ -672,8 +686,24 @@
             this.showErrorMsg(this.$t('notifications.budgetErr'));
             return;
           }
+
+          if (Number(this.monthlyBudgetAltEos.split(' ')[0])
+            > Number(this.proposalsSettings.max_monthly_budget.split(' ')[0])) {
+            this.showErrorMsg(this.$t(
+              'notifications.budgetErrMax',
+              { maxMonthlyBudget: this.proposalsSettings.max_monthly_budget },
+            ));
+            return;
+          }
         } else if (!this.monthlyBudget || this.monthlyBudget.split(' ')[0] < 100) {
           this.showErrorMsg(this.$t('notifications.budgetErr'));
+          return;
+        } else if (Number(this.monthlyBudget.split(' ')[0])
+          > Number(this.proposalsSettings.max_monthly_budget.split(' ')[0])) {
+          this.showErrorMsg(this.$t(
+            'notifications.budgetErrMax',
+            { maxMonthlyBudget: this.proposalsSettings.max_monthly_budget },
+          ));
           return;
         }
 
