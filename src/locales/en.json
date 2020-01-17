@@ -141,6 +141,7 @@
     "fillFields": "Fill all the fields correctly",
     "durationErr": "Duration must be at least 1 month and at most 6 months",
     "budgetErr": "Monthly budget must be at least 100 EOS",
+    "budgetErrMax": "Monthly budget cannot be greater than {maxMonthlyBudget}",
     "overviewEmpty": "Overview can't be empty",
     "milestonesEmpty": "Add at least one timeline item",
     "proposalNameExists": "A proposal with the same name already exists! Try another one",

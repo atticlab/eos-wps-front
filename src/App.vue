@@ -12,6 +12,7 @@
               <v-btn
                 v-if="!getAccountNameWithAuthority"
                 color="primary"
+                :disabled="isScatterLoginLoading"
                 @click="SCATTER_LOGIN"
               >
                 {{ $t('common.signInWithScatter') }}
@@ -102,6 +103,7 @@
         <v-btn
           v-if="!getAccountNameWithAuthority"
           text
+          :disabled="isScatterLoginLoading"
           @click="SCATTER_LOGIN"
         >
           {{ $t('common.signInWithScatter') }}

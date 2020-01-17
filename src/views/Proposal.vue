@@ -50,6 +50,7 @@
                   block
                   class="mb-4"
                   color="blue darken-3 white--text"
+                  :disabled="isSendDepositLoading"
                   @click="transfer"
                 >
                   {{ $t('proposalPage.payFee') }}
@@ -65,6 +66,7 @@
                       block
                       class="mb-4"
                       color="blue darken-3 white--text"
+                      :disabled="isSendDepositLoading"
                       v-on="on"
                     >
                       {{ $t('proposalPage.activate') }}
@@ -93,6 +95,7 @@
                         <v-btn
                           class="mr-2 mb-4"
                           color="green white--text"
+                          :disabled="isActivateProposalLoading"
                           @click="activateProposal(false)"
                         >
                           <i18n path="proposalPage.activateFor">
@@ -106,6 +109,7 @@
                         <v-btn
                           class="ml-0 mb-4"
                           color="green white--text"
+                          :disabled="isActivateProposalLoading"
                           @click="activateProposal(true)"
                         >
                           <i18n path="proposalPage.activateFor">
@@ -134,6 +138,7 @@
                   block
                   class="mb-4"
                   color="blue darken-3 white--text"
+                  :disabled="isRefundLoading"
                   @click="refund"
                 >
                   {{ $t('proposalPage.refund') }}
@@ -142,6 +147,7 @@
                   block
                   class="mb-4"
                   color="error"
+                  :disabled="isCancelProposalDraftLoading"
                   @click="deleteProposal"
                 >
                   {{ $t('proposalPage.deleteProposal') }}
