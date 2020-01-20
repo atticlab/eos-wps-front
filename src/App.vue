@@ -75,15 +75,19 @@
 
     <v-app-bar
       app
-      color="primary"
-      dark
+      height="80"
+      class="border"
+      :elevate-on-scroll="true"
     >
       <div class="d-flex align-center">
         <v-app-bar-nav-icon
           class="d-flex d-md-none"
           @click.stop="drawer = !drawer"
         />
-        <v-app-bar-nav-icon :to="{ name: 'ProposalsActive' }">
+        <v-app-bar-nav-icon
+          :to="{ name: 'ProposalsActive' }"
+          color="primary"
+        >
           <img
             src="@/assets/img/eos.svg"
             alt="EOS WPS"
@@ -91,18 +95,43 @@
           >
         </v-app-bar-nav-icon>
         <v-toolbar-title
-          class="ml-2"
+          class="ml-2 font-weight-bold"
         >
-          EOS WPS
+          EOS
+          <span class="primary--text">
+            WPS
+          </span>
         </v-toolbar-title>
       </div>
 
       <v-spacer />
 
-      <v-toolbar-items class="d-none d-md-flex mr-n4">
+      <v-toolbar-items class="d-none d-md-flex">
+        <v-btn
+          text
+          :to="{ name: 'ProposalsActive' }"
+          class="font-weight-bold fs-13 text-transform-none"
+        >
+          {{ $t('common.activeProposals') }}
+        </v-btn>
+
+        <v-btn
+          v-if="getAccountNameWithAuthority
+            && proposals
+            && proposals.length !== 0"
+          text
+          :to="{ name: 'ProposalsDrafts' }"
+          class="font-weight-bold fs-13 text-transform-none"
+        >
+          {{ $t('common.drafts') }}
+        </v-btn>
+
+        <v-divider vertical />
+
         <v-btn
           v-if="!getAccountNameWithAuthority"
           text
+          class="font-weight-bold fs-13 text-transform-none"
           :disabled="isScatterLoginLoading"
           @click="SCATTER_LOGIN"
         >
@@ -115,6 +144,7 @@
           <template v-slot:activator="{ on }">
             <v-btn
               text
+              class="font-weight-bold fs-13 text-transform-none"
               v-on="on"
             >
               {{ getAccountNameWithAuthority }}
@@ -125,44 +155,24 @@
             <v-list-item
               @click="SCATTER_LOGOUT($route.name)"
             >
-              <v-list-item-title>
+              <v-list-item-title class="fs-13 font-weight-medium">
                 {{ $t('common.signOut') }}
               </v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
-
-        <v-divider vertical />
-
-        <v-btn
-          text
-          :to="{ name: 'ProposalsActive' }"
-        >
-          {{ $t('common.activeProposals') }}
-        </v-btn>
-
-        <v-divider vertical />
-
-        <v-btn
-          v-if="getAccountNameWithAuthority
-            && proposals
-            && proposals.length !== 0"
-          text
-          :to="{ name: 'ProposalsDrafts' }"
-        >
-          {{ $t('common.drafts') }}
-        </v-btn>
-
-        <v-divider vertical />
-
-        <v-btn
-          v-if="getAccountNameWithAuthority"
-          :to="{ name: 'Proposal editor' }"
-          text
-        >
-          {{ $t('common.createProposal') }}
-        </v-btn>
       </v-toolbar-items>
+
+      <v-btn
+        v-if="getAccountNameWithAuthority"
+        :to="{ name: 'Proposal editor' }"
+        color="primary"
+        class="d-none d-md-flex font-weight-bold fs-13 text-transform-none"
+        :large="true"
+        height="50"
+      >
+        {{ $t('common.createProposal') }}
+      </v-btn>
     </v-app-bar>
 
     <v-overlay v-if="isScatterLoginLoading">
@@ -188,9 +198,10 @@
     </v-content>
 
     <v-footer
-      color="primary"
+      color="white secondary--text"
+      height="80"
     >
-      <span class="white--text">&copy; 2019</span>
+      <span class="font-weight-bold">© {{ thisYear }} EOS WPS. All Rights Reserved</span>
     </v-footer>
 
     <v-snackbar
@@ -241,6 +252,10 @@
       ...mapGetters('userService', {
         getAccountNameWithAuthority: 'getAccountNameWithAuthority',
       }),
+      thisYear() {
+        const now = new Date();
+        return now.getFullYear();
+      },
     },
     watch: {
       getAccountNameWithAuthority: {
@@ -299,5 +314,9 @@
 
     left: 0;
     top: 0;
+  }
+
+  .v-app-bar {
+    border-bottom: 1px solid $grey-white !important;
   }
 </style>

@@ -6,27 +6,27 @@
       : `/proposal/active/${proposalName}` }"
   >
     <v-card>
-      <div class="proposal-item d-flex">
-        <div
-          class="proposal-item__left"
-          :style="{'background-image': `url(${img})`}"
-        >
-          <!--  bg-image        -->
-        </div>
-        <div class="proposal-item__right px-6 py-4">
-          <h2 class="title text-center text-sm-left mb-3">
-            {{ title }}
-          </h2>
+      <div class="proposal-item">
+        <v-img
+          class="white--text align-end"
+          height="218px"
+          :src="img"
+        />
+        <div class="px-6 py-4">
+          <div class="d-flex justify-space-between">
+            <h2 class="title text-center text-sm-left mb-1">
+              {{ title }}
+            </h2>
+
+            <span class="primary--text font-weight-bold text-capitalize">{{ category }}</span>
+          </div>
+
+          <div class="mb-3 font-weight-bold">
+            by
+            <span class="primary--text">{{ proposer }}</span>
+          </div>
           <div class="proposal-item__content body-2">
             <div class="proposal-item__content-left mb-6 mb-md-0 mr-md-2">
-              <div class="mb-3">
-                <span class="teal--darken-4--bold text-capitalize">{{ category }}</span>
-                <v-divider
-                  vertical
-                  class="mx-2"
-                />
-                <span class="cyan--darken-2--bold">{{ proposer }}</span>
-              </div>
               <p class="proposal-item__desc mb-0">
                 {{ summary }}
               </p>

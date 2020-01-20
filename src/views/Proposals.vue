@@ -1,7 +1,7 @@
 <template>
   <div class="py-12">
     <v-container class="container--custom">
-      <h1 class="display-1 font-weight-regular">
+      <h1 class="fs-50 font-weight-bold">
         {{ proposalsTitle }}
       </h1>
 
@@ -38,62 +38,72 @@
         <!--          </v-col>-->
         <!--        </v-row>-->
 
-        <div>
-          <h2 class="font-weight-regular green--text mb-6">
+        <div class="mb-12">
+          <h2 class="fs-30 mb-12">
             {{ $t('common.passingProposals') }}
           </h2>
-          <template v-if="passingProposals && passingProposals.length !== 0">
-            <ProposalItem
-              v-for="(proposal, index) in passingProposals"
-              :key="index"
-              :proposal-name="proposal.proposal_name"
-              :title="proposal.title"
-              :proposer="proposal.proposer"
-              :available-budget="proposal.available_budget"
-              :img="proposal.proposal_json.img"
-              :category="proposal.proposal_json.category"
-              :summary="proposal.proposal_json.summary"
-              :budget="proposal.total_budget"
-              :duration="proposal.duration"
-              :payments="proposal.payments"
-              :status-by-votes="proposal.statusByVotes"
-              :votes="proposal.total_net_votes"
-              :is-draft="proposal.isDraft"
-            />
-          </template>
-          <div v-else>
-            {{ $t('noDataTexts.nothingToDisplay') }}
-          </div>
+          <v-row>
+            <template v-if="passingProposals && passingProposals.length !== 0">
+              <v-col
+                v-for="(proposal, index) in passingProposals"
+                :key="index"
+                md="6"
+              >
+                <ProposalItem
+                  :proposal-name="proposal.proposal_name"
+                  :title="proposal.title"
+                  :proposer="proposal.proposer"
+                  :available-budget="proposal.available_budget"
+                  :img="proposal.proposal_json.img"
+                  :category="proposal.proposal_json.category"
+                  :summary="proposal.proposal_json.summary"
+                  :budget="proposal.total_budget"
+                  :duration="proposal.duration"
+                  :payments="proposal.payments"
+                  :status-by-votes="proposal.statusByVotes"
+                  :votes="proposal.total_net_votes"
+                  :is-draft="proposal.isDraft"
+                />
+              </v-col>
+            </template>
+            <div v-else>
+              {{ $t('noDataTexts.nothingToDisplay') }}
+            </div>
+          </v-row>
         </div>
 
-        <v-divider class="my-12" />
-
-        <div>
-          <h2 class="font-weight-regular red--text mb-6">
+        <div class="mb-12">
+          <h2 class="fs-30 mb-12">
             {{ $t('common.notPassingProposals') }}
           </h2>
-          <template v-if="notPassingProposals && notPassingProposals.length !== 0">
-            <ProposalItem
-              v-for="(proposal, index) in notPassingProposals"
-              :key="index"
-              :proposal-name="proposal.proposal_name"
-              :title="proposal.title"
-              :proposer="proposal.proposer"
-              :available-budget="proposal.available_budget"
-              :img="proposal.proposal_json.img"
-              :category="proposal.proposal_json.category"
-              :summary="proposal.proposal_json.summary"
-              :budget="proposal.total_budget"
-              :duration="proposal.duration"
-              :payments="proposal.payments"
-              :status-by-votes="proposal.statusByVotes"
-              :votes="proposal.total_net_votes"
-              :is-draft="proposal.isDraft"
-            />
-          </template>
-          <div v-else>
-            {{ $t('noDataTexts.nothingToDisplay') }}
-          </div>
+          <v-row>
+            <template v-if="notPassingProposals && notPassingProposals.length !== 0">
+              <v-col
+                v-for="(proposal, index) in notPassingProposals"
+                :key="index"
+                md="6"
+              >
+                <ProposalItem
+                  :proposal-name="proposal.proposal_name"
+                  :title="proposal.title"
+                  :proposer="proposal.proposer"
+                  :available-budget="proposal.available_budget"
+                  :img="proposal.proposal_json.img"
+                  :category="proposal.proposal_json.category"
+                  :summary="proposal.proposal_json.summary"
+                  :budget="proposal.total_budget"
+                  :duration="proposal.duration"
+                  :payments="proposal.payments"
+                  :status-by-votes="proposal.statusByVotes"
+                  :votes="proposal.total_net_votes"
+                  :is-draft="proposal.isDraft"
+                />
+              </v-col>
+            </template>
+            <div v-else>
+              {{ $t('noDataTexts.nothingToDisplay') }}
+            </div>
+          </v-row>
         </div>
       </template>
 

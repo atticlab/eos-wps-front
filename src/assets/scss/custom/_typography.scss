@@ -1,3 +1,27 @@
+html,
+body,
+.v-application,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.v-application .display-1,
+.v-application .display-2,
+.v-application .title,
+.v-application > * {
+  font-family: $body-font-family;
+}
+
+html, body {
+  font-size: 14px;
+}
+
+.theme--light.v-application {
+  color: $black !important;
+}
+
 .cyan--darken-2--bold {
   font-weight: 700 !important;
   color: $cyan--darken-2 !important;
@@ -10,4 +34,20 @@
 
 .word-break {
   word-break: break-all;
+}
+
+.fs-13 {
+  font-size: 13px !important;
+}
+
+.fs-50 {
+  font-size: 50px !important;
+}
+
+.fs-30 {
+  font-size: 30px !important;
+}
+
+.text-transform-none {
+  text-transform: none !important;
 }

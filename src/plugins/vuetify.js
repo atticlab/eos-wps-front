@@ -14,10 +14,10 @@ export default new Vuetify({
   theme: {
     themes: {
       light: {
-        // primary: colors.indigo.darken4,
-        primary: '#192867',
-        // primary: '#3f51b5',
+        // primary: '#192867',
+        primary: '#309282',
         // secondary: '#2196f3',
+        secondary: '#2d2e2c',
         // accent: '#673ab7',
         // error: '#f44336',
         // warning: '#ff9800',
