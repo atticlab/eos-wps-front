@@ -95,6 +95,36 @@
             {{ $t('noDataTexts.nothingToDisplay') }}
           </div>
         </div>
+
+        <v-divider class="my-12" />
+
+        <div>
+          <h2 class="font-weight-regular warning--text mb-6">
+            {{ $t('common.overBudgetProposals') }}
+          </h2>
+          <template v-if="overBudgetProposals && overBudgetProposals.length !== 0">
+            <ProposalItem
+              v-for="(proposal, index) in overBudgetProposals"
+              :key="index"
+              :proposal-name="proposal.proposal_name"
+              :title="proposal.title"
+              :proposer="proposal.proposer"
+              :available-budget="proposal.available_budget"
+              :img="proposal.proposal_json.img"
+              :category="proposal.proposal_json.category"
+              :summary="proposal.proposal_json.summary"
+              :budget="proposal.total_budget"
+              :duration="proposal.duration"
+              :payments="proposal.payments"
+              :status-by-votes="proposal.statusByVotes"
+              :votes="proposal.total_net_votes"
+              :is-draft="proposal.isDraft"
+            />
+          </template>
+          <div v-else>
+            {{ $t('noDataTexts.nothingToDisplay') }}
+          </div>
+        </div>
       </template>
 
       <template v-else>
@@ -195,7 +225,11 @@
         //   return new Date(proposal1.created) - new Date(proposal2.created);
         // });
         proposalsWithStatuses
-          .sort((proposal1, proposal2) => proposal2.total_net_votes - proposal1.total_net_votes);
+          .sort((proposal1, proposal2) => {
+            if (proposal2.eligible < proposal1.eligible) return -1;
+            if (proposal2.eligible > proposal1.eligible) return 1;
+            return proposal2.total_net_votes - proposal1.total_net_votes;
+          });
 
         return this.defineAvailableBudget(
           proposalsWithStatuses,
@@ -206,13 +240,18 @@
         if (!this.proposalsFullInfo && this.proposalsFullInfo.length === 0) return [];
 
         return this.proposalsFullInfo.filter(proposal => proposal.statusByVotes
-          === this.$t('proposalStatuses.passing'));
+          === this.$t('proposalStatuses.passing') && Boolean(proposal.eligible));
       },
       notPassingProposals() {
         if (!this.proposalsFullInfo && this.proposalsFullInfo.length === 0) return [];
 
         return this.proposalsFullInfo.filter(proposal => proposal.statusByVotes
-          === this.$t('proposalStatuses.notPassing'));
+          === this.$t('proposalStatuses.notPassing') && Boolean(proposal.eligible));
+      },
+      overBudgetProposals() {
+        if (!this.proposalsFullInfo && this.proposalsFullInfo.length === 0) return [];
+
+        return this.proposalsFullInfo.filter(proposal => !proposal.eligible);
       },
       isAllDataLoading() {
         return this.isActiveProposalsLoading

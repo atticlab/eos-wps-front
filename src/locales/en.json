@@ -26,6 +26,7 @@
     "months": "month(s)",
     "passingProposals": "Passing proposals",
     "notPassingProposals": "Not passing proposals",
+    "overBudgetProposals": "Over the budget",
     "paymentsDuration": "Duration of payments",
     "yes": "Yes",
     "no": "No"
