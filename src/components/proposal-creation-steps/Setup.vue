@@ -4,7 +4,7 @@
       <div class="mb-4">
         <label
           for="proposalName"
-          class="title d-inline-flex mb-2 required"
+          class="body-1 font-weight-bold d-inline-flex required"
         >
           {{ $t('proposalCreationPage.proposalName') }}
         </label>
@@ -24,7 +24,7 @@
       <div class="mb-4">
         <label
           for="proposalTitle"
-          class="title d-inline-flex mb-2 required"
+          class="body-1 font-weight-bold d-inline-flex required"
         >
           {{ $t('proposalCreationPage.proposalTitle') }}
         </label>
@@ -43,7 +43,7 @@
       <div class="mb-4">
         <label
           for="proposalSummary"
-          class="title d-inline-flex mb-2 required"
+          class="body-1 font-weight-bold d-inline-flex required"
         >
           {{ $t('proposalCreationPage.proposalSummary') }}
         </label>
@@ -62,7 +62,7 @@
       <div class="mb-4">
         <label
           for="proposalCategory"
-          class="title d-inline-flex mb-2 required"
+          class="body-1 font-weight-bold d-inline-flex required"
         >
           {{ $t('proposalCreationPage.proposalCategory') }}
         </label>
@@ -93,18 +93,15 @@
       <div class="mb-4">
         <label
           for="proposalImage"
-          class="title d-block mb-2"
+          class="body-1 font-weight-bold d-block"
         >
           {{ $t('proposalCreationPage.heroImg') }}
-          <span class="d-block body-2 grey--text">
-            {{ $t('proposalCreationPage.attachImgUrl') }}
-          </span>
         </label>
         <v-text-field
           id="proposalImage"
           v-model="setupData.img"
           :error-messages="imgErrors"
-          :label="$t('proposalCreationPage.imgUrl')"
+          :label="$t('proposalCreationPage.attachImgUrl')"
           @input="validateSingleField('img')"
           @blur="validateSingleField('img')"
         />
@@ -113,31 +110,29 @@
       <div class="mb-4">
         <label
           for="proposalVideo"
-          class="title d-block mb-2"
+          class="body-1 font-weight-bold d-block"
         >
           {{ $t('proposalCreationPage.videoLink') }}
-          <span class="d-block body-2 grey--text">
-            {{ $t('proposalCreationPage.attachVideoUrl') }}
-          </span>
         </label>
         <v-text-field
           id="proposalVideo"
           v-model="setupData.video"
           :error-messages="videoErrors"
-          :label="$t('proposalCreationPage.videoUrl')"
+          :label="$t('proposalCreationPage.attachVideoUrl')"
           @input="validateSingleField('video')"
           @blur="validateSingleField('video')"
         />
       </div>
 
       <v-card
-        class="mb-12 border--grey pa-4"
+        class="mb-12"
+        flat
       >
         <div class="mb-6">
-          <h2 class="title mb-1">
+          <h2 class="body-1 font-weight-bold mb-1">
             {{ $t('proposalCreationPage.buildBudget') }}
           </h2>
-          <p class="orange--text">
+          <p class="accent--text font-weight-medium">
             {{ $t('proposalCreationPage.budgetEos') }}
           </p>
         </div>
@@ -157,7 +152,7 @@
         >
           <label
             for="monthlyBudget"
-            class="title d-block mb-2"
+            class="body-1 font-weight-bold d-block"
           >
             {{ $t('proposalCreationPage.monthlyEosBudget') }}
           </label>
@@ -199,7 +194,7 @@
           <!--      </div>-->
 
           <div class="mt-12">
-            <h2 class="title mb-6">
+            <h2 class="body-1 font-weight-bold mb-6">
               {{ $t('common.paymentsDuration') }}
             </h2>
 
@@ -229,7 +224,7 @@
           class="d-flex justify-end my-12"
         >
           <div class="pr-3">
-            <h2 class="title required">
+            <h2 class="body-1 font-weight-bold required">
               {{ $t('proposalCreationPage.monthlyEosBudget') }}
             </h2>
             <div
@@ -253,7 +248,7 @@
           class="d-flex justify-end my-12"
         >
           <div class="pr-3">
-            <h2 class="title required">
+            <h2 class="body-1 font-weight-bold required">
               {{ $t('proposalCreationPage.monthlyEosBudget') }}
             </h2>
             <div
@@ -274,24 +269,30 @@
       </v-card>
     </v-form>
 
-    <v-btn
-      v-if="!proposalId"
-      color="success"
-      class="mr-2"
-      :disabled="isCreateProposalDraftLoading"
-      @click="propose"
-    >
-      {{ $t('proposalCreationPage.continue') }}
-    </v-btn>
-    <v-btn
-      v-else
-      color="success"
-      class="mr-2"
-      :disabled="isModifyProposalDraftLoading"
-      @click="modify"
-    >
-      {{ $t('proposalCreationPage.continue') }}
-    </v-btn>
+    <div class="d-flex justify-center">
+      <v-btn
+        v-if="!proposalId"
+        color="primary"
+        :large="true"
+        class="fs-13 text-transform-none mr-2"
+        height="50"
+        :disabled="isCreateProposalDraftLoading"
+        @click="propose"
+      >
+        {{ $t('proposalCreationPage.continue') }}
+      </v-btn>
+      <v-btn
+        v-else
+        color="primary"
+        :large="true"
+        class="fs-13 text-transform-none mr-2"
+        height="50"
+        :disabled="isModifyProposalDraftLoading"
+        @click="modify"
+      >
+        {{ $t('proposalCreationPage.continue') }}
+      </v-btn>
+    </div>
   </div>
 </template>
 

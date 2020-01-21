@@ -148,6 +148,10 @@
               v-on="on"
             >
               {{ getAccountNameWithAuthority }}
+
+              <span class="icon-circle">
+                {{ getAccountNameWithAuthority.split('')[0] }}
+              </span>
             </v-btn>
           </template>
 
@@ -318,5 +322,19 @@
 
   .v-app-bar {
     border-bottom: 1px solid $grey-white !important;
+  }
+
+  .icon-circle {
+    background-color: $primary;
+    border-radius: 50%;
+    color: $white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 5px;
+    text-transform: uppercase;
+    font-weight: 500;
+    height: 34px;
+    width: 34px;
   }
 </style>

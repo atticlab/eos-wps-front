@@ -1,3 +1,7 @@
+.theme--light.v-stepper .v-stepper__step--active .v-stepper__label {
+  text-shadow: 0 0 0 $primary !important;
+}
+
 @media (max-width: 599px) {
   .v-stepper--alt-labels .v-stepper__step {
     flex-basis: 30px !important;

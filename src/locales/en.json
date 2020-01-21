@@ -4,6 +4,7 @@
     "signInWithScatter": "Sign in with Scatter",
     "signOut": "Sign out",
     "createProposal": "Create proposal",
+    "createProposalOnMainnet": "Create proposal EOS mainnet",
     "activeProposals": "Active proposals",
     "drafts": "Drafts",
     "requested": "Requested",
@@ -166,7 +167,7 @@
   "noDataTexts": {
     "noData": "No data",
     "noOverview": "No overview is provided",
-    "noDesc": "No description is provided",
+    "noSummary": "No summary is provided",
     "noBudgetItems": "No budget details are provided",
     "noTimeline": "No timeline milestones are provided",
     "noProposer": "Proposer is unknown",
