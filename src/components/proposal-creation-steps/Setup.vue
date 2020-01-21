@@ -301,13 +301,13 @@
     required, minLength, maxLength, helpers, numeric, minValue,
     maxValue, url, decimal,
   } from 'vuelidate/lib/validators';
+  import { mapState, mapActions } from 'vuex';
+  import ActionType from '@/store/constants';
   import BudgetTable from '@/components/BudgetTable.vue';
   import createProposalDraft from '@/mixins/createProposalDraft';
-  import getEosPrice from '@/mixins/getEosPrice';
   import isProposalExist from '@/mixins/isProposalExist';
   import modifyProposalDraft from '@/mixins/modifyProposalDraft';
   import notification from '@/mixins/notification';
-  import getSettings from '@/mixins/getSettings';
 
   export default {
     name: 'Setup',
@@ -317,11 +317,9 @@
     mixins: [
       validationMixin,
       createProposalDraft,
-      getEosPrice,
       isProposalExist,
       modifyProposalDraft,
       notification,
-      getSettings,
     ],
     validations: {
       setupData: {
@@ -395,6 +393,9 @@
       };
     },
     computed: {
+      ...mapState({
+        proposalsSettings: state => state.userService.proposalsSettings,
+      }),
       nameErrors() {
         const errors = [];
         if (!this.$v.setupData.proposal_name.$dirty) return errors;
@@ -557,7 +558,7 @@
       $route: {
         immediate: true,
         handler() {
-          this.$_getEosPrice();
+          this[ActionType.GET_EOS_PRICE]();
 
           if (this.proposalId) {
             this.proposal = this.$helpers.copyDeep(this.proposalInitial);
@@ -590,9 +591,13 @@
       },
     },
     created() {
-      this.$_getSettings();
+      this[ActionType.GET_SETTINGS]();
     },
     methods: {
+      ...mapActions('userService', [
+        ActionType.GET_SETTINGS,
+        ActionType.GET_EOS_PRICE,
+      ]),
       changeCurrentStep(val) {
         this.$emit('step', val);
       },

@@ -81,11 +81,12 @@
 </template>
 
 <script>
+  import { mapState, mapActions } from 'vuex';
+  import ActionType from '@/store/constants';
   import Setup from '@/components/proposal-creation-steps/Setup.vue';
   import Description from '@/components/proposal-creation-steps/Description.vue';
   import TimelineEditable from '@/components/proposal-creation-steps/TimelineEditable.vue';
   import proposalParsed from '@/mixins/proposalParsed';
-  import getDraftByProposalName from '@/mixins/getDraftByProposalName';
   import isProposalExist from '@/mixins/isProposalExist';
 
   export default {
@@ -95,7 +96,7 @@
       Description,
       TimelineEditable,
     },
-    mixins: [proposalParsed, getDraftByProposalName, isProposalExist],
+    mixins: [proposalParsed, isProposalExist],
     data() {
       return {
         currentStep: 1,
@@ -103,6 +104,10 @@
       };
     },
     computed: {
+      ...mapState({
+        isDraftProposalByProposalNameLoading: state => state
+          .userService.isDraftProposalByProposalNameLoading,
+      }),
       proposalId() {
         return this.$route.params.slug ? this.$route.params.slug : '';
       },
@@ -136,7 +141,7 @@
             return;
           }
 
-          this.$_getDraftProposalByProposalName(this.proposalId);
+          this[ActionType.GET_DRAFT_BY_PROPOSAL_NAME](this.proposalId);
         },
       },
       async currentStep() {
@@ -146,7 +151,7 @@
           return;
         }
 
-        this.$_getDraftProposalByProposalName(this.proposalId);
+        this[ActionType.GET_DRAFT_BY_PROPOSAL_NAME](this.proposalId);
       },
       async isDraftModified() {
         if (!this.proposalId) return;
@@ -155,10 +160,13 @@
           return;
         }
 
-        this.$_getDraftProposalByProposalName(this.proposalId);
+        this[ActionType.GET_DRAFT_BY_PROPOSAL_NAME](this.proposalId);
       },
     },
     methods: {
+      ...mapActions('userService', [
+        ActionType.GET_DRAFT_BY_PROPOSAL_NAME,
+      ]),
       setCurrentStep(stepNumber) {
         this.currentStep = stepNumber;
       },

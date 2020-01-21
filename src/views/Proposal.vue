@@ -273,7 +273,8 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
+  import { mapState, mapActions } from 'vuex';
+  import ActionType from '@/store/constants';
   import Overview from '@/components/proposal-tabs/Overview.vue';
   import BudgetOverview from '@/components/proposal-tabs/BudgetOverview.vue';
   import TimelineOverview from '@/components/proposal-tabs/TimelineOverview.vue';
@@ -284,12 +285,7 @@
   import refund from '@/mixins/refund';
   import activateProposal from '@/mixins/activateProposal';
   import cancelProposalDraft from '@/mixins/cancelProposalDraft';
-  import getDraftByProposalName from '@/mixins/getDraftByProposalName';
   import isProposalExist from '@/mixins/isProposalExist';
-  import getActiveProposalByProposalName from '@/mixins/getActiveProposalByProposalName';
-  import getState from '@/mixins/getState';
-  import getVotesByProposalName from '@/mixins/getVotesByProposalName';
-  import getDeposit from '@/mixins/getDeposit';
   import notification from '@/mixins/notification';
 
   export default {
@@ -307,18 +303,12 @@
       refund,
       activateProposal,
       cancelProposalDraft,
-      getDraftByProposalName,
       isProposalExist,
-      getActiveProposalByProposalName,
-      getState,
-      getVotesByProposalName,
-      getDeposit,
       notification,
     ],
     data() {
       return {
         proposalId: this.$route.params.slug,
-        proposal: {},
         activationDialog: false,
         isDataLoading: true,
       };
@@ -326,6 +316,7 @@
     computed: {
       ...mapState({
         isBp: state => state.userService.isBp,
+        proposal: state => state.userService.proposal,
       }),
       isDraft() {
         return this.$route.path.includes('draft');
@@ -359,17 +350,16 @@
             }
 
             if (this.isDraft) {
-              await this.$_getState();
-              await this.$_getDeposit();
-              this.$_getDraftProposalByProposalName(this.proposalId);
+              await this[ActionType.GET_STATE]();
+              await this[ActionType.GET_DEPOSIT]();
+              this[ActionType.GET_DRAFT_BY_PROPOSAL_NAME](this.proposalId);
             } else {
-              this.$_getActiveProposalByProposalName(this.proposalId);
+              this[ActionType.GET_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME](this.proposalId);
             }
-
             // get votes
-            await this.$_getVotesByProposalName(this.proposalId);
+            await this[ActionType.GET_VOTES_BY_PROPOSAL_NAME](this.proposalId);
           } catch (error) {
-            // No catch
+            console.error('Error', error);
           } finally {
             this.isDataLoading = false;
           }
@@ -377,6 +367,13 @@
       },
     },
     methods: {
+      ...mapActions('userService', [
+        ActionType.GET_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME,
+        ActionType.GET_DEPOSIT,
+        ActionType.GET_STATE,
+        ActionType.GET_VOTES_BY_PROPOSAL_NAME,
+        ActionType.GET_DRAFT_BY_PROPOSAL_NAME,
+      ]),
       async transfer() {
         try {
           await this.$_sendDeposit();

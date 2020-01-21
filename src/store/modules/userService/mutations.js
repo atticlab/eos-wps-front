@@ -22,4 +22,67 @@ export default {
   [ActionType.SET_SCATTER]: (state, data) => {
     state.scatter = data;
   },
+
+  [ActionType.GET_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME]: (state, data) => {
+    state.proposal = data;
+  },
+  [ActionType.GET_ACTIVE_PROPOSALS]: (state, data) => {
+    state.proposals = data;
+  },
+  [ActionType.GET_DEPOSIT]: (state, data) => {
+    state.proposalDeposit = data;
+  },
+  [ActionType.GET_DRAFT_BY_PROPOSAL_NAME]: (state, data) => {
+    state.proposal = data;
+  },
+  [ActionType.GET_DRAFTS_BY_ACCOUNT_NAME]: (state, data) => {
+    state.proposals = data;
+  },
+  [ActionType.GET_EOS_PRICE]: (state, data) => {
+    state.eosPrice = data;
+  },
+  [ActionType.GET_SETTINGS]: (state, data) => {
+    state.proposalsSettings = data;
+  },
+  [ActionType.GET_STATE]: (state, data) => {
+    state.proposalState = data;
+  },
+  [ActionType.GET_VOTES]: (state, data) => {
+    state.proposalsVotes = data;
+  },
+  [ActionType.GET_VOTES_BY_PROPOSAL_NAME]: (state, data) => {
+    state.votesByProposalName = data;
+  },
+
+  // flags
+  [ActionType.SET_IS_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME_LOADING]: (state, data) => {
+    state.isActiveProposalByProposalNameLoading = data;
+  },
+  [ActionType.SET_IS_ACTIVE_PROPOSALS_LOADING]: (state, data) => {
+    state.isActiveProposalsLoading = data;
+  },
+  [ActionType.SET_IS_DEPOSITS_LOADING]: (state, data) => {
+    state.isDepositsLoading = data;
+  },
+  [ActionType.SET_IS_DRAFT_PROPOSAL_BY_PROPOSAL_NAME_LOADING]: (state, data) => {
+    state.isDraftProposalByProposalNameLoading = data;
+  },
+  [ActionType.SET_IS_DRAFTS_BY_ACCOUNT_NAME_LOADING]: (state, data) => {
+    state.isDraftProposalByAccountNameLoading = data;
+  },
+  [ActionType.SET_IS_EOSPRICE_LOADING]: (state, data) => {
+    state.isEosPriceLoading = data;
+  },
+  [ActionType.SET_IS_SETTINGS_LOADING]: (state, data) => {
+    state.isSettingsLoading = data;
+  },
+  [ActionType.SET_IS_STATE_LOADING]: (state, data) => {
+    state.isStateLoading = data;
+  },
+  [ActionType.SET_IS_VOTES_LOADING]: (state, data) => {
+    state.isVotesLoading = data;
+  },
+  [ActionType.SET_IS_PROPOSAL_VOTES_LOADING]: (state, data) => {
+    state.isProposalVotesLoading = data;
+  },
 };

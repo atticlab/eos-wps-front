@@ -42,7 +42,7 @@ export default {
         );
         return response.transaction_id;
       } catch (e) {
-        console.error('$_createProposal', e);
+        console.error('$_createProposalDraft', e);
         this.$errorsHandler.handleError(e);
         return null;
       } finally {

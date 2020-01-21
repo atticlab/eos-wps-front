@@ -126,23 +126,15 @@
 </template>
 
 <script>
+  import { mapState, mapActions } from 'vuex';
   import ProposalItem from '@/components/ProposalItem.vue';
-  import getActiveProposals from '@/mixins/getActiveProposals';
-  import getDraftsByAccountName from '@/mixins/getDraftsByAccountName';
-  import getVotes from '@/mixins/getVotes';
-  import getSettings from '@/mixins/getSettings';
+  import ActionType from '@/store/constants';
 
   export default {
     name: 'Proposals',
     components: {
       ProposalItem,
     },
-    mixins: [
-      getActiveProposals,
-      getDraftsByAccountName,
-      getVotes,
-      getSettings,
-    ],
     data() {
       return {
         sortByOptions: [
@@ -155,6 +147,14 @@
       };
     },
     computed: {
+      ...mapState({
+        proposals: state => state.userService.proposals,
+        isActiveProposalsLoading: state => state.userService.isActiveProposalsLoading,
+        isSettingsLoading: state => state.userService.isSettingsLoading,
+        proposalsSettings: state => state.userService.proposalsSettings,
+        isDraftProposalByAccountNameLoading: state => state
+          .userService.isDraftProposalByAccountNameLoading,
+      }),
       isDrafts() {
         return this.$route.path.includes('drafts');
       },
@@ -227,16 +227,20 @@
           // Request either active proposals or drafts
           this.proposalsType = this.getLastPartOfRoute(val.path);
           if (this.proposalsType === 'active') {
-            // this.$_getVotes();
-            this.$_getSettings();
-            this.$_getActiveProposals();
+            this[ActionType.GET_SETTINGS]();
+            this[ActionType.GET_ACTIVE_PROPOSALS]();
           } else {
-            this.$_getDraftProposalByAccountName();
+            this[ActionType.GET_DRAFTS_BY_ACCOUNT_NAME]();
           }
         },
       },
     },
     methods: {
+      ...mapActions('userService', [
+        ActionType.GET_ACTIVE_PROPOSALS,
+        ActionType.GET_SETTINGS,
+        ActionType.GET_DRAFTS_BY_ACCOUNT_NAME,
+      ]),
       getLastPartOfRoute(path) {
         const pathItems = path.split('/');
         return pathItems[pathItems.length - 1];

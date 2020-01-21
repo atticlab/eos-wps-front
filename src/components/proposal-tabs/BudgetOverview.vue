@@ -91,15 +91,15 @@
 </template>
 
 <script>
+  import { mapState, mapActions } from 'vuex';
   import BudgetTable from '@/components/BudgetTable.vue';
-  import getEosPrice from '@/mixins/getEosPrice';
+  import ActionType from '@/store/constants';
 
   export default {
     name: 'BudgetOverview',
     components: {
       BudgetTable,
     },
-    mixins: [getEosPrice],
     props: {
       monthlyBudget: {
         type: String,
@@ -124,8 +124,18 @@
         },
       },
     },
+    computed: {
+      ...mapState({
+        eosPrice: state => state.userService.eosPrice,
+      }),
+    },
     mounted() {
-      this.$_getEosPrice();
+      this[ActionType.GET_EOS_PRICE]();
+    },
+    methods: {
+      ...mapActions('userService', [
+        ActionType.GET_EOS_PRICE,
+      ]),
     },
   };
 </script>

@@ -20,7 +20,6 @@ const independentEosCalls = {
       reverse: false,
       show_payer: false,
     };
-
     return independentEosApi.getTableRows(reqObj);
   },
 };
