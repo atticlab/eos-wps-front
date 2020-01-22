@@ -54,7 +54,7 @@ export default {
     if (state.scatter && state.scatter.logout) {
       state.scatter.logout();
     }
-    commit(ActionType.SET_EOS, null);
+    // commit(ActionType.SET_EOS, null);
     commit(ActionType.SET_EOS_ACCOUNT, null);
     commit(ActionType.SET_IS_BP, false);
     dispatch(ActionType.DEFINE_ROUTE_TO, null);
