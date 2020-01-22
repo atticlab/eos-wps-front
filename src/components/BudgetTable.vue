@@ -3,7 +3,6 @@
     :headers="budgetHeaders"
     :items="budgetData"
     :hide-default-footer="true"
-    class="table"
     :items-per-page="$constants.MAX_TABLE_ITEMS"
   >
     <template v-slot:top>
@@ -19,9 +18,9 @@
           <template v-slot:activator="{ on }">
             <v-btn
               v-if="budgetData.length < $constants.MAX_TABLE_ITEMS"
-              color="primary"
-              dark
-              class="ml-auto mb-2"
+              class="btn--alt text-transform-none fs-13 font-weight-bold ml-auto mb-2"
+              :elevation="0"
+              :light="true"
               v-on="on"
             >
               {{ $t('proposalCreationPage.addNewItem') }}
@@ -178,31 +177,33 @@
       </v-toolbar>
     </template>
     <template v-slot:item.title="{ item }">
-      <span class="body-1">
+      <span class="body-1 font-weight-semi-bold">
         {{ item.title }}
       </span>
     </template>
     <template v-slot:item.cost="{ item }">
-      <span class="body-1">
+      <span class="body-1 font-weight-semi-bold">
         {{ `$${item.cost}` }}
       </span>
     </template>
     <template v-slot:item.amount="{ item }">
-      <span class="body-1">
+      <span class="body-1 font-weight-semi-bold">
         {{ item.amount }}
       </span>
     </template>
     <template v-slot:item.unit="{ item }">
-      <span class="body-1">
+      <span class="body-1 font-weight-semi-bold">
         {{ item.unit }}
       </span>
     </template>
     <template v-slot:item.subtotal="{ item }">
-      <div class="body-1">
-        {{ `$${item.subtotal}` }}
-      </div>
-      <div class="body-2 font-weight-bold indigo--text">
-        {{ `${(item.subtotal / eosPrice).toFixed($constants.EOS_MAX_DIGITS)} EOS` }}
+      <div class="body-1 font-weight-semi-bold">
+        <div class="mb-1">
+          {{ `$${item.subtotal}` }}
+        </div>
+        <div class="primary--text">
+          {{ `${(item.subtotal / eosPrice).toFixed($constants.EOS_MAX_DIGITS)} EOS` }}
+        </div>
       </div>
     </template>
     <template
@@ -235,19 +236,21 @@
     </template>
     <template v-slot:footer>
       <div class="d-flex d-sm-none justify-space-between pa-4">
-        <div class="title">
-          <div>
+        <div class="body-1 font-weight-bold">
+          <div class="mb-1">
             {{ $t('proposalPage.total') }}:
           </div>
-          <div class="body-1 font-weight-bold indigo--text">
+          <div class="body-2 font-weight-medium accent--text">
             {{ $t('proposalPage.eosConversionRate') }}:
             {{ `$${eosPrice}` }}
           </div>
         </div>
 
-        <div class="title">
-          <div>{{ `$${totalBudget}` }}</div>
-          <div class="font-weight-bold indigo--text">
+        <div class="body-1 font-weight-semi-bold">
+          <div class="mb-1">
+            {{ `$${totalBudget}` }}
+          </div>
+          <div class="body-2 font-weight-medium accent--text">
             {{ `${(totalBudgetEos).toFixed($constants.EOS_MAX_DIGITS)} EOS` }}
           </div>
         </div>
@@ -256,11 +259,11 @@
 
     <template v-slot:body.append>
       <tr class="d-none d-sm-table-row">
-        <td class="title">
-          <div>
+        <td class="body-1 font-weight-bold">
+          <div class="mb-1">
             {{ $t('proposalPage.total') }}:
           </div>
-          <div class="body-1 font-weight-bold indigo--text">
+          <div class="body-2 font-weight-medium accent--text">
             {{ $t('proposalPage.eosConversionRate') }}:
             {{ `$${eosPrice}` }}
           </div>
@@ -268,9 +271,11 @@
         <td />
         <td />
         <td />
-        <td class="title">
-          <div>{{ `$${totalBudget}` }}</div>
-          <div class="font-weight-bold indigo--text">
+        <td class="body-1 font-weight-semi-bold">
+          <div class="mb-1">
+            {{ `$${totalBudget}` }}
+          </div>
+          <div class="body-2 font-weight-medium accent--text">
             {{ `${(totalBudgetEos).toFixed($constants.EOS_MAX_DIGITS)} EOS` }}
           </div>
         </td>

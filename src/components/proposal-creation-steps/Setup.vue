@@ -223,14 +223,14 @@
           v-if="!isExistingProposalWithoutBudgets"
           class="d-flex justify-end my-12"
         >
-          <div class="pr-3">
-            <h2 class="body-1 font-weight-bold required">
-              {{ $t('proposalCreationPage.monthlyEosBudget') }}
+          <div class="pr-3 d-flex flex-wrap">
+            <h2 class="body-1 font-weight-bold required mr-5">
+              {{ $t('proposalCreationPage.monthlyEosBudget') }}:
             </h2>
             <div
               :class="{
-                'font-weight-bold title': true,
-                'green--text': monthlyBudget
+                'font-weight-bold body-2': true,
+                'primary--text': monthlyBudget
                   ? monthlyBudget.split(' ')[0] >= 100
                   : false,
                 'red--text text-underline': monthlyBudget
@@ -247,14 +247,14 @@
           v-else
           class="d-flex justify-end my-12"
         >
-          <div class="pr-3">
-            <h2 class="body-1 font-weight-bold required">
+          <div class="pr-3 d-flex flex-wrap">
+            <h2 class="body-1 font-weight-bold required mr-5">
               {{ $t('proposalCreationPage.monthlyEosBudget') }}
             </h2>
             <div
               :class="{
-                'font-weight-bold title': true,
-                'green--text': monthlyBudgetAltEos
+                'font-weight-bold body-2': true,
+                'primary--text': monthlyBudgetAltEos
                   ? monthlyBudgetAltEos.split(' ')[0] >= 100
                   : false,
                 'red--text text-underline': monthlyBudgetAltEos
