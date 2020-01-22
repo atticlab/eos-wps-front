@@ -16,6 +16,8 @@
       <!--      :alt-labels="true"-->
       <v-stepper
         v-model="currentStep"
+        flat
+        :elevation="0"
       >
         <v-stepper-header
           class="justify-center font-weight-bold"
@@ -65,14 +67,20 @@
         </div>
 
         <v-stepper-items v-show="!isDraftProposalByProposalNameLoading">
-          <v-stepper-content step="1">
+          <v-stepper-content
+            step="1"
+            class="pb-12"
+          >
             <Setup
               :proposal-initial="$_proposalParsed"
               @step="setCurrentStep"
             />
           </v-stepper-content>
 
-          <v-stepper-content step="2">
+          <v-stepper-content
+            step="2"
+            class="pb-12"
+          >
             <Description
               :proposal-initial="$_proposalParsed"
               @step="setCurrentStep"
@@ -80,7 +88,10 @@
             />
           </v-stepper-content>
 
-          <v-stepper-content step="3">
+          <v-stepper-content
+            step="3"
+            class="pb-12"
+          >
             <TimelineEditable
               :proposal-initial="$_proposalParsed"
               @is-draft-modified="setIsDraftModified"

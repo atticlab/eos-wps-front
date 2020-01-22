@@ -1,3 +1,5 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import '@fortawesome/fontawesome-free/css/all.css'; // Ensure you are using css-loader
 import Vue from 'vue';
 import Vuetify, {
  VIcon, VBtn, VSlider, VSpacer,
@@ -11,9 +13,6 @@ Vue.use(Vuetify, {
 });
 
 export default new Vuetify({
-  icons: {
-    iconfont: 'fa',
-  },
   theme: {
     themes: {
       light: {

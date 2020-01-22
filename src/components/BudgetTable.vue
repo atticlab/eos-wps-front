@@ -20,7 +20,6 @@
               v-if="budgetData.length < $constants.MAX_TABLE_ITEMS"
               class="btn--alt text-transform-none fs-13 font-weight-bold ml-auto mb-2"
               :elevation="0"
-              :light="true"
               v-on="on"
             >
               {{ $t('proposalCreationPage.addNewItem') }}
@@ -29,7 +28,7 @@
           <v-card>
             <!--            <form @submit.prevent="save">-->
             <v-card-title>
-              <span class="headline">{{ formTitle }}</span>
+              <span class="font-weight-bold">{{ formTitle }}</span>
             </v-card-title>
 
             <v-card-text>
@@ -119,19 +118,19 @@
             <v-card-actions>
               <v-spacer />
               <v-btn
-                color="error"
-                text
-                @click="closeDialogEdit"
-              >
-                {{ $t('proposalCreationPage.cancel') }}
-              </v-btn>
-              <v-btn
-                color="success"
-                text
+                class="text-transform-none fs-13 font-weight-bold"
+                color="primary"
                 type="submit"
                 @click="save"
               >
                 {{ $t('proposalCreationPage.save') }}
+              </v-btn>
+              <v-btn
+                class="text-transform-none fs-13 font-weight-bold"
+                color="error"
+                @click="closeDialogEdit"
+              >
+                {{ $t('proposalCreationPage.cancel') }}
               </v-btn>
             </v-card-actions>
             <!--            </form>-->
@@ -144,13 +143,13 @@
         >
           <v-card>
             <v-card-title>
-              <span class="headline">
+              <span class="font-weight-bold">
                 {{ $t('proposalCreationPage.deleteItem') }}
               </span>
             </v-card-title>
 
             <v-card-text>
-              <p>
+              <p class="font-weight-medium">
                 {{ $t('proposalCreationPage.deleteConfirm') }}
               </p>
             </v-card-text>
@@ -158,18 +157,18 @@
             <v-card-actions>
               <v-spacer />
               <v-btn
+                class="text-transform-none fs-13 font-weight-bold"
                 color="error"
-                text
-                @click="closeDialogDelete"
-              >
-                {{ $t('proposalCreationPage.cancel') }}
-              </v-btn>
-              <v-btn
-                color="error"
-                text
                 @click="deleteItem"
               >
                 {{ $t('proposalCreationPage.delete') }}
+              </v-btn>
+              <v-btn
+                class="text-transform-none fs-13 font-weight-bold"
+                color="error"
+                @click="closeDialogDelete"
+              >
+                {{ $t('proposalCreationPage.cancel') }}
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -210,27 +209,25 @@
       v-slot:item.action="{ item }"
     >
       <v-btn
-        text
         icon
         color="primary"
       >
         <v-icon
-          small
+          :size="18"
           @click="editItem(item)"
         >
-          mdi-pencil
+          fas fa-edit
         </v-icon>
       </v-btn>
       <v-btn
-        text
         icon
         color="error"
       >
         <v-icon
-          small
+          :size="18"
           @click="openDeleteDialog(item)"
         >
-          mdi-delete
+          far fa-trash-alt
         </v-icon>
       </v-btn>
     </template>

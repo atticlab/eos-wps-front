@@ -111,8 +111,6 @@
 </template>
 
 <script>
-  import Vue from 'vue';
-
   export default {
     name: 'ProposalItem',
     props: {
@@ -127,7 +125,9 @@
       },
       img: {
         type: String,
-        default: Vue.prototype.$constants.PROPOSAL_IMAGE_STUB_URL,
+        default() {
+          return this.$constants.PROPOSAL_IMAGE_STUB_URL;
+        },
       },
       availableBudget: {
         type: String,

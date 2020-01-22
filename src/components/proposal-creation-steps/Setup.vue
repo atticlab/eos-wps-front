@@ -711,8 +711,17 @@
         const proposalAdditionalInfo = this.$helpers.copyDeep(this.proposal.proposal_json);
         proposalAdditionalInfo.summary = this.setupData.summary;
         proposalAdditionalInfo.category = this.setupData.category;
-        proposalAdditionalInfo.img = this.setupData.img;
-        proposalAdditionalInfo.video = this.setupData.video;
+
+        if (this.setupData.img || !!this.setupData.img !== !!proposalAdditionalInfo.img) {
+          proposalAdditionalInfo.img = this.setupData.img;
+        } else {
+          delete proposalAdditionalInfo.img;
+        }
+        if (this.setupData.video || !!this.setupData.video !== !!proposalAdditionalInfo.video) {
+          proposalAdditionalInfo.video = this.setupData.video;
+        } else {
+          delete proposalAdditionalInfo.video;
+        }
 
         const proposalAdditionalInfoRestructured = this.$helpers
           .restructureProposalAdditionalInfo(proposalAdditionalInfo);
