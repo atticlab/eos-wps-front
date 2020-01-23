@@ -8,10 +8,13 @@
       <v-list dense>
         <v-list-item button>
           <v-list-item-content>
-            <v-list-item-title>
+            <v-list-item-title class="text-center">
               <v-btn
                 v-if="!getAccountNameWithAuthority"
+                large
+                height="50"
                 color="primary"
+                class="text-transform-none fs-13 font-weight-bold"
                 :disabled="isScatterLoginLoading"
                 @click="SCATTER_LOGIN"
               >
@@ -23,10 +26,24 @@
               >
                 <template v-slot:activator="{ on }">
                   <v-btn
-                    color="primary"
+                    text
+                    large
+                    class="font-weight-bold fs-13 text-transform-none"
                     v-on="on"
                   >
+                    <v-icon
+                      size="12"
+                      left
+                      class="mt-1"
+                    >
+                      fas fa-chevron-down
+                    </v-icon>
+
                     {{ getAccountNameWithAuthority }}
+
+                    <span class="icon-circle">
+                      {{ getAccountNameWithAuthority.split('')[0] }}
+                    </span>
                   </v-btn>
                 </template>
 
@@ -128,17 +145,8 @@
 
         <v-divider vertical />
 
-        <v-btn
-          v-if="!getAccountNameWithAuthority"
-          text
-          class="font-weight-bold fs-13 text-transform-none"
-          :disabled="isScatterLoginLoading"
-          @click="SCATTER_LOGIN"
-        >
-          {{ $t('common.signInWithScatter') }}
-        </v-btn>
         <v-menu
-          v-else
+          v-if="getAccountNameWithAuthority"
           offset-y
         >
           <template v-slot:activator="{ on }">
@@ -147,6 +155,14 @@
               class="font-weight-bold fs-13 text-transform-none"
               v-on="on"
             >
+              <v-icon
+                size="12"
+                left
+                class="mt-1"
+              >
+                fas fa-chevron-down
+              </v-icon>
+
               {{ getAccountNameWithAuthority }}
 
               <span class="icon-circle">
@@ -168,7 +184,19 @@
       </v-toolbar-items>
 
       <v-btn
-        v-if="getAccountNameWithAuthority"
+        v-if="!getAccountNameWithAuthority"
+        color="primary"
+        class="ml-4 font-weight-bold fs-13 text-transform-none"
+        :disabled="isScatterLoginLoading"
+        :large="true"
+        height="50"
+        @click="SCATTER_LOGIN"
+      >
+        {{ $t('common.signInWithScatter') }}
+      </v-btn>
+
+      <v-btn
+        v-else
         :to="{ name: 'Proposal editor' }"
         color="primary"
         class="d-none d-md-flex font-weight-bold fs-13 text-transform-none"

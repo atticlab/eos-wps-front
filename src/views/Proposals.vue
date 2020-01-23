@@ -160,6 +160,8 @@
               class="mb-4"
               :elevation="0"
               :large="true"
+              height="68"
+              width="68"
               :to="{ name: 'Proposal editor' }"
             >
               <v-icon
