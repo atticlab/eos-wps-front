@@ -23,7 +23,7 @@
         color="primary"
         large
         height="50"
-        class="text-transform-none fs-13 font-weight-bold"
+        class="text-transform-none"
         :disabled="isModifyProposalDraftLoading"
         @click="modify"
       >

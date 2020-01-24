@@ -171,7 +171,7 @@
                 mdi-plus
               </v-icon>
             </v-btn>
-            <div class="font-weight-bold fs-13">
+            <div class="font-weight-bold">
               {{ $t('common.createProposal') }}
             </div>
           </div>

@@ -28,7 +28,7 @@
               <template v-slot:activator="{ on }">
                 <v-btn
                   v-if="milestones.length < $constants.MAX_TABLE_ITEMS"
-                  class="btn--alt text-transform-none fs-13 font-weight-bold ml-auto mb-2"
+                  class="btn--alt text-transform-none font-weight-bold ml-auto mb-2"
                   :elevation="0"
                   v-on="on"
                 >
@@ -169,14 +169,14 @@
                   <v-spacer />
                   <v-btn
                     color="primary"
-                    class="text-transform-none fs-13 font-weight-bold"
+                    class="text-transform-none"
                     @click="save"
                   >
                     {{ $t('proposalCreationPage.save') }}
                   </v-btn>
                   <v-btn
                     color="error"
-                    class="text-transform-none fs-13 font-weight-bold"
+                    class="text-transform-none"
                     @click="closeDialogEdit"
                   >
                     {{ $t('proposalCreationPage.cancel') }}
@@ -206,14 +206,14 @@
                   <v-spacer />
                   <v-btn
                     color="error"
-                    class="text-transform-none fs-13 font-weight-bold"
+                    class="text-transform-none"
                     @click="deleteItem"
                   >
                     {{ $t('proposalCreationPage.delete') }}
                   </v-btn>
                   <v-btn
                     color="error"
-                    class="text-transform-none fs-13 font-weight-bold"
+                    class="text-transform-none"
                     @click="closeDialogDelete"
                   >
                     {{ $t('proposalCreationPage.cancel') }}
@@ -272,7 +272,7 @@
 
     <div class="d-flex justify-center">
       <v-btn
-        class="text-transform-none fs-13 font-weight-bold"
+        class="text-transform-none"
         color="primary"
         large
         height="50"

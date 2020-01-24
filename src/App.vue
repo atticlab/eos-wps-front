@@ -14,7 +14,7 @@
                 large
                 height="50"
                 color="primary"
-                class="text-transform-none fs-13 font-weight-bold"
+                class="text-transform-none"
                 :disabled="isScatterLoginLoading"
                 @click="SCATTER_LOGIN"
               >
@@ -28,7 +28,7 @@
                   <v-btn
                     text
                     large
-                    class="font-weight-bold fs-13 text-transform-none"
+                    class="font-weight-bold text-transform-none"
                     v-on="on"
                   >
                     <v-icon
@@ -127,7 +127,7 @@
         <v-btn
           text
           :to="{ name: 'ProposalsActive' }"
-          class="font-weight-bold fs-13 text-transform-none"
+          class="font-weight-bold text-transform-none"
         >
           {{ $t('common.activeProposals') }}
         </v-btn>
@@ -138,7 +138,7 @@
             && proposals.length !== 0"
           text
           :to="{ name: 'ProposalsDrafts' }"
-          class="font-weight-bold fs-13 text-transform-none"
+          class="font-weight-bold text-transform-none"
         >
           {{ $t('common.drafts') }}
         </v-btn>
@@ -152,7 +152,7 @@
           <template v-slot:activator="{ on }">
             <v-btn
               text
-              class="font-weight-bold fs-13 text-transform-none"
+              class="font-weight-bold text-transform-none"
               v-on="on"
             >
               <v-icon
@@ -175,7 +175,7 @@
             <v-list-item
               @click="SCATTER_LOGOUT($route.name)"
             >
-              <v-list-item-title class="fs-13 font-weight-medium">
+              <v-list-item-title class="font-weight-medium">
                 {{ $t('common.signOut') }}
               </v-list-item-title>
             </v-list-item>
@@ -186,7 +186,7 @@
       <v-btn
         v-if="!getAccountNameWithAuthority"
         color="primary"
-        class="ml-4 font-weight-bold fs-13 text-transform-none"
+        class="ml-4 text-transform-none"
         :disabled="isScatterLoginLoading"
         :large="true"
         height="50"
@@ -199,7 +199,7 @@
         v-else
         :to="{ name: 'Proposal editor' }"
         color="primary"
-        class="d-none d-md-flex font-weight-bold fs-13 text-transform-none"
+        class="d-none d-md-flex text-transform-none"
         :large="true"
         height="50"
       >

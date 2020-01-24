@@ -18,7 +18,7 @@
           <template v-slot:activator="{ on }">
             <v-btn
               v-if="budgetData.length < $constants.MAX_TABLE_ITEMS"
-              class="btn--alt text-transform-none fs-13 font-weight-bold ml-auto mb-2"
+              class="btn--alt text-transform-none font-weight-bold ml-auto mb-2"
               :elevation="0"
               v-on="on"
             >
@@ -118,7 +118,7 @@
             <v-card-actions>
               <v-spacer />
               <v-btn
-                class="text-transform-none fs-13 font-weight-bold"
+                class="text-transform-none"
                 color="primary"
                 type="submit"
                 @click="save"
@@ -126,7 +126,7 @@
                 {{ $t('proposalCreationPage.save') }}
               </v-btn>
               <v-btn
-                class="text-transform-none fs-13 font-weight-bold"
+                class="text-transform-none"
                 color="error"
                 @click="closeDialogEdit"
               >
@@ -157,14 +157,14 @@
             <v-card-actions>
               <v-spacer />
               <v-btn
-                class="text-transform-none fs-13 font-weight-bold"
+                class="text-transform-none"
                 color="error"
                 @click="deleteItem"
               >
                 {{ $t('proposalCreationPage.delete') }}
               </v-btn>
               <v-btn
-                class="text-transform-none fs-13 font-weight-bold"
+                class="text-transform-none"
                 color="error"
                 @click="closeDialogDelete"
               >

@@ -274,7 +274,7 @@
         v-if="!proposalId"
         color="primary"
         :large="true"
-        class="fs-13 text-transform-none mr-2"
+        class="text-transform-none mr-2"
         height="50"
         :disabled="isCreateProposalDraftLoading"
         @click="propose"
@@ -285,7 +285,7 @@
         v-else
         color="primary"
         :large="true"
-        class="fs-13 text-transform-none mr-2"
+        class="text-transform-none mr-2"
         height="50"
         :disabled="isModifyProposalDraftLoading"
         @click="modify"
