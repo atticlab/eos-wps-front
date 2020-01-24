@@ -25,8 +25,8 @@
     "start": "Start",
     "end": "End",
     "months": "month(s)",
-    "passingProposals": "Passing proposals",
-    "notPassingProposals": "Not passing proposals",
+    "paidProposals": "Paid proposals",
+    "unpaidProposals": "Unpaid proposals",
     "paymentsDuration": "Duration of payments",
     "yes": "Yes",
     "no": "No"
@@ -35,7 +35,8 @@
     "availableBudget": "Available budget",
     "status": "Status",
     "passing": "Passing",
-    "insufficientVotes": "Insufficient votes"
+    "insufficientVotes": "Insufficient votes",
+    "insufficientBudget": "Insufficient budget"
   },
   "proposalPage": {
     "proposedBy": "Proposed by",
@@ -161,8 +162,8 @@
     "mustLogin": "You should log in"
   },
   "proposalStatuses": {
-    "passing": "Passing",
-    "notPassing": "Not passing"
+    "paid": "Paid",
+    "unpaid": "Unpaid"
   },
   "noDataTexts": {
     "noData": "No data",

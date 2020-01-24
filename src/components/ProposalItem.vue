@@ -52,8 +52,8 @@
                 {{ $t('proposalItem.status') }}:
                 <span
                   :class="{'text-capitalize': true,
-                           'red--text': statusByVotes === $t('proposalStatuses.notPassing'),
-                           'primary--text': statusByVotes === $t('proposalStatuses.passing')
+                           'red--text': statusByVotes === $t('proposalStatuses.unpaid'),
+                           'primary--text': statusByVotes === $t('proposalStatuses.paid')
                   }"
                 >
                   {{ statusByVotes }}
