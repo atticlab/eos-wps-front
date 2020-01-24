@@ -52,8 +52,8 @@
                 </div>
                 <div
                   :class="{'font-weight-bold text-capitalize': true,
-                           'red--text': statusByVotes === $t('proposalStatuses.notPassing'),
-                           'green--text': statusByVotes === $t('proposalStatuses.passing')
+                           'red--text': statusByVotes === $t('proposalStatuses.unpaid'),
+                           'green--text': statusByVotes === $t('proposalStatuses.paid')
                   }"
                 >
                   {{ statusByVotes }}
