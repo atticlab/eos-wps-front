@@ -19,7 +19,4 @@ export default {
   [ActionType.SET_ROUTE_TO]: (state, data) => {
     state.routeTo = data;
   },
-  [ActionType.SET_SCATTER]: (state, data) => {
-    state.scatter = data;
-  },
 };

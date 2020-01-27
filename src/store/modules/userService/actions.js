@@ -18,7 +18,6 @@ export default {
         throw new Error('Web scatter not supported');
       }
       const { scatter } = ScatterJS;
-      commit(ActionType.SET_SCATTER, scatter);
       commit(ActionType.SET_EOS, scatter.eos(config.eos, Eos));
       if (scatter.identity) {
         commit(ActionType.SET_EOS_ACCOUNT, scatter.account('eos'));
@@ -32,15 +31,15 @@ export default {
       return false;
     }
   },
-  [ActionType.SCATTER_LOGIN]: async ({ commit, dispatch, state }) => {
+  [ActionType.SCATTER_LOGIN]: async ({ commit, dispatch }) => {
     try {
       commit(ActionType.SET_IS_SCATTER_LOGIN_LOADING, true);
 
-      if (!state.scatter && !await dispatch(ActionType.SCATTER_INIT)) {
+      if (!ScatterJS.scatter && !await dispatch(ActionType.SCATTER_INIT)) {
         throw new Error('fail to SCATTER_INIT');
       }
-      if (!await state.scatter.login()) return new Error('no identity');
-      commit(ActionType.SET_EOS_ACCOUNT, state.scatter.account('eos'));
+      if (!await ScatterJS.scatter.login()) return new Error('no identity');
+      commit(ActionType.SET_EOS_ACCOUNT, ScatterJS.scatter.account('eos'));
       return true;
     } catch (e) {
       console.error('ActionType.SCATTER_LOGIN', e);
@@ -50,9 +49,9 @@ export default {
       commit(ActionType.SET_IS_SCATTER_LOGIN_LOADING, false);
     }
   },
-  [ActionType.SCATTER_LOGOUT]: ({ commit, dispatch, state }, data) => {
-    if (state.scatter && state.scatter.logout) {
-      state.scatter.logout();
+  [ActionType.SCATTER_LOGOUT]: ({ commit, dispatch }, data) => {
+    if (ScatterJS.scatter && ScatterJS.scatter.logout) {
+      ScatterJS.scatter.logout();
     }
     commit(ActionType.SET_EOS_ACCOUNT, null);
     commit(ActionType.SET_IS_BP, false);

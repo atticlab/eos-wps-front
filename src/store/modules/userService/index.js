@@ -4,7 +4,6 @@ import actions from './actions';
 const state = {
   eos: null,
   eosAccount: null,
-  scatter: null,
   isBp: false,
   isScatterLoginLoading: false,
   isScatterNotConnected: false,
