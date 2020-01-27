@@ -23,34 +23,34 @@ export default {
     state.scatter = data;
   },
 
-  [ActionType.REQUEST_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME]: (state, data) => {
+  [ActionType.SET_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME]: (state, data) => {
     state.proposal = data;
   },
-  [ActionType.REQUEST_PROPOSALS]: (state, data) => {
+  [ActionType.SET_PROPOSALS]: (state, data) => {
     state.proposals = data;
   },
-  [ActionType.REQUEST_DEPOSIT]: (state, data) => {
+  [ActionType.SET_DEPOSIT]: (state, data) => {
     state.proposalDeposit = data;
   },
-  [ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME]: (state, data) => {
+  [ActionType.SET_DRAFT_BY_PROPOSAL_NAME]: (state, data) => {
     state.proposal = data;
   },
-  [ActionType.REQUEST_DRAFTS_BY_ACCOUNT_NAME]: (state, data) => {
+  [ActionType.SET_DRAFTS_BY_ACCOUNT_NAME]: (state, data) => {
     state.draftProposals = data;
   },
-  [ActionType.REQUEST_EOS_PRICE]: (state, data) => {
+  [ActionType.SET_EOS_PRICE]: (state, data) => {
     state.eosPrice = data;
   },
-  [ActionType.REQUEST_SETTINGS]: (state, data) => {
+  [ActionType.SET_SETTINGS]: (state, data) => {
     state.proposalsSettings = data;
   },
-  [ActionType.REQUEST_STATE]: (state, data) => {
+  [ActionType.SET_STATE]: (state, data) => {
     state.proposalState = data;
   },
-  [ActionType.REQUEST_VOTES]: (state, data) => {
+  [ActionType.SET_VOTES]: (state, data) => {
     state.proposalsVotes = data;
   },
-  [ActionType.REQUEST_VOTES_BY_PROPOSAL_NAME]: (state, data) => {
+  [ActionType.SET_VOTES_BY_PROPOSAL_NAME]: (state, data) => {
     state.votesByProposalName = data;
   },
 

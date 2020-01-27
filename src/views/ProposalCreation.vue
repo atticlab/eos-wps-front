@@ -134,7 +134,7 @@
         async handler() {
           if (!this.proposalId) {
             // proposal is in the getDraftByProposalName mixin
-            this[ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME]({});
+            this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({});
             return;
           }
           if (!await this.$_isProposalExist(this.proposalId)) {
@@ -169,7 +169,7 @@
         ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME,
       ]),
       ...mapMutations('userService', [
-        ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME,
+        ActionType.SET_DRAFT_BY_PROPOSAL_NAME,
       ]),
       setCurrentStep(stepNumber) {
         this.currentStep = stepNumber;

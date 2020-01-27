@@ -211,17 +211,17 @@
         if ((!this.proposals || this.proposals.length === 0)
         && (!this.draftProposals || this.draftProposals.length === 0)) return [];
 
-        const proposalsClone = this.$helpers.copyDeep(this.proposals);
-        const draftProposalsClone = this.$helpers.copyDeep(this.draftProposals);
-        const mapProposalsClone = proposalsClone
+        let proposalsClone;
+        if (this.isDrafts) {
+          proposalsClone = this.$helpers.copyDeep(this.draftProposals);
+        } else {
+          proposalsClone = this.$helpers.copyDeep(this.proposals);
+        }
+
+        return proposalsClone
           .map(
             proposal => this.$helpers.parseProposal(proposal),
           );
-        const mapDraftProposalsClone = draftProposalsClone
-          .map(
-            proposal => this.$helpers.parseProposal(proposal),
-          );
-        return [...mapProposalsClone, ...mapDraftProposalsClone];
       },
       proposalsFullInfo() {
         if (!this.proposalsParsed || this.proposalsParsed.length === 0

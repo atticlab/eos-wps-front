@@ -395,6 +395,7 @@
     computed: {
       ...mapState({
         proposalsSettings: state => state.userService.proposalsSettings,
+        eosPrice: state => state.userService.eosPrice,
       }),
       nameErrors() {
         const errors = [];

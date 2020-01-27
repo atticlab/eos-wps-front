@@ -318,6 +318,9 @@
         isBp: state => state.userService.isBp,
         proposal: state => state.userService.proposal,
         draftProposal: state => state.userService.draftProposal,
+        proposalState: state => state.userService.proposalState,
+        votesByProposalName: state => state.userService.votesByProposalName,
+        proposalDeposit: state => state.userService.proposalDeposit,
       }),
       isDraft() {
         return this.$route.path.includes('draft');
