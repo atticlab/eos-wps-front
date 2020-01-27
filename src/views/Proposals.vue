@@ -169,23 +169,15 @@
 </template>
 
 <script>
+  import { mapState, mapActions } from 'vuex';
   import ProposalItem from '@/components/ProposalItem.vue';
-  import getActiveProposals from '@/mixins/getActiveProposals';
-  import getDraftsByAccountName from '@/mixins/getDraftsByAccountName';
-  import getVotes from '@/mixins/getVotes';
-  import getSettings from '@/mixins/getSettings';
+  import ActionType from '@/store/constants';
 
   export default {
     name: 'Proposals',
     components: {
       ProposalItem,
     },
-    mixins: [
-      getActiveProposals,
-      getDraftsByAccountName,
-      getVotes,
-      getSettings,
-    ],
     data() {
       return {
         sortByOptions: [
@@ -198,6 +190,15 @@
       };
     },
     computed: {
+      ...mapState({
+        proposals: state => state.userService.proposals,
+        draftProposals: state => state.userService.draftProposals,
+        isActiveProposalsLoading: state => state.userService.isActiveProposalsLoading,
+        isSettingsLoading: state => state.userService.isSettingsLoading,
+        proposalsSettings: state => state.userService.proposalsSettings,
+        isDraftProposalByAccountNameLoading: state => state
+          .userService.isDraftProposalByAccountNameLoading,
+      }),
       isDrafts() {
         return this.$route.path.includes('drafts');
       },
@@ -207,9 +208,16 @@
                : this.$t('common.drafts');
       },
       proposalsParsed() {
-        if (!this.proposals || this.proposals.length === 0) return [];
+        if ((!this.proposals || this.proposals.length === 0)
+        && (!this.draftProposals || this.draftProposals.length === 0)) return [];
 
-        const proposalsClone = this.$helpers.copyDeep(this.proposals);
+        let proposalsClone;
+        if (this.isDrafts) {
+          proposalsClone = this.$helpers.copyDeep(this.draftProposals);
+        } else {
+          proposalsClone = this.$helpers.copyDeep(this.proposals);
+        }
+
         return proposalsClone
           .map(
             proposal => this.$helpers.parseProposal(proposal),
@@ -251,15 +259,20 @@
           // Request either active proposals or drafts
           this.proposalsType = this.getLastPartOfRoute(val.path);
           if (this.proposalsType === 'active') {
-            this.$_getSettings();
-            this.$_getActiveProposals();
+            this[ActionType.REQUEST_SETTINGS]();
+            this[ActionType.REQUEST_PROPOSALS]();
           } else {
-            this.$_getDraftProposalByAccountName();
+            this[ActionType.REQUEST_DRAFTS_BY_ACCOUNT_NAME]();
           }
         },
       },
     },
     methods: {
+      ...mapActions('userService', [
+        ActionType.REQUEST_PROPOSALS,
+        ActionType.REQUEST_SETTINGS,
+        ActionType.REQUEST_DRAFTS_BY_ACCOUNT_NAME,
+      ]),
       getLastPartOfRoute(path) {
         const pathItems = path.split('/');
         return pathItems[pathItems.length - 1];
@@ -310,7 +323,6 @@
         const proposalsCopy = this.$helpers.copyDeep(proposals);
         let budget;
         let prevProposalTotalBudget;
-        console.log(proposals);
 
         return Object.keys(proposalsCopy).reduce((acc, proposalsType, typeIndex) => {
           proposalsCopy[proposalsType].forEach((proposal, index) => {

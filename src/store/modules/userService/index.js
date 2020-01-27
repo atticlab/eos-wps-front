@@ -2,13 +2,35 @@ import mutations from './mutations';
 import actions from './actions';
 
 const state = {
+  routeTo: null,
   eos: null,
   eosAccount: null,
   scatter: null,
+
   isBp: false,
   isScatterLoginLoading: false,
   isScatterNotConnected: false,
-  routeTo: null,
+
+  isActiveProposalByProposalNameLoading: false,
+  isActiveProposalsLoading: false,
+  isDepositsLoading: false,
+  isDraftProposalByProposalNameLoading: false,
+  isDraftProposalByAccountNameLoading: false,
+  isEosPriceLoading: false,
+  isSettingsLoading: false,
+  isStateLoading: false,
+  isVotesLoading: false,
+  isProposalVotesLoading: false,
+
+  proposal: {},
+  proposals: [],
+  draftProposals: [],
+  proposalDeposit: {},
+  eosPrice: 0,
+  proposalsSettings: {},
+  proposalState: {},
+  proposalsVotes: [],
+  votesByProposalName: [],
 };
 
 /* eslint-disable */
