@@ -23,34 +23,34 @@ export default {
     state.scatter = data;
   },
 
-  [ActionType.GET_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME]: (state, data) => {
+  [ActionType.REQUEST_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME]: (state, data) => {
     state.proposal = data;
   },
-  [ActionType.GET_ACTIVE_PROPOSALS]: (state, data) => {
+  [ActionType.REQUEST_PROPOSALS]: (state, data) => {
     state.proposals = data;
   },
-  [ActionType.GET_DEPOSIT]: (state, data) => {
+  [ActionType.REQUEST_DEPOSIT]: (state, data) => {
     state.proposalDeposit = data;
   },
-  [ActionType.GET_DRAFT_BY_PROPOSAL_NAME]: (state, data) => {
+  [ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME]: (state, data) => {
     state.proposal = data;
   },
-  [ActionType.GET_DRAFTS_BY_ACCOUNT_NAME]: (state, data) => {
-    state.proposals = data;
+  [ActionType.REQUEST_DRAFTS_BY_ACCOUNT_NAME]: (state, data) => {
+    state.draftProposals = data;
   },
-  [ActionType.GET_EOS_PRICE]: (state, data) => {
+  [ActionType.REQUEST_EOS_PRICE]: (state, data) => {
     state.eosPrice = data;
   },
-  [ActionType.GET_SETTINGS]: (state, data) => {
+  [ActionType.REQUEST_SETTINGS]: (state, data) => {
     state.proposalsSettings = data;
   },
-  [ActionType.GET_STATE]: (state, data) => {
+  [ActionType.REQUEST_STATE]: (state, data) => {
     state.proposalState = data;
   },
-  [ActionType.GET_VOTES]: (state, data) => {
+  [ActionType.REQUEST_VOTES]: (state, data) => {
     state.proposalsVotes = data;
   },
-  [ActionType.GET_VOTES_BY_PROPOSAL_NAME]: (state, data) => {
+  [ActionType.REQUEST_VOTES_BY_PROPOSAL_NAME]: (state, data) => {
     state.votesByProposalName = data;
   },
 

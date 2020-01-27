@@ -81,7 +81,7 @@
 </template>
 
 <script>
-  import { mapState, mapActions } from 'vuex';
+  import { mapState, mapActions, mapMutations } from 'vuex';
   import ActionType from '@/store/constants';
   import Setup from '@/components/proposal-creation-steps/Setup.vue';
   import Description from '@/components/proposal-creation-steps/Description.vue';
@@ -107,6 +107,7 @@
       ...mapState({
         isDraftProposalByProposalNameLoading: state => state
           .userService.isDraftProposalByProposalNameLoading,
+        proposal: state => state.userService.proposal,
       }),
       proposalId() {
         return this.$route.params.slug ? this.$route.params.slug : '';
@@ -133,7 +134,7 @@
         async handler() {
           if (!this.proposalId) {
             // proposal is in the getDraftByProposalName mixin
-            this.proposal = {};
+            this[ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME]({});
             return;
           }
           if (!await this.$_isProposalExist(this.proposalId)) {
@@ -141,7 +142,7 @@
             return;
           }
 
-          this[ActionType.GET_DRAFT_BY_PROPOSAL_NAME](this.proposalId);
+          this[ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME](this.proposalId);
         },
       },
       async currentStep() {
@@ -151,7 +152,7 @@
           return;
         }
 
-        this[ActionType.GET_DRAFT_BY_PROPOSAL_NAME](this.proposalId);
+        this[ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME](this.proposalId);
       },
       async isDraftModified() {
         if (!this.proposalId) return;
@@ -160,12 +161,15 @@
           return;
         }
 
-        this[ActionType.GET_DRAFT_BY_PROPOSAL_NAME](this.proposalId);
+        this[ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME](this.proposalId);
       },
     },
     methods: {
       ...mapActions('userService', [
-        ActionType.GET_DRAFT_BY_PROPOSAL_NAME,
+        ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME,
+      ]),
+      ...mapMutations('userService', [
+        ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME,
       ]),
       setCurrentStep(stepNumber) {
         this.currentStep = stepNumber;

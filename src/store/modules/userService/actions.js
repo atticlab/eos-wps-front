@@ -38,15 +38,16 @@ export default {
       return true;
     } catch (e) {
       console.error('ActionType.SCATTER_INIT', e);
-      throw e;
+      // throw e;
+      return false;
     }
   },
   [ActionType.SCATTER_LOGIN]: async ({ commit, dispatch, state }) => {
     try {
       commit(ActionType.SET_IS_SCATTER_LOGIN_LOADING, true);
 
-      if (!state.scatter) {
-        await dispatch(ActionType.SCATTER_INIT);
+      if (!state.scatter && !await dispatch(ActionType.SCATTER_INIT)) {
+        throw new Error('fail to SCATTER_INIT');
       }
       if (!await state.scatter.login()) return new Error('no identity');
       commit(ActionType.SET_EOS_ACCOUNT, state.scatter.account('eos'));
@@ -54,7 +55,8 @@ export default {
     } catch (e) {
       console.error('ActionType.SCATTER_LOGIN', e);
       commit(ActionType.SET_IS_SCATTER_NOT_CONNECTED, true);
-      throw e;
+      // throw e;
+      return false;
     } finally {
       commit(ActionType.SET_IS_SCATTER_LOGIN_LOADING, false);
     }
@@ -75,7 +77,7 @@ export default {
     commit(ActionType.SET_ROUTE_TO, data);
   },
 
-  [ActionType.GET_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME]: async ({ commit }, proposalName) => {
+  [ActionType.REQUEST_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME]: async ({ commit }, proposalName) => {
     if (!proposalName) {
       throw new Error('you should specify proposalName');
     }
@@ -94,20 +96,20 @@ export default {
         );
       const result = response.rows;
       if (!result || !result.length) {
-        commit(ActionType.GET_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME, {});
+        commit(ActionType.SET_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME, {});
         return;
       }
 
-      commit(ActionType.GET_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME,
+      commit(ActionType.SET_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME,
         Vue.prototype.$helpers.copyDeep(result[0]));
     } catch (e) {
-      console.error('GET_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME', e);
+      console.error('REQUEST_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME', e);
       Vue.prototype.$errorsHandler.handleError(e);
     } finally {
       commit(ActionType.SET_IS_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME_LOADING, false);
     }
   },
-  [ActionType.GET_ACTIVE_PROPOSALS]: async ({ commit }) => {
+  [ActionType.REQUEST_PROPOSALS]: async ({ commit }) => {
     let response = null;
     let lowerBound = 'active';
     const upperBound = lowerBound;
@@ -133,19 +135,19 @@ export default {
       } while (response.more);
 
       if (!result || !result.length) {
-        commit(ActionType.GET_ACTIVE_PROPOSALS, []);
+        commit(ActionType.SET_PROPOSALS, []);
         return;
       }
 
-      commit(ActionType.GET_ACTIVE_PROPOSALS, Vue.prototype.$helpers.copyDeep(result));
+      commit(ActionType.SET_PROPOSALS, Vue.prototype.$helpers.copyDeep(result));
     } catch (e) {
-      console.error('GET_ACTIVE_PROPOSALS', e);
+      console.error('REQUEST_PROPOSALS', e);
       Vue.prototype.$errorsHandler.handleError(e);
     } finally {
       commit(ActionType.SET_IS_ACTIVE_PROPOSALS_LOADING, false);
     }
   },
-  [ActionType.GET_DEPOSIT]: async ({ commit, getters }) => {
+  [ActionType.REQUEST_DEPOSIT]: async ({ commit, getters }) => {
     const lowerBound = getters.getAccountName;
     const upperBound = getters.getAccountName;
     let response = null;
@@ -167,15 +169,15 @@ export default {
         return;
       }
 
-      commit(ActionType.GET_DEPOSIT, Vue.prototype.$helpers.copyDeep(result[0]));
+      commit(ActionType.SET_DEPOSIT, Vue.prototype.$helpers.copyDeep(result[0]));
     } catch (e) {
-      console.error('GET_DEPOSIT', e);
+      console.error('REQUEST_DEPOSIT', e);
       Vue.prototype.$errorsHandler.handleError(e);
     } finally {
       commit(ActionType.SET_IS_DEPOSITS_LOADING, false);
     }
   },
-  [ActionType.GET_DRAFT_BY_PROPOSAL_NAME]: async ({ commit, getters }, proposalName) => {
+  [ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME]: async ({ commit, getters }, proposalName) => {
     const indexPosition = 1;
 
     if (!getters.getAccountName) {
@@ -197,18 +199,18 @@ export default {
         );
       const result = response.rows;
       if (!result || !result.length) {
-        commit(ActionType.GET_DRAFT_BY_PROPOSAL_NAME, {});
+        commit(ActionType.SET_DRAFT_BY_PROPOSAL_NAME, {});
         return;
       }
-      commit(ActionType.GET_DRAFT_BY_PROPOSAL_NAME, Vue.prototype.$helpers.copyDeep(result[0]));
+      commit(ActionType.SET_DRAFT_BY_PROPOSAL_NAME, Vue.prototype.$helpers.copyDeep(result[0]));
     } catch (e) {
-      console.error('GET_DRAFT_BY_PROPOSAL_NAME', e);
+      console.error('REQUEST_DRAFT_BY_PROPOSAL_NAME', e);
       Vue.prototype.$errorsHandler.handleError(e);
     } finally {
       commit(ActionType.SET_IS_DRAFT_PROPOSAL_BY_PROPOSAL_NAME_LOADING, false);
     }
   },
-  [ActionType.GET_DRAFTS_BY_ACCOUNT_NAME]: async ({ commit, getters }) => {
+  [ActionType.REQUEST_DRAFTS_BY_ACCOUNT_NAME]: async ({ commit, getters }) => {
     let lowerBound = '';
     let response = null;
     const result = [];
@@ -236,19 +238,19 @@ export default {
       } while (response.more);
 
       if (!result || !result.length) {
-        commit(ActionType.GET_DRAFTS_BY_ACCOUNT_NAME, []);
+        commit(ActionType.SET_DRAFTS_BY_ACCOUNT_NAME, []);
         return;
       }
 
-      commit(ActionType.GET_DRAFTS_BY_ACCOUNT_NAME, Vue.prototype.$helpers.copyDeep(result));
+      commit(ActionType.SET_DRAFTS_BY_ACCOUNT_NAME, Vue.prototype.$helpers.copyDeep(result));
     } catch (e) {
-      console.error('GET_DRAFTS_BY_ACCOUNT_NAME', e);
+      console.error('REQUEST_DRAFTS_BY_ACCOUNT_NAME', e);
       Vue.prototype.$errorsHandler.handleError(e);
     } finally {
       commit(ActionType.SET_IS_DRAFTS_BY_ACCOUNT_NAME_LOADING, false);
     }
   },
-  [ActionType.GET_EOS_PRICE]: async ({ commit }) => {
+  [ActionType.REQUEST_EOS_PRICE]: async ({ commit }) => {
     const indexPosition = 1;
 
     try {
@@ -272,15 +274,15 @@ export default {
       const parsedRate = parseFloat(eosPriceObj[0].rate);
       if (!parsedRate) throw new Error('can\'t parse eos/usd rate');
 
-      commit(ActionType.GET_EOS_PRICE, parsedRate);
+      commit(ActionType.SET_EOS_PRICE, parsedRate);
     } catch (e) {
-      console.error('GET_EOS_PRICE', e);
+      console.error('REQUEST_EOS_PRICE', e);
       Vue.prototype.$errorsHandler.handleError(e);
     } finally {
       commit(ActionType.SET_IS_EOSPRICE_LOADING, false);
     }
   },
-  [ActionType.GET_SETTINGS]: async ({ commit }) => {
+  [ActionType.REQUEST_SETTINGS]: async ({ commit }) => {
     const indexPosition = 1;
 
     try {
@@ -299,15 +301,15 @@ export default {
         return;
       }
 
-      commit(ActionType.GET_SETTINGS, Vue.prototype.$helpers.copyDeep(result[0]));
+      commit(ActionType.SET_SETTINGS, Vue.prototype.$helpers.copyDeep(result[0]));
     } catch (e) {
-      console.error('GET_SETTINGS', e);
+      console.error('REQUEST_SETTINGS', e);
       Vue.prototype.$errorsHandler.handleError(e);
     } finally {
       commit(ActionType.SET_IS_SETTINGS_LOADING, false);
     }
   },
-  [ActionType.GET_STATE]: async ({ commit }) => {
+  [ActionType.REQUEST_STATE]: async ({ commit }) => {
     const indexPosition = 1;
 
     try {
@@ -326,15 +328,15 @@ export default {
         return;
       }
 
-      commit(ActionType.GET_STATE, Vue.prototype.$helpers.copyDeep(result[0]));
+      commit(ActionType.SET_STATE, Vue.prototype.$helpers.copyDeep(result[0]));
     } catch (e) {
-      console.error('GET_STATE', e);
+      console.error('REQUEST_STATE', e);
       Vue.prototype.$errorsHandler.handleError(e);
     } finally {
       commit(ActionType.SET_IS_STATE_LOADING, false);
     }
   },
-  [ActionType.GET_VOTES]: async ({ commit }) => {
+  [ActionType.REQUEST_VOTES]: async ({ commit }) => {
     let lowerBound = '';
     let response = null;
     const result = [];
@@ -362,15 +364,15 @@ export default {
         return;
       }
 
-      commit(ActionType.GET_VOTES, Vue.prototype.$helpers.copyDeep(result));
+      commit(ActionType.SET_VOTES, Vue.prototype.$helpers.copyDeep(result));
     } catch (e) {
-      console.error('GET_VOTES', e);
+      console.error('REQUEST_VOTES', e);
       Vue.prototype.$errorsHandler.handleError(e);
     } finally {
       commit(ActionType.SET_IS_VOTES_LOADING, false);
     }
   },
-  [ActionType.GET_VOTES_BY_PROPOSAL_NAME]: async ({ commit }, proposalName) => {
+  [ActionType.REQUEST_VOTES_BY_PROPOSAL_NAME]: async ({ commit }, proposalName) => {
     if (!proposalName) {
       throw new Error('you should specify proposalName');
     }
@@ -390,13 +392,13 @@ export default {
       const result = response.rows;
 
       if (!result || !result.length) {
-        commit(ActionType.GET_VOTES_BY_PROPOSAL_NAME, []);
+        commit(ActionType.SET_VOTES_BY_PROPOSAL_NAME, []);
         return;
       }
 
-      commit(ActionType.GET_VOTES_BY_PROPOSAL_NAME, Vue.prototype.$helpers.copyDeep(result));
+      commit(ActionType.SET_VOTES_BY_PROPOSAL_NAME, Vue.prototype.$helpers.copyDeep(result));
     } catch (e) {
-      console.error('GET_VOTES_BY_PROPOSAL_NAME', e);
+      console.error('REQUEST_VOTES_BY_PROPOSAL_NAME', e);
       Vue.prototype.$errorsHandler.handleError(e);
     } finally {
       commit(ActionType.SET_IS_PROPOSAL_VOTES_LOADING, false);

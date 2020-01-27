@@ -130,11 +130,11 @@
       }),
     },
     mounted() {
-      this[ActionType.GET_EOS_PRICE]();
+      this[ActionType.REQUEST_EOS_PRICE]();
     },
     methods: {
       ...mapActions('userService', [
-        ActionType.GET_EOS_PRICE,
+        ActionType.REQUEST_EOS_PRICE,
       ]),
     },
   };

@@ -317,6 +317,7 @@
       ...mapState({
         isBp: state => state.userService.isBp,
         proposal: state => state.userService.proposal,
+        draftProposal: state => state.userService.draftProposal,
       }),
       isDraft() {
         return this.$route.path.includes('draft');
@@ -350,14 +351,14 @@
             }
 
             if (this.isDraft) {
-              await this[ActionType.GET_STATE]();
-              await this[ActionType.GET_DEPOSIT]();
-              this[ActionType.GET_DRAFT_BY_PROPOSAL_NAME](this.proposalId);
+              await this[ActionType.REQUEST_STATE]();
+              await this[ActionType.REQUEST_DEPOSIT]();
+              this[ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME](this.proposalId);
             } else {
-              this[ActionType.GET_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME](this.proposalId);
+              this[ActionType.REQUEST_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME](this.proposalId);
             }
             // get votes
-            await this[ActionType.GET_VOTES_BY_PROPOSAL_NAME](this.proposalId);
+            await this[ActionType.REQUEST_VOTES_BY_PROPOSAL_NAME](this.proposalId);
           } catch (error) {
             console.error('Error', error);
           } finally {
@@ -368,11 +369,11 @@
     },
     methods: {
       ...mapActions('userService', [
-        ActionType.GET_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME,
-        ActionType.GET_DEPOSIT,
-        ActionType.GET_STATE,
-        ActionType.GET_VOTES_BY_PROPOSAL_NAME,
-        ActionType.GET_DRAFT_BY_PROPOSAL_NAME,
+        ActionType.REQUEST_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME,
+        ActionType.REQUEST_DEPOSIT,
+        ActionType.REQUEST_STATE,
+        ActionType.REQUEST_VOTES_BY_PROPOSAL_NAME,
+        ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME,
       ]),
       async transfer() {
         try {

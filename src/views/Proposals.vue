@@ -192,6 +192,7 @@
     computed: {
       ...mapState({
         proposals: state => state.userService.proposals,
+        draftProposals: state => state.userService.draftProposals,
         isActiveProposalsLoading: state => state.userService.isActiveProposalsLoading,
         isSettingsLoading: state => state.userService.isSettingsLoading,
         proposalsSettings: state => state.userService.proposalsSettings,
@@ -207,13 +208,20 @@
                : this.$t('common.drafts');
       },
       proposalsParsed() {
-        if (!this.proposals || this.proposals.length === 0) return [];
+        if ((!this.proposals || this.proposals.length === 0)
+        && (!this.draftProposals || this.draftProposals.length === 0)) return [];
 
         const proposalsClone = this.$helpers.copyDeep(this.proposals);
-        return proposalsClone
+        const draftProposalsClone = this.$helpers.copyDeep(this.draftProposals);
+        const mapProposalsClone = proposalsClone
           .map(
             proposal => this.$helpers.parseProposal(proposal),
           );
+        const mapDraftProposalsClone = draftProposalsClone
+          .map(
+            proposal => this.$helpers.parseProposal(proposal),
+          );
+        return [...mapProposalsClone, ...mapDraftProposalsClone];
       },
       proposalsFullInfo() {
         if (!this.proposalsParsed || this.proposalsParsed.length === 0
@@ -251,19 +259,19 @@
           // Request either active proposals or drafts
           this.proposalsType = this.getLastPartOfRoute(val.path);
           if (this.proposalsType === 'active') {
-            this[ActionType.GET_SETTINGS]();
-            this[ActionType.GET_ACTIVE_PROPOSALS]();
+            this[ActionType.REQUEST_SETTINGS]();
+            this[ActionType.REQUEST_PROPOSALS]();
           } else {
-            this[ActionType.GET_DRAFTS_BY_ACCOUNT_NAME]();
+            this[ActionType.REQUEST_DRAFTS_BY_ACCOUNT_NAME]();
           }
         },
       },
     },
     methods: {
       ...mapActions('userService', [
-        ActionType.GET_ACTIVE_PROPOSALS,
-        ActionType.GET_SETTINGS,
-        ActionType.GET_DRAFTS_BY_ACCOUNT_NAME,
+        ActionType.REQUEST_PROPOSALS,
+        ActionType.REQUEST_SETTINGS,
+        ActionType.REQUEST_DRAFTS_BY_ACCOUNT_NAME,
       ]),
       getLastPartOfRoute(path) {
         const pathItems = path.split('/');
@@ -315,7 +323,6 @@
         const proposalsCopy = this.$helpers.copyDeep(proposals);
         let budget;
         let prevProposalTotalBudget;
-        console.log(proposals);
 
         return Object.keys(proposalsCopy).reduce((acc, proposalsType, typeIndex) => {
           proposalsCopy[proposalsType].forEach((proposal, index) => {

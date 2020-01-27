@@ -24,6 +24,7 @@ const state = {
 
   proposal: {},
   proposals: [],
+  draftProposals: [],
   proposalDeposit: {},
   eosPrice: 0,
   proposalsSettings: {},

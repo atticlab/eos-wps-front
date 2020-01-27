@@ -558,7 +558,7 @@
       $route: {
         immediate: true,
         handler() {
-          this[ActionType.GET_EOS_PRICE]();
+          this[ActionType.REQUEST_EOS_PRICE]();
 
           if (this.proposalId) {
             this.proposal = this.$helpers.copyDeep(this.proposalInitial);
@@ -591,12 +591,12 @@
       },
     },
     created() {
-      this[ActionType.GET_SETTINGS]();
+      this[ActionType.REQUEST_SETTINGS]();
     },
     methods: {
       ...mapActions('userService', [
-        ActionType.GET_SETTINGS,
-        ActionType.GET_EOS_PRICE,
+        ActionType.REQUEST_SETTINGS,
+        ActionType.REQUEST_EOS_PRICE,
       ]),
       changeCurrentStep(val) {
         this.$emit('step', val);
