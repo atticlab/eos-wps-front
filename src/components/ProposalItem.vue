@@ -5,7 +5,7 @@
       ? `/proposal/draft/${proposalName}`
       : `/proposal/active/${proposalName}` }"
   >
-    <v-card>
+    <v-card flat>
       <div>
         <v-img
           height="218px"

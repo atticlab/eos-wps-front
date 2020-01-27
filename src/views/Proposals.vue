@@ -394,7 +394,6 @@
         const proposalsCopy = this.$helpers.copyDeep(proposals);
         let budget;
         let prevProposalTotalBudget;
-        console.log(proposals);
 
         return Object.keys(proposalsCopy).reduce((acc, proposalsType, typeIndex) => {
           proposalsCopy[proposalsType].forEach((proposal, index) => {

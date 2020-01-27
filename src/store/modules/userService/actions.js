@@ -29,15 +29,15 @@ export default {
       return true;
     } catch (e) {
       console.error('ActionType.SCATTER_INIT', e);
-      throw e;
+      return false;
     }
   },
   [ActionType.SCATTER_LOGIN]: async ({ commit, dispatch, state }) => {
     try {
       commit(ActionType.SET_IS_SCATTER_LOGIN_LOADING, true);
 
-      if (!state.scatter) {
-        await dispatch(ActionType.SCATTER_INIT);
+      if (!state.scatter && !await dispatch(ActionType.SCATTER_INIT)) {
+        throw new Error('fail to SCATTER_INIT');
       }
       if (!await state.scatter.login()) return new Error('no identity');
       commit(ActionType.SET_EOS_ACCOUNT, state.scatter.account('eos'));
@@ -45,7 +45,7 @@ export default {
     } catch (e) {
       console.error('ActionType.SCATTER_LOGIN', e);
       commit(ActionType.SET_IS_SCATTER_NOT_CONNECTED, true);
-      throw e;
+      return false;
     } finally {
       commit(ActionType.SET_IS_SCATTER_LOGIN_LOADING, false);
     }

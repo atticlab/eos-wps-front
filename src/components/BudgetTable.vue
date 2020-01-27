@@ -120,6 +120,7 @@
               <v-btn
                 class="text-transform-none"
                 color="primary"
+                :elevation="0"
                 type="submit"
                 @click="save"
               >
@@ -128,6 +129,7 @@
               <v-btn
                 class="text-transform-none"
                 color="error"
+                :elevation="0"
                 @click="closeDialogEdit"
               >
                 {{ $t('proposalCreationPage.cancel') }}
@@ -159,6 +161,7 @@
               <v-btn
                 class="text-transform-none"
                 color="error"
+                :elevation="0"
                 @click="deleteItem"
               >
                 {{ $t('proposalCreationPage.delete') }}
@@ -166,6 +169,7 @@
               <v-btn
                 class="text-transform-none"
                 color="error"
+                :elevation="0"
                 @click="closeDialogDelete"
               >
                 {{ $t('proposalCreationPage.cancel') }}
@@ -232,7 +236,7 @@
       </v-btn>
     </template>
     <template v-slot:footer>
-      <div class="d-flex d-sm-none justify-space-between pa-4">
+      <div class="d-flex d-sm-none justify-space-between pa-4 border-bottom">
         <div class="body-1 font-weight-bold">
           <div class="mb-1">
             {{ $t('proposalPage.total') }}:

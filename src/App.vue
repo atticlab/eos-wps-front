@@ -40,10 +40,6 @@
                     </v-icon>
 
                     {{ getAccountNameWithAuthority }}
-
-                    <span class="icon-circle">
-                      {{ getAccountNameWithAuthority.split('')[0] }}
-                    </span>
                   </v-btn>
                 </template>
 
@@ -173,7 +169,7 @@
 
           <v-list>
             <v-list-item
-              @click="SCATTER_LOGOUT($route.name)"
+              @click="SCATTER_LOGOUT()"
             >
               <v-list-item-title class="font-weight-medium">
                 {{ $t('common.signOut') }}
@@ -186,7 +182,8 @@
       <v-btn
         v-if="!getAccountNameWithAuthority"
         color="primary"
-        class="ml-4 text-transform-none"
+        class="d-none d-md-flex ml-4 text-transform-none"
+        :elevation="0"
         :disabled="isScatterLoginLoading"
         :large="true"
         height="50"
@@ -199,6 +196,7 @@
         v-else
         :to="{ name: 'Proposal editor' }"
         color="primary"
+        :elevation="0"
         class="d-none d-md-flex text-transform-none"
         :large="true"
         height="50"
@@ -211,7 +209,7 @@
       <v-alert
         transition="scale-transition"
         border-top
-        type="info"
+        color="primary"
         :class="{ 'alert-scatter': true }"
       >
         {{ $t('notifications.scatterInit') }}
@@ -238,8 +236,8 @@
 
     <v-snackbar
       v-if="!isScatterLoginLoading"
-      v-model="isScatterNotConnected"
-      color="info"
+      v-model="isSnackbarOpen"
+      color="primary"
       :timeout="30000"
       :top="true"
       :multi-line="true"
@@ -273,6 +271,7 @@
     data() {
       return {
         drawer: false,
+        isSnackbarOpen: true,
       };
     },
     computed: {
@@ -300,21 +299,27 @@
           }
         },
       },
+      isScatterNotConnected: {
+        immediate: true,
+        handler(val) {
+          this.isSnackbarOpen = val;
+        },
+      },
     },
     created() {
       this[ActionType.SCATTER_INIT]();
-      this.$_getProducers();
-      this.$eventBus.$on('proposal-created', (val) => {
-        if (!val) return;
-        this.$_getDraftProposalByAccountName();
-      });
-      this.$eventBus.$on('proposal-deleted', async (val) => {
-        if (!val) return;
-        await this.$_getDraftProposalByAccountName();
-        if (!this.proposals || this.proposals.length === 0) {
-          this.$router.push({ name: 'ProposalsActive' });
-        }
-      });
+      // this.$_getProducers();
+      // this.$eventBus.$on('proposal-created', (val) => {
+      //   if (!val) return;
+      //   this.$_getDraftProposalByAccountName();
+      // });
+      // this.$eventBus.$on('proposal-deleted', async (val) => {
+      //   if (!val) return;
+      //   await this.$_getDraftProposalByAccountName();
+      //   if (!this.proposals || this.proposals.length === 0) {
+      //     this.$router.push({ name: 'ProposalsActive' });
+      //   }
+      // });
     },
     methods: {
       ...mapMutations('userService', [

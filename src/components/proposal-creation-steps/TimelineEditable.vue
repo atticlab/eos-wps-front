@@ -1,6 +1,9 @@
 <template>
   <div>
-    <v-card class="mb-12">
+    <v-card
+      flat
+      class="border-bottom mb-12"
+    >
       <div class="mb-12">
         <h2 class="body-1 font-weight-bold mb-3">
           {{ $t('proposalCreationPage.setupTimeline') }}
@@ -94,18 +97,18 @@
                           >
                             <v-spacer />
                             <v-btn
-                              text
                               color="primary"
-                              @click="startsAtMenu = false"
-                            >
-                              {{ $t('proposalCreationPage.cancel') }}
-                            </v-btn>
-                            <v-btn
-                              text
-                              color="primary"
+                              class="text-transform-none"
                               @click="$refs.startsAtMenu.save(editedItem.startsAt)"
                             >
                               {{ $t('common.ok') }}
+                            </v-btn>
+                            <v-btn
+                              color="error"
+                              class="text-transform-none"
+                              @click="startsAtMenu = false"
+                            >
+                              {{ $t('proposalCreationPage.cancel') }}
                             </v-btn>
                           </v-date-picker>
                         </v-menu>
@@ -145,18 +148,18 @@
                           >
                             <v-spacer />
                             <v-btn
-                              text
                               color="primary"
-                              @click="endsAtMenu = false"
-                            >
-                              {{ $t('proposalCreationPage.cancel') }}
-                            </v-btn>
-                            <v-btn
-                              text
-                              color="primary"
+                              class="text-transform-none"
                               @click="$refs.endsAtMenu.save(editedItem.endsAt)"
                             >
                               {{ $t('common.ok') }}
+                            </v-btn>
+                            <v-btn
+                              color="error"
+                              class="text-transform-none"
+                              @click="endsAtMenu = false"
+                            >
+                              {{ $t('proposalCreationPage.cancel') }}
                             </v-btn>
                           </v-date-picker>
                         </v-menu>
@@ -170,6 +173,7 @@
                   <v-btn
                     color="primary"
                     class="text-transform-none"
+                    :elevation="0"
                     @click="save"
                   >
                     {{ $t('proposalCreationPage.save') }}
@@ -177,6 +181,7 @@
                   <v-btn
                     color="error"
                     class="text-transform-none"
+                    :elevation="0"
                     @click="closeDialogEdit"
                   >
                     {{ $t('proposalCreationPage.cancel') }}
@@ -207,6 +212,7 @@
                   <v-btn
                     color="error"
                     class="text-transform-none"
+                    :elevation="0"
                     @click="deleteItem"
                   >
                     {{ $t('proposalCreationPage.delete') }}
@@ -214,6 +220,7 @@
                   <v-btn
                     color="error"
                     class="text-transform-none"
+                    :elevation="0"
                     @click="closeDialogDelete"
                   >
                     {{ $t('proposalCreationPage.cancel') }}
