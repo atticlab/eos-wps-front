@@ -56,10 +56,15 @@
     "downvote": "Downvote",
     "abstain": "Abstain",
     "eosConversionRate": "EOS conversion rate",
-    "activate": "Activate proposal",
+    "activateProposal": "Activate proposal",
+    "activate": "Activate",
+    "edit": "Edit",
     "refund": "Refund",
     "deleteProposal": "Delete proposal",
     "payFee": "Pay deposit fee (100 EOS)",
+    "payDepositFee": "Pay deposit fee",
+    "haveToPay": "You have to pay 100 EOS fee if you want to take part at WPS",
+    "payFeeShort": "Pay fee",
     "videoLink": "Video link",
     "voters": "Voters",
     "voter": "Voter",
@@ -68,7 +73,8 @@
     "next": "next",
     "current": "current",
     "sureToActivate": "Are you sure you want to activate your proposal for the current voting period?",
-    "currentVotingPeriodEndsIn": "The current voting period ends in {daysTillEnd} days"
+    "currentVotingPeriodEndsIn": "The current voting period ends in {daysTillEnd} days",
+    "proposalInfo": "Proposal info"
   },
   "proposalCreationPage": {
     "proposalCreation": "Proposal creation",

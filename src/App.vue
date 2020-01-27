@@ -94,12 +94,9 @@
     >
       <div class="d-flex align-center">
         <v-app-bar-nav-icon
-          class="d-flex d-md-none"
-          @click.stop="drawer = !drawer"
-        />
-        <v-app-bar-nav-icon
           :to="{ name: 'ProposalsActive' }"
           color="primary"
+          class="w-100"
         >
           <img
             src="@/assets/img/eos.svg"
@@ -203,6 +200,11 @@
       >
         {{ $t('common.createProposal') }}
       </v-btn>
+
+      <v-app-bar-nav-icon
+        class="d-flex d-md-none flex-stretch"
+        @click.stop="drawer = !drawer"
+      />
     </v-app-bar>
 
     <v-overlay v-if="isScatterLoginLoading">

@@ -12,7 +12,10 @@
           :src="img"
         />
         <div class="pa-4">
-          <div class="d-flex justify-space-between align-center">
+          <div
+            class="d-flex justify-space-between flex-column align-start
+                   flex-sm-row align-sm-center mb-1 mb-sm-0"
+          >
             <h2 class="fs-20 mb-1">
               {{ title }}
             </h2>
@@ -25,10 +28,6 @@
           <div class="mb-3 font-weight-medium">
             by
             <span class="font-weight-bold primary--text">{{ proposer }}</span>
-          </div>
-
-          <div class=" font-weight-medium mt-8 mb-6">
-            {{ summary }}
           </div>
 
           <v-row>
@@ -104,6 +103,10 @@
               </div>
             </v-col>
           </v-row>
+
+          <div class=" font-weight-medium mb-6">
+            {{ summary }}
+          </div>
         </div>
       </div>
     </v-card>

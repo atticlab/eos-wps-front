@@ -200,7 +200,7 @@
     margin-bottom: 30px;
 
     &__top {
-      background-color: rgba(48, 146, 130, 0.13);
+      background-color: $primary--bg;
       background-image: url("~@/assets/img/bg-top.png");
       background-size: 35%;
       background-position: center right;

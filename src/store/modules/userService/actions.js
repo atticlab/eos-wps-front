@@ -35,8 +35,10 @@ export default {
     try {
       commit(ActionType.SET_IS_SCATTER_LOGIN_LOADING, true);
 
-      if (!ScatterJS.scatter && !await dispatch(ActionType.SCATTER_INIT)) {
-        throw new Error('fail to SCATTER_INIT');
+      if ((!ScatterJS.scatter
+          && !await dispatch(ActionType.SCATTER_INIT))
+          || !ScatterJS.scatter.login) {
+        throw new Error('Failed to SCATTER_INIT');
       }
       if (!await ScatterJS.scatter.login()) return new Error('no identity');
       commit(ActionType.SET_EOS_ACCOUNT, ScatterJS.scatter.account('eos'));
