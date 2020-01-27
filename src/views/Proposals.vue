@@ -40,17 +40,20 @@
 
         <div>
           <h2 class="font-weight-regular green--text mb-6">
-            {{ $t('common.passingProposals') }}
+            {{ $t('common.paidProposals') }}
           </h2>
-          <template v-if="passingProposals && passingProposals.length !== 0">
+          <template
+            v-if="proposalsFullInfo.paidProposals
+              && proposalsFullInfo.paidProposals.length !== 0"
+          >
             <ProposalItem
-              v-for="(proposal, index) in passingProposals"
+              v-for="(proposal, index) in proposalsFullInfo.paidProposals"
               :key="index"
               :proposal-name="proposal.proposal_name"
               :title="proposal.title"
               :proposer="proposal.proposer"
               :available-budget="proposal.available_budget"
-              :img="proposal.proposal_json.img"
+              :img="proposal.proposal_json.img || undefined"
               :category="proposal.proposal_json.category"
               :summary="proposal.proposal_json.summary"
               :budget="proposal.total_budget"
@@ -70,29 +73,69 @@
 
         <div>
           <h2 class="font-weight-regular red--text mb-6">
-            {{ $t('common.notPassingProposals') }}
+            {{ $t('common.unpaidProposals') }}
           </h2>
-          <template v-if="notPassingProposals && notPassingProposals.length !== 0">
-            <ProposalItem
-              v-for="(proposal, index) in notPassingProposals"
-              :key="index"
-              :proposal-name="proposal.proposal_name"
-              :title="proposal.title"
-              :proposer="proposal.proposer"
-              :available-budget="proposal.available_budget"
-              :img="proposal.proposal_json.img"
-              :category="proposal.proposal_json.category"
-              :summary="proposal.proposal_json.summary"
-              :budget="proposal.total_budget"
-              :duration="proposal.duration"
-              :payments="proposal.payments"
-              :status-by-votes="proposal.statusByVotes"
-              :votes="proposal.total_net_votes"
-              :is-draft="proposal.isDraft"
-            />
-          </template>
-          <div v-else>
-            {{ $t('noDataTexts.nothingToDisplay') }}
+
+          <div class="mb-6">
+            <h3 class="font-weight-regular warning--text mb-6">
+              {{ $t('proposalItem.insufficientBudget') }}
+            </h3>
+            <template
+              v-if="proposalsFullInfo.insufficientBudgetProposals
+                && proposalsFullInfo.insufficientBudgetProposals.length !== 0"
+            >
+              <ProposalItem
+                v-for="(proposal, index) in proposalsFullInfo.insufficientBudgetProposals"
+                :key="index"
+                :proposal-name="proposal.proposal_name"
+                :title="proposal.title"
+                :proposer="proposal.proposer"
+                :available-budget="proposal.available_budget"
+                :img="proposal.proposal_json.img || undefined"
+                :category="proposal.proposal_json.category"
+                :summary="proposal.proposal_json.summary"
+                :budget="proposal.total_budget"
+                :duration="proposal.duration"
+                :payments="proposal.payments"
+                :status-by-votes="proposal.statusByVotes"
+                :votes="proposal.total_net_votes"
+                :is-draft="proposal.isDraft"
+              />
+            </template>
+            <div v-else>
+              {{ $t('noDataTexts.nothingToDisplay') }}
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <h3 class="font-weight-regular warning--text mb-6">
+              {{ $t('proposalItem.insufficientVotes') }}
+            </h3>
+            <template
+              v-if="proposalsFullInfo.insufficientVotesProposals
+                && proposalsFullInfo.insufficientVotesProposals.length !== 0"
+            >
+              <ProposalItem
+                v-for="(proposal, index) in proposalsFullInfo.insufficientVotesProposals"
+                :key="index"
+                :proposal-name="proposal.proposal_name"
+                :title="proposal.title"
+                :proposer="proposal.proposer"
+                :available-budget="proposal.available_budget"
+                :img="proposal.proposal_json.img || undefined"
+                :category="proposal.proposal_json.category"
+                :summary="proposal.proposal_json.summary"
+                :budget="proposal.total_budget"
+                :duration="proposal.duration"
+                :payments="proposal.payments"
+                :status-by-votes="proposal.statusByVotes"
+                :votes="proposal.total_net_votes"
+                :is-draft="proposal.isDraft"
+              />
+            </template>
+            <div v-else>
+              {{ $t('noDataTexts.nothingToDisplay') }}
+            </div>
           </div>
         </div>
       </template>
@@ -106,7 +149,7 @@
             :title="proposal.title"
             :proposer="proposal.proposer"
             :available-budget="proposal.available_budget"
-            :img="proposal.proposal_json.img"
+            :img="proposal.proposal_json.img || undefined"
             :category="proposal.proposal_json.category"
             :summary="proposal.proposal_json.summary"
             :budget="proposal.total_budget"
@@ -174,49 +217,30 @@
       },
       proposalsFullInfo() {
         if (!this.proposalsParsed || this.proposalsParsed.length === 0
-          // || !this.proposalsVotes || this.proposalsVotes.length === 0
           || !this.proposalsSettings || Object.keys(this.proposalsSettings).length === 0
           || this.isDrafts) return [];
 
-        const proposalsParsedCopy = this.$helpers.copyDeep(this.proposalsParsed);
+        // Add statuses by votes to proposals
+        const proposalsWithStatusesByVotes = this.proposalsParsed.map(proposal => ({
+          ...proposal,
+          ...{
+            statusByVotes: this.defineStatus(
+                proposal.total_net_votes,
+                this.proposalsSettings.vote_margin,
+                Boolean(proposal.eligible),
+              ),
+          },
+        }));
 
-        // Add statuses to proposals
-        const proposalsWithStatuses = proposalsParsedCopy.map((proposal) => {
-          // eslint-disable-next-line no-param-reassign
-          proposal.statusByVotes = this.defineStatus(
-            proposal.total_net_votes,
-            this.proposalsSettings.vote_margin,
-          );
-          return proposal;
-        });
-
-        // Sort proposals
-        // proposalsWithStatuses.sort((proposal1, proposal2) => {
-        //   return new Date(proposal1.created) - new Date(proposal2.created);
-        // });
-        proposalsWithStatuses
-          .sort((proposal1, proposal2) => proposal2.total_net_votes - proposal1.total_net_votes);
+        const proposalsOrdered = this.restructureProposalsToObject(proposalsWithStatusesByVotes);
 
         return this.defineAvailableBudget(
-          proposalsWithStatuses,
-          this.proposalsSettings.max_monthly_budget,
-        );
-      },
-      passingProposals() {
-        if (!this.proposalsFullInfo && this.proposalsFullInfo.length === 0) return [];
-
-        return this.proposalsFullInfo.filter(proposal => proposal.statusByVotes
-          === this.$t('proposalStatuses.passing'));
-      },
-      notPassingProposals() {
-        if (!this.proposalsFullInfo && this.proposalsFullInfo.length === 0) return [];
-
-        return this.proposalsFullInfo.filter(proposal => proposal.statusByVotes
-          === this.$t('proposalStatuses.notPassing'));
+            proposalsOrdered,
+            this.proposalsSettings.max_monthly_budget,
+          );
       },
       isAllDataLoading() {
         return this.isActiveProposalsLoading
-          // && this.isVotesLoading
           && this.isSettingsLoading;
       },
     },
@@ -245,27 +269,78 @@
         const pathItems = path.split('/');
         return pathItems[pathItems.length - 1];
       },
-      defineStatus(totalNetVotes, voteMargin) {
-        return totalNetVotes >= voteMargin
-               ? this.$t('proposalStatuses.passing')
-               : this.$t('proposalStatuses.notPassing');
+      defineStatus(totalNetVotes, voteMargin, isEligible) {
+        return totalNetVotes >= voteMargin && isEligible
+               ? this.$t('proposalStatuses.paid')
+               : this.$t('proposalStatuses.unpaid');
+      },
+      sortProposalsByVotes(proposals) {
+        return proposals
+          .sort((proposal1, proposal2) => proposal2.total_net_votes - proposal1.total_net_votes);
+      },
+      restructureProposalsToObject(proposals) {
+        const paidProposals = this.sortProposalsByVotes(
+          proposals
+            .filter(proposal => proposal.statusByVotes
+              === this.$t('proposalStatuses.paid')),
+        );
+
+        const unpaidProposals = proposals
+          .filter(proposal => proposal.statusByVotes
+            === this.$t('proposalStatuses.unpaid'));
+
+        const insufficientBudgetProposals = this.sortProposalsByVotes(
+          unpaidProposals
+            .filter(proposal => Boolean(proposal.eligible) === false && proposal.total_net_votes
+              >= this.proposalsSettings.vote_margin),
+        );
+
+        const insufficientVotesProposals = this.sortProposalsByVotes(
+          unpaidProposals
+            .filter(proposal => proposal.total_net_votes < this.proposalsSettings.vote_margin),
+        );
+
+        return {
+          ...(paidProposals && paidProposals.length !== 0)
+          && { paidProposals },
+
+          ...(insufficientBudgetProposals && insufficientBudgetProposals.length !== 0)
+          && { insufficientBudgetProposals },
+
+          ...(insufficientVotesProposals && insufficientVotesProposals.length !== 0)
+          && { insufficientVotesProposals },
+        };
       },
       defineAvailableBudget(proposals, maxMonthlyBudget) {
-        let acc;
         const proposalsCopy = this.$helpers.copyDeep(proposals);
-        return proposalsCopy.map((proposal, index) => {
-          if (index === 0) {
-            acc = +maxMonthlyBudget.split(' ')[0];
-            // eslint-disable-next-line no-param-reassign
-            proposal.available_budget = `${acc} EOS`;
-          } else {
-            acc -= proposalsCopy[index - 1].total_budget.split(' ')[0];
-            // eslint-disable-next-line no-param-reassign
-            proposal.available_budget = `${acc} EOS`;
-          }
+        let budget;
+        let prevProposalTotalBudget;
+        console.log(proposals);
 
-          return proposal;
-        });
+        return Object.keys(proposalsCopy).reduce((acc, proposalsType, typeIndex) => {
+          proposalsCopy[proposalsType].forEach((proposal, index) => {
+            if (typeIndex === 0 && index === 0) {
+              budget = +maxMonthlyBudget.split(' ')[0];
+              // eslint-disable-next-line prefer-destructuring
+              prevProposalTotalBudget = proposal.total_budget.split(' ')[0];
+            } else {
+              budget -= +prevProposalTotalBudget;
+              // eslint-disable-next-line prefer-destructuring
+              prevProposalTotalBudget = proposal.total_budget.split(' ')[0];
+            }
+
+            // eslint-disable-next-line no-param-reassign
+            proposal.available_budget = `${budget} EOS`;
+            if (proposalsType in acc) {
+              acc[proposalsType].push(proposal);
+            } else {
+              // eslint-disable-next-line no-param-reassign
+              acc = { ...acc, ...{ [proposalsType]: [proposal] } };
+            }
+            return acc;
+          });
+          return acc;
+        }, {});
       },
     },
   };
