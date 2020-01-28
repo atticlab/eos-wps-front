@@ -108,7 +108,7 @@
                   >
                     <div>
                       <div>{{ $t('common.subtotal') }}</div>
-                      <div class="black--text body-1">
+                      <div class="black--text body-1 font-weight-medium">
                         {{ `$${subtotal}` }}
                       </div>
                     </div>
