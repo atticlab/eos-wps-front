@@ -16,7 +16,8 @@
       <template v-else>
         <v-row>
           <v-col
-            md="7"
+            cols="12"
+            :md="!isBp && !isDraft ? '12' : '7'"
             class="d-flex"
           >
             <v-card
@@ -44,7 +45,12 @@
                 </p>
 
                 <v-row>
-                  <v-col>
+                  <v-col
+                    cols="12"
+                    sm="3"
+                    :md="!isBp && !isDraft ? '4' : '6'"
+                    :lg="!isBp && !isDraft ? '2' : '3'"
+                  >
                     <div>
                       <div class="text-uppercase accent--text font-weight-semi-bold">
                         {{ $t('proposalPage.proposedBy') }}
@@ -54,7 +60,12 @@
                       </div>
                     </div>
                   </v-col>
-                  <v-col>
+                  <v-col
+                    cols="12"
+                    sm="3"
+                    :md="!isBp && !isDraft ? '4' : '6'"
+                    :lg="!isBp && !isDraft ? '2' : '3'"
+                  >
                     <div>
                       <div class="text-uppercase accent--text font-weight-semi-bold">
                         {{ $t('proposalPage.category') }}
@@ -68,7 +79,13 @@
                       </div>
                     </div>
                   </v-col>
-                  <v-col v-if="!isDraft">
+                  <v-col
+                    v-if="!isDraft"
+                    cols="12"
+                    sm="3"
+                    :md="!isBp && !isDraft ? '4' : '6'"
+                    :lg="!isBp && !isDraft ? '2' : '3'"
+                  >
                     <div>
                       <div class="text-uppercase accent--text font-weight-semi-bold">
                         {{ $t('common.payments') }}
@@ -78,7 +95,12 @@
                       </div>
                     </div>
                   </v-col>
-                  <v-col>
+                  <v-col
+                    cols="12"
+                    sm="3"
+                    :md="!isBp && !isDraft ? '4' : '6'"
+                    :lg="!isBp && !isDraft ? '2' : '3'"
+                  >
                     <div>
                       <div class="text-uppercase accent--text font-weight-semi-bold">
                         {{ $t('common.requested') }}
@@ -88,16 +110,33 @@
                       </div>
                     </div>
                   </v-col>
+                  <v-col
+                    v-if="!isDraft"
+                    cols="12"
+                    sm="3"
+                    :md="!isBp && !isDraft ? '4' : '6'"
+                    :lg="!isBp && !isDraft ? '2' : '3'"
+                  >
+                    <div>
+                      <div class="text-uppercase accent--text font-weight-semi-bold">
+                        {{ $t('common.votes') }}
+                      </div>
+                      <div class="font-weight-bold">
+                        {{ $_proposalParsed.total_net_votes }}
+                      </div>
+                    </div>
+                  </v-col>
                 </v-row>
               </v-container>
             </v-card>
           </v-col>
           <v-col
+            cols="12"
             class="d-flex"
             md="5"
           >
             <v-card
-              v-if="isDraft"
+              v-if="isDraft || isBp"
               class="flex-fill"
               flat
             >
@@ -109,7 +148,69 @@
                   {{ $t('common.actions') }}
                 </div>
 
-                <div>
+                <template v-if="isBp && !isDraft">
+                  <div class="d-flex justify-space-between align-center flex-wrap mb-4">
+                    <div class="actions-left">
+                      <div class="font-weight-semi-bold text-uppercase">
+                        {{ $t('proposalPage.voteFor') }}
+                      </div>
+                    </div>
+
+                    <div class="actions-btn-container">
+                      <v-btn
+                        block
+                        :elevation="0"
+                        class="btn--alt"
+                        :disabled="isVoteProposalLoading"
+                        @click="handleVote($constants.VOTE_YES)"
+                      >
+                        {{ $t('proposalPage.upvote') }}
+                      </v-btn>
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-space-between align-center flex-wrap mb-4">
+                    <div class="actions-left">
+                      <div class="font-weight-semi-bold text-uppercase">
+                        {{ $t('proposalPage.abstainIn') }}
+                      </div>
+                    </div>
+
+                    <div class="actions-btn-container">
+                      <v-btn
+                        block
+                        :elevation="0"
+                        class="btn--alt"
+                        :disabled="isVoteProposalLoading"
+                        @click="handleVote($constants.VOTE_ABSTAIN)"
+                      >
+                        {{ $t('proposalPage.abstain') }}
+                      </v-btn>
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-space-between align-center flex-wrap mb-4">
+                    <div class="actions-left">
+                      <div class="font-weight-semi-bold text-uppercase">
+                        {{ $t('proposalPage.voteAgainst') }}
+                      </div>
+                    </div>
+
+                    <div class="actions-btn-container">
+                      <v-btn
+                        block
+                        :elevation="0"
+                        class="btn--alt"
+                        :disabled="isVoteProposalLoading"
+                        @click="handleVote($constants.VOTE_NO)"
+                      >
+                        {{ $t('proposalPage.downvote') }}
+                      </v-btn>
+                    </div>
+                  </div>
+                </template>
+
+                <template v-else>
                   <div
                     v-if="!isMinDepositPaid"
                     class="d-flex justify-space-between align-center flex-wrap mb-4"
@@ -119,7 +220,7 @@
                         {{ $t('proposalPage.payDepositFee') }}
                       </div>
                       <div class="accent--text fs-12">
-                        {{ $t('proposalPage.haveToPay') }}
+                        {{ $t('proposalPage.payFeeDesc') }}
                       </div>
                     </div>
 
@@ -127,7 +228,7 @@
                       <v-btn
                         block
                         :elevation="0"
-                        class="btn--alt text-transform-none font-weight-semi-bold"
+                        class="btn--alt"
                         :disabled="isSendDepositLoading"
                         @click="transfer"
                       >
@@ -135,7 +236,6 @@
                       </v-btn>
                     </div>
                   </div>
-
                   <div
                     v-if="isMinDepositPaid"
                     class="d-flex justify-space-between align-center flex-wrap mb-4"
@@ -145,7 +245,7 @@
                         {{ $t('proposalPage.activateProposal') }}
                       </div>
                       <div class="accent--text fs-12">
-                        {{ $t('proposalPage.haveToPay') }}
+                        {{ $t('proposalPage.activateDesc') }}
                       </div>
                     </div>
 
@@ -158,7 +258,7 @@
                           <v-btn
                             block
                             :elevation="0"
-                            class="btn--alt text-transform-none font-weight-semi-bold"
+                            class="btn--alt"
                             v-on="on"
                           >
                             {{ $t('proposalPage.activate') }}
@@ -166,16 +266,18 @@
                         </template>
                         <v-card>
                           <v-card-title>
-                            <span class="headline">Proposal activation</span>
+                            <span class="font-weight-bold">
+                              {{ $t('proposalPage.proposalActivation') }}
+                            </span>
                           </v-card-title>
                           <v-card-text>
-                            <p class="body-1">
+                            <p class="font-weight-medium">
                               {{ $t('proposalPage.sureToActivate') }}
                             </p>
                             <i18n
                               path="proposalPage.currentVotingPeriodEndsIn"
                               tag="p"
-                              class="warning--text body-1"
+                              class="red--text font-weight-medium mb-0"
                             >
                               <template #daysTillEnd>
                                 {{ daysBeforeCurrentVotingPeriodExpires }}
@@ -183,10 +285,13 @@
                             </i18n>
                           </v-card-text>
                           <v-card-actions class="flex-wrap">
-                            <div class="ml-4">
+                            <v-spacer />
+
+                            <div>
                               <v-btn
-                                class="mr-2 mb-4"
-                                color="green white--text"
+                                :elevation="0"
+                                class="text-transform-none mr-2 mb-2"
+                                color="primary"
                                 :disabled="isActivateProposalLoading"
                                 @click="activateProposal(false)"
                               >
@@ -199,8 +304,9 @@
                                 </i18n>
                               </v-btn>
                               <v-btn
-                                class="ml-0 mb-4"
-                                color="green white--text"
+                                :elevation="0"
+                                class="text-transform-none ml-0 mb-2"
+                                color="primary"
                                 :disabled="isActivateProposalLoading"
                                 @click="activateProposal(true)"
                               >
@@ -218,29 +324,6 @@
                       </v-dialog>
                     </div>
                   </div>
-
-                  <div class="d-flex justify-space-between align-center flex-wrap mb-4">
-                    <div class="actions-left">
-                      <div class="font-weight-semi-bold text-uppercase">
-                        {{ $t('proposalCreationPage.editProposal') }}
-                      </div>
-                      <div class="accent--text fs-12">
-                        {{ $t('proposalPage.haveToPay') }}
-                      </div>
-                    </div>
-
-                    <div class="actions-btn-container">
-                      <v-btn
-                        block
-                        :elevation="0"
-                        class="btn--alt text-transform-none font-weight-semi-bold"
-                        :to="`/proposal-editor/${proposalId}`"
-                      >
-                        {{ $t('proposalPage.edit') }}
-                      </v-btn>
-                    </div>
-                  </div>
-
                   <div
                     v-if="isMinDepositPaid"
                     class="d-flex justify-space-between align-center flex-wrap mb-4"
@@ -250,7 +333,7 @@
                         {{ $t('proposalPage.refund') }}
                       </div>
                       <div class="accent--text fs-12">
-                        {{ $t('proposalPage.haveToPay') }}
+                        {{ $t('proposalPage.refundDesc') }}
                       </div>
                     </div>
 
@@ -258,7 +341,7 @@
                       <v-btn
                         block
                         :elevation="0"
-                        class="btn--alt text-transform-none font-weight-semi-bold"
+                        class="btn--alt"
                         :disabled="isRefundLoading"
                         @click="refund"
                       >
@@ -270,10 +353,10 @@
                   <div class="d-flex justify-space-between align-center flex-wrap mb-4">
                     <div class="actions-left">
                       <div class="font-weight-semi-bold text-uppercase">
-                        {{ $t('proposalPage.deleteProposal') }}
+                        {{ $t('proposalCreationPage.editProposal') }}
                       </div>
                       <div class="accent--text fs-12">
-                        {{ $t('proposalPage.haveToPay') }}
+                        {{ $t('proposalPage.editDesc') }}
                       </div>
                     </div>
 
@@ -281,7 +364,29 @@
                       <v-btn
                         block
                         :elevation="0"
-                        class="btn--alt text-transform-none font-weight-semi-bold"
+                        class="btn--alt"
+                        :to="`/proposal-editor/${proposalId}`"
+                      >
+                        {{ $t('proposalPage.edit') }}
+                      </v-btn>
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-space-between align-center flex-wrap mb-4">
+                    <div class="actions-left">
+                      <div class="font-weight-semi-bold text-uppercase">
+                        {{ $t('proposalPage.deleteProposal') }}
+                      </div>
+                      <div class="accent--text fs-12">
+                        {{ $t('proposalPage.deleteDesc') }}
+                      </div>
+                    </div>
+
+                    <div class="actions-btn-container">
+                      <v-btn
+                        block
+                        :elevation="0"
+                        class="btn--alt"
                         :disabled="isCancelProposalDraftLoading"
                         @click="deleteProposal"
                       >
@@ -289,13 +394,13 @@
                       </v-btn>
                     </div>
                   </div>
-                </div>
+                </template>
               </v-container>
             </v-card>
           </v-col>
         </v-row>
 
-        <v-row class="mb-12">
+        <v-row class="mb-3">
           <v-col
             cols="12"
           >
@@ -307,74 +412,46 @@
               class="proposal__img"
             />
           </v-col>
-          <v-col>
-            <div class="cards-wrapper">
-              <v-card
-                v-if="!isDraft"
-                class="text-center mb-12"
-                color="pink darken-4 white--text"
-              >
-                <v-card-title class="justify-center pa-2">
-                  {{ $t('common.votes') }}:
-                </v-card-title>
-                <v-card-text class="white pt-4 word-break">
-                  <div class="d-flex justify-space-around">
-                    <div class="font-weight-bold body-1">
-                      {{ $_proposalParsed.total_net_votes }}
-                    </div>
-                  </div>
-                </v-card-text>
-              </v-card>
-
-              <template
-                v-if="isBp && !isDraft"
-              >
-                <v-btn
-                  class="mb-4"
-                  block
-                  color="success"
-                  @click="handleVote($constants.VOTE_YES)"
-                >
-                  {{ $t('proposalPage.upvote') }}
-                </v-btn>
-                <v-btn
-                  class="mb-4"
-                  block
-                  color="blue darken-3 white--text"
-                  @click="handleVote($constants.VOTE_ABSTAIN)"
-                >
-                  {{ $t('proposalPage.abstain') }}
-                </v-btn>
-                <v-btn
-                  class="mb-4"
-                  block
-                  color="error"
-                  @click="handleVote($constants.VOTE_NO)"
-                >
-                  {{ $t('proposalPage.downvote') }}
-                </v-btn>
-              </template>
-            </div>
-          </v-col>
         </v-row>
 
         <v-tabs
-          class="elevation-2"
-          dark
-          background-color="primary"
+          background-color="rgb(250, 250, 250)"
+          hide-slider
+          show-arrows
         >
-          <v-tab>{{ $t('proposalPage.overview') }}</v-tab>
-          <v-tab>{{ $t('common.budget') }}</v-tab>
-          <v-tab>{{ $t('common.timeline') }}</v-tab>
-          <v-tab>{{ $t('proposalPage.voters') }}</v-tab>
+          <v-tab
+            class="text-transform-none font-weight-semi-bold body-1"
+            active-class="v-tab--active"
+            :ripple="false"
+          >
+            {{ $t('proposalPage.overview') }}
+          </v-tab>
+          <v-tab
+            class="text-transform-none font-weight-semi-bold body-1"
+            active-class="v-tab--active"
+            :ripple="false"
+          >
+            {{ $t('common.budget') }}
+          </v-tab>
+          <v-tab
+            class="text-transform-none font-weight-semi-bold body-1"
+            active-class="v-tab--active"
+            :ripple="false"
+          >
+            {{ $t('common.timeline') }}
+          </v-tab>
+          <v-tab
+            class="text-transform-none font-weight-semi-bold body-1"
+            active-class="v-tab--active"
+            :ripple="false"
+          >
+            {{ $t('proposalPage.voters') }}
+          </v-tab>
 
-          <v-tab-item background-color="tile">
+          <v-tab-item>
             <Overview
               :overview="$_proposalParsed.proposal_json && $_proposalParsed.proposal_json.overview"
-              :proposer="$_proposalParsed.proposer"
-              :hash="$_proposalParsed.proposal_json && $_proposalParsed.proposal_json.hash"
-              :category="$_proposalParsed.proposal_json && $_proposalParsed.proposal_json.category"
-              :created="$_proposalParsed.proposal_json && $_proposalParsed.proposal_json.created"
+              :created="$_proposalParsed.created && $_proposalParsed.created"
               :video="$_proposalParsed.proposal_json && $_proposalParsed.proposal_json.video"
             />
           </v-tab-item>
@@ -403,7 +480,8 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
+  import { mapState, mapActions } from 'vuex';
+  import ActionType from '@/store/constants';
   import Overview from '@/components/proposal-tabs/Overview.vue';
   import BudgetOverview from '@/components/proposal-tabs/BudgetOverview.vue';
   import TimelineOverview from '@/components/proposal-tabs/TimelineOverview.vue';
@@ -414,12 +492,7 @@
   import refund from '@/mixins/refund';
   import activateProposal from '@/mixins/activateProposal';
   import cancelProposalDraft from '@/mixins/cancelProposalDraft';
-  import getDraftByProposalName from '@/mixins/getDraftByProposalName';
   import isProposalExist from '@/mixins/isProposalExist';
-  import getActiveProposalByProposalName from '@/mixins/getActiveProposalByProposalName';
-  import getState from '@/mixins/getState';
-  import getVotesByProposalName from '@/mixins/getVotesByProposalName';
-  import getDeposit from '@/mixins/getDeposit';
   import notification from '@/mixins/notification';
 
   export default {
@@ -437,18 +510,12 @@
       refund,
       activateProposal,
       cancelProposalDraft,
-      getDraftByProposalName,
       isProposalExist,
-      getActiveProposalByProposalName,
-      getState,
-      getVotesByProposalName,
-      getDeposit,
       notification,
     ],
     data() {
       return {
         proposalId: this.$route.params.slug,
-        proposal: {},
         activationDialog: false,
         isDataLoading: true,
       };
@@ -456,6 +523,11 @@
     computed: {
       ...mapState({
         isBp: state => state.userService.isBp,
+        proposal: state => state.userService.proposal,
+        draftProposal: state => state.userService.draftProposal,
+        proposalState: state => state.userService.proposalState,
+        votesByProposalName: state => state.userService.votesByProposalName,
+        proposalDeposit: state => state.userService.proposalDeposit,
       }),
       isDraft() {
         return this.$route.path.includes('draft');
@@ -479,37 +551,22 @@
       $route: {
         immediate: true,
         async handler() {
-          try {
-            this.isDataLoading = true;
-
-            // Request either active proposal or draft
-            if (!await this.$_isProposalExist(this.proposalId)) {
-              this.$router.push({ name: 'Not found' });
-              return;
-            }
-
-            if (this.isDraft) {
-              await this.$_getState();
-              await this.$_getDeposit();
-              this.$_getDraftProposalByProposalName(this.proposalId);
-            } else {
-              this.$_getActiveProposalByProposalName(this.proposalId);
-            }
-
-            // get votes
-            await this.$_getVotesByProposalName(this.proposalId);
-          } catch (error) {
-            // No catch
-          } finally {
-            this.isDataLoading = false;
-          }
+          this.getData();
         },
       },
     },
     methods: {
+      ...mapActions('userService', [
+        ActionType.REQUEST_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME,
+        ActionType.REQUEST_DEPOSIT,
+        ActionType.REQUEST_STATE,
+        ActionType.REQUEST_VOTES_BY_PROPOSAL_NAME,
+        ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME,
+      ]),
       async transfer() {
         try {
           await this.$_sendDeposit();
+          this.getData();
           this.showSuccessMsg(this.$t('notifications.sentDeposit'));
         } catch {} // eslint-disable-line no-empty
       },
@@ -561,6 +618,31 @@
           this.showSuccessMsg(this.$t('notifications.sentVote'));
         } catch {} // eslint-disable-line no-empty
       },
+      async getData() {
+        try {
+          this.isDataLoading = true;
+
+          // Request either active proposal or draft
+          if (!await this.$_isProposalExist(this.proposalId)) {
+            this.$router.push({ name: 'Not found' });
+            return;
+          }
+
+          if (this.isDraft) {
+            await this[ActionType.REQUEST_STATE]();
+            await this[ActionType.REQUEST_DEPOSIT]();
+            this[ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME](this.proposalId);
+          } else {
+            this[ActionType.REQUEST_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME](this.proposalId);
+          }
+          // get votes
+          await this[ActionType.REQUEST_VOTES_BY_PROPOSAL_NAME](this.proposalId);
+        } catch (error) {
+          console.error('Error', error);
+        } finally {
+          this.isDataLoading = false;
+        }
+      },
     },
   };
 </script>
@@ -573,15 +655,31 @@
       background-position: center;
       background-size: cover;
       background-repeat: no-repeat;
-      min-height: 400px;
+      height: 480px;
     }
   }
 
   .actions-left {
-    max-width: 190px;
+    max-width: 230px;
   }
 
   .actions-btn-container {
     width: 140px;
+  }
+
+  .v-tab--active {
+    background-color: $white;
+
+    &:before {
+      display: none;
+    }
+  }
+
+  @media (max-width: 1263px) {
+    .actions-left {
+      max-width: 60%;
+      margin-right: 16px;
+      margin-bottom: 16px;
+    }
   }
 </style>

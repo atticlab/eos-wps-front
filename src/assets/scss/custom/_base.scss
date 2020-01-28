@@ -18,6 +18,10 @@
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 
+.border-none {
+  border: none !important;
+}
+
 @media (min-width: 1904px) {
   .container--custom {
     max-width: 1185px !important;

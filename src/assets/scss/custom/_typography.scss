@@ -1,20 +1,8 @@
 html,
 body,
-.v-application,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-.v-application .display-1,
-.v-application .display-2,
-.v-application .title,
-.v-application > * {
+.v-application {
   font-family: $body-font-family;
-}
-
-html, body {
+  font-weight: 500;
   font-size: 14px;
 }
 

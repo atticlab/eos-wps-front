@@ -302,13 +302,13 @@
     required, minLength, maxLength, helpers, numeric, minValue,
     maxValue, url, decimal,
   } from 'vuelidate/lib/validators';
+  import { mapState, mapActions } from 'vuex';
+  import ActionType from '@/store/constants';
   import BudgetTable from '@/components/BudgetTable.vue';
   import createProposalDraft from '@/mixins/createProposalDraft';
-  import getEosPrice from '@/mixins/getEosPrice';
   import isProposalExist from '@/mixins/isProposalExist';
   import modifyProposalDraft from '@/mixins/modifyProposalDraft';
   import notification from '@/mixins/notification';
-  import getSettings from '@/mixins/getSettings';
 
   export default {
     name: 'Setup',
@@ -318,11 +318,9 @@
     mixins: [
       validationMixin,
       createProposalDraft,
-      getEosPrice,
       isProposalExist,
       modifyProposalDraft,
       notification,
-      getSettings,
     ],
     validations: {
       setupData: {
@@ -396,6 +394,10 @@
       };
     },
     computed: {
+      ...mapState({
+        proposalsSettings: state => state.userService.proposalsSettings,
+        eosPrice: state => state.userService.eosPrice,
+      }),
       nameErrors() {
         const errors = [];
         if (!this.$v.setupData.proposal_name.$dirty) return errors;
@@ -558,7 +560,7 @@
       $route: {
         immediate: true,
         handler() {
-          this.$_getEosPrice();
+          this[ActionType.REQUEST_EOS_PRICE]();
 
           if (this.proposalId) {
             this.proposal = this.$helpers.copyDeep(this.proposalInitial);
@@ -591,9 +593,13 @@
       },
     },
     created() {
-      this.$_getSettings();
+      this[ActionType.REQUEST_SETTINGS]();
     },
     methods: {
+      ...mapActions('userService', [
+        ActionType.REQUEST_SETTINGS,
+        ActionType.REQUEST_EOS_PRICE,
+      ]),
       changeCurrentStep(val) {
         this.$emit('step', val);
       },
@@ -712,12 +718,14 @@
         proposalAdditionalInfo.summary = this.setupData.summary;
         proposalAdditionalInfo.category = this.setupData.category;
 
-        if (this.setupData.img || !!this.setupData.img !== !!proposalAdditionalInfo.img) {
+        // || !!this.setupData.img !== !!proposalAdditionalInfo.img
+        if (this.setupData.img) {
           proposalAdditionalInfo.img = this.setupData.img;
         } else {
           delete proposalAdditionalInfo.img;
         }
-        if (this.setupData.video || !!this.setupData.video !== !!proposalAdditionalInfo.video) {
+        // || !!this.setupData.video !== !!proposalAdditionalInfo.video
+        if (this.setupData.video) {
           proposalAdditionalInfo.video = this.setupData.video;
         } else {
           delete proposalAdditionalInfo.video;

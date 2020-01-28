@@ -31,7 +31,7 @@
               <template v-slot:activator="{ on }">
                 <v-btn
                   v-if="milestones.length < $constants.MAX_TABLE_ITEMS"
-                  class="btn--alt text-transform-none font-weight-bold ml-auto mb-2"
+                  class="btn--alt ml-auto mb-2"
                   :elevation="0"
                   v-on="on"
                 >
@@ -97,15 +97,17 @@
                           >
                             <v-spacer />
                             <v-btn
+                              :elevation="0"
                               color="primary"
-                              class="text-transform-none"
+                              class="text-transform-none mb-2"
                               @click="$refs.startsAtMenu.save(editedItem.startsAt)"
                             >
                               {{ $t('common.ok') }}
                             </v-btn>
                             <v-btn
+                              :elevation="0"
                               color="error"
-                              class="text-transform-none"
+                              class="text-transform-none mb-2"
                               @click="startsAtMenu = false"
                             >
                               {{ $t('proposalCreationPage.cancel') }}
@@ -148,15 +150,17 @@
                           >
                             <v-spacer />
                             <v-btn
+                              :elevation="0"
                               color="primary"
-                              class="text-transform-none"
+                              class="text-transform-none mb-2"
                               @click="$refs.endsAtMenu.save(editedItem.endsAt)"
                             >
                               {{ $t('common.ok') }}
                             </v-btn>
                             <v-btn
+                              :elevation="0"
                               color="error"
-                              class="text-transform-none"
+                              class="text-transform-none mb-2"
                               @click="endsAtMenu = false"
                             >
                               {{ $t('proposalCreationPage.cancel') }}
@@ -172,7 +176,7 @@
                   <v-spacer />
                   <v-btn
                     color="primary"
-                    class="text-transform-none"
+                    class="text-transform-none mb-2"
                     :elevation="0"
                     @click="save"
                   >
@@ -180,7 +184,7 @@
                   </v-btn>
                   <v-btn
                     color="error"
-                    class="text-transform-none"
+                    class="text-transform-none mb-2"
                     :elevation="0"
                     @click="closeDialogEdit"
                   >
@@ -211,7 +215,7 @@
                   <v-spacer />
                   <v-btn
                     color="error"
-                    class="text-transform-none"
+                    class="text-transform-none mb-2"
                     :elevation="0"
                     @click="deleteItem"
                   >
@@ -219,7 +223,7 @@
                   </v-btn>
                   <v-btn
                     color="error"
-                    class="text-transform-none"
+                    class="text-transform-none mb-2"
                     :elevation="0"
                     @click="closeDialogDelete"
                   >

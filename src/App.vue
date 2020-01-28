@@ -64,7 +64,7 @@
           </v-list-item-content>
         </v-list-item>
         <v-list-item
-          v-if="getAccountNameWithAuthority && proposals && proposals.length !== 0"
+          v-if="getAccountNameWithAuthority && draftProposals && draftProposals.length !== 0"
           :to="{ name: 'ProposalsDrafts' }"
         >
           <v-list-item-content>
@@ -127,8 +127,8 @@
 
         <v-btn
           v-if="getAccountNameWithAuthority
-            && proposals
-            && proposals.length !== 0"
+            && draftProposals
+            && draftProposals.length !== 0"
           text
           :to="{ name: 'ProposalsDrafts' }"
           class="font-weight-bold text-transform-none"
@@ -264,12 +264,13 @@
  mapState, mapActions, mapGetters, mapMutations,
 } from 'vuex';
   import ActionType from '@/store/constants';
-  import getDraftsByAccountName from '@/mixins/getDraftsByAccountName';
   import getProducers from '@/mixins/getProducers';
 
   export default {
     name: 'App',
-    mixins: [getDraftsByAccountName, getProducers],
+    mixins: [
+      getProducers,
+    ],
     data() {
       return {
         drawer: false,
@@ -281,6 +282,7 @@
         isScatterLoginLoading: state => state.userService.isScatterLoginLoading,
         isScatterNotConnected: state => state.userService.isScatterNotConnected,
         routeTo: state => state.userService.routeTo,
+        draftProposals: state => state.userService.draftProposals,
       }),
       ...mapGetters('userService', {
         getAccountNameWithAuthority: 'getAccountNameWithAuthority',
@@ -295,7 +297,7 @@
         immediate: true,
         handler(val) {
           if (!val) return;
-          this.$_getDraftProposalByAccountName();
+          this[ActionType.REQUEST_DRAFTS_BY_ACCOUNT_NAME]();
           if (this.routeTo && this.routeTo.meta.requiresAuth) {
             this.$router.push({ path: this.routeTo.path });
           }
@@ -308,20 +310,20 @@
         },
       },
     },
-    created() {
+    async created() {
       this[ActionType.SCATTER_INIT]();
-      // this.$_getProducers();
-      // this.$eventBus.$on('proposal-created', (val) => {
-      //   if (!val) return;
-      //   this.$_getDraftProposalByAccountName();
-      // });
-      // this.$eventBus.$on('proposal-deleted', async (val) => {
-      //   if (!val) return;
-      //   await this.$_getDraftProposalByAccountName();
-      //   if (!this.proposals || this.proposals.length === 0) {
-      //     this.$router.push({ name: 'ProposalsActive' });
-      //   }
-      // });
+      this.$_getProducers();
+      this.$eventBus.$on('proposal-created', (val) => {
+        if (!val) return;
+        this[ActionType.REQUEST_DRAFTS_BY_ACCOUNT_NAME]();
+      });
+      this.$eventBus.$on('proposal-deleted', async (val) => {
+        if (!val) return;
+        await this[ActionType.REQUEST_DRAFTS_BY_ACCOUNT_NAME]();
+        if (!this.draftProposals || this.draftProposals.length === 0) {
+          this.$router.push({ name: 'ProposalsActive' });
+        }
+      });
     },
     methods: {
       ...mapMutations('userService', [
@@ -332,6 +334,8 @@
         ActionType.SCATTER_LOGOUT,
         ActionType.SCATTER_LOGIN,
         ActionType.DEFINE_ROUTE_TO,
+        ActionType.REQUEST_PRODUCERS,
+        ActionType.REQUEST_DRAFTS_BY_ACCOUNT_NAME,
       ]),
     },
   };

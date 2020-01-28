@@ -63,7 +63,6 @@
     "deleteProposal": "Delete proposal",
     "payFee": "Pay deposit fee (100 EOS)",
     "payDepositFee": "Pay deposit fee",
-    "haveToPay": "You have to pay 100 EOS fee if you want to take part at WPS",
     "payFeeShort": "Pay fee",
     "videoLink": "Video link",
     "voters": "Voters",
@@ -74,7 +73,16 @@
     "current": "current",
     "sureToActivate": "Are you sure you want to activate your proposal for the current voting period?",
     "currentVotingPeriodEndsIn": "The current voting period ends in {daysTillEnd} days",
-    "proposalInfo": "Proposal info"
+    "proposalInfo": "Proposal info",
+    "proposalActivation": "Proposal activation",
+    "payFeeDesc": "In order to activate your proposal and make it eligible for voting you have to pay a deposit fee (100 EOS).",
+    "activateDesc": "Note, clicking this button pushes the proposal onchain. This action is irreversible.",
+    "refundDesc": "You can get your deposit fee back if you don't want to make your proposal public. Note, this action is only possible if you haven't activated the proposal.",
+    "editDesc": "You can edit a proposal that hasn't been activated yet.",
+    "deleteDesc": "This action removes a proposal from drafts and you won't be able to access it again.",
+    "voteFor": "Vote for proposal",
+    "abstainIn": "Abstain in voting",
+    "voteAgainst": "Vote against proposal"
   },
   "proposalCreationPage": {
     "proposalCreation": "Proposal creation",
@@ -184,6 +192,7 @@
     "noTotalBudget": "No total budget",
     "nothingToDisplay": "Nothing to display yet",
     "noVideo": "No video",
-    "noVoters": "No voters"
+    "noVoters": "No voters",
+    "noDate": "No date"
   }
 }

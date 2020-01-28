@@ -1,114 +1,61 @@
 <template>
   <v-container fluid>
-    <v-row>
+    <v-row
+      v-if="video && created"
+      class="mb-10 mt-6"
+    >
       <v-col
         cols="12"
-        md="7"
-        lg="8"
+        md="5"
       >
-        <div
-          v-if="overview !== $t('noDataTexts.noOverview')"
-          v-html="overview"
-        />
-        <div v-else>
-          {{ overview }}
-        </div>
-      </v-col>
-      <v-col
-        order="first"
-        order-md="2"
-      >
-        <v-card color="pink darken-4 white--text mb-5">
-          <v-card-title class="justify-center pa-2">
-            {{ $t('proposalPage.author') }}:
-          </v-card-title>
-          <v-card-text
-            class="white
-                   pt-4
-                   text-center
-                   font-weight-bold
-                   word-break
-                   indigo--text"
-          >
-            {{ proposer }}
-          </v-card-text>
-        </v-card>
-
-        <v-card color="pink darken-4 white--text mb-5">
-          <v-card-title class="justify-center pa-2">
-            {{ $t('proposalPage.category') }}:
-          </v-card-title>
-          <v-card-text
-            class="white
-                   pt-4
-                   text-center
-                   font-weight-bold
-                   text-uppercase
-                   word-break
-                   indigo--text"
-          >
-            {{ category }}
-          </v-card-text>
-        </v-card>
-
-        <v-card
-          v-if="video !== $t('noDataTexts.noVideo')"
-          color="pink darken-4 white--text mb-5"
-        >
-          <v-card-title class="justify-center pa-2">
-            {{ $t('proposalPage.videoLink') }}:
-          </v-card-title>
-          <v-card-text
-            class="white
-                   pt-4
-                   text-center
-                   font-weight-bold
-                   text-uppercase
-                   word-break
-                   indigo--text"
-          >
+        <div>
+          <div class="accent--text font-weight-semi-bold text-uppercase">
+            {{ $t('proposalPage.videoLink') }}
+          </div>
+          <div class="font-weight-semi-bold word-break fs-20">
+            <template v-if="video === $t('noDataTexts.noVideo')">
+              {{ video }}
+            </template>
             <a
+              v-else
               :href="video"
               rel="noopener noreferrer"
               target="_blank"
             >
               {{ video }}
             </a>
-          </v-card-text>
-        </v-card>
-
-        <!--        <v-card color="pink darken-4 white&#45;&#45;text mb-5">-->
-        <!--          <v-card-title class="justify-center pa-2">-->
-        <!--            {{ $t('proposalPage.created') }}:-->
-        <!--          </v-card-title>-->
-        <!--          <v-card-text-->
-        <!--            class="white-->
-        <!--                   pt-4-->
-        <!--                   text-center-->
-        <!--                   text-uppercase-->
-        <!--                   word-break-->
-        <!--                   font-weight-bold-->
-        <!--                   indigo&#45;&#45;text"-->
-        <!--          >-->
-        <!--            {{ $moment(created).format($constants.DATE_FORMAT) }}-->
-        <!--          </v-card-text>-->
-        <!--        </v-card>-->
-
-        <!--        <v-card color="pink darken-4 white&#45;&#45;text">-->
-        <!--          <v-card-title class="justify-center pa-2">-->
-        <!--            {{ $t('proposalPage.hash') }}:-->
-        <!--          </v-card-title>-->
-        <!--          <v-card-text-->
-        <!--            class="white pt-4-->
-        <!--                   text-center-->
-        <!--                   text-uppercase-->
-        <!--                   word-break-->
-        <!--                   font-weight-bold-->
-        <!--                   indigo&#45;&#45;text"-->
-        <!--          >-->
-        <!--            {{ hash }}-->
-        <!--          </v-card-text>-->
-        <!--        </v-card>-->
+          </div>
+        </div>
+      </v-col>
+      <v-col
+        v-if="created !== $t('noDataTexts.noDate')"
+        cols="12"
+        md="5"
+      >
+        <div>
+          <div class="accent--text font-weight-semi-bold text-uppercase">
+            {{ $t('proposalPage.created') }}
+          </div>
+          <div class="font-weight-semi-bold word-break fs-20">
+            {{ $moment(created).format($constants.DATE_FORMAT) }}
+          </div>
+        </div>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col
+        cols="12"
+        md="8"
+        lg="9"
+      >
+        <div
+          v-if="overview !== $t('noDataTexts.noOverview')"
+          class="overview-container"
+          v-html="overview"
+        />
+        <div v-else>
+          {{ overview }}
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -124,24 +71,6 @@
           return this.$t('noDataTexts.noOverview');
         },
       },
-      proposer: {
-        type: String,
-        default() {
-          return this.$t('noDataTexts.noProposer');
-        },
-      },
-      hash: {
-        type: String,
-        default() {
-          return this.$t('noDataTexts.noHash');
-        },
-      },
-      category: {
-        type: String,
-        default() {
-          return this.$t('noDataTexts.noCategory');
-        },
-      },
       video: {
         type: String,
         default() {
@@ -150,12 +79,16 @@
       },
       created: {
         type: String,
-        default: '',
+        default() {
+          return this.$t('noDataTexts.noDate');
+        },
       },
     },
   };
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+  .overview-container {
+   margin-bottom: -12px;
+  }
 </style>

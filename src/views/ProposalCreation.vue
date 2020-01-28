@@ -104,11 +104,12 @@
 </template>
 
 <script>
+  import { mapState, mapActions, mapMutations } from 'vuex';
+  import ActionType from '@/store/constants';
   import Setup from '@/components/proposal-creation-steps/Setup.vue';
   import Description from '@/components/proposal-creation-steps/Description.vue';
   import TimelineEditable from '@/components/proposal-creation-steps/TimelineEditable.vue';
   import proposalParsed from '@/mixins/proposalParsed';
-  import getDraftByProposalName from '@/mixins/getDraftByProposalName';
   import isProposalExist from '@/mixins/isProposalExist';
 
   export default {
@@ -118,7 +119,7 @@
       Description,
       TimelineEditable,
     },
-    mixins: [proposalParsed, getDraftByProposalName, isProposalExist],
+    mixins: [proposalParsed, isProposalExist],
     data() {
       return {
         currentStep: 1,
@@ -126,6 +127,11 @@
       };
     },
     computed: {
+      ...mapState({
+        isDraftProposalByProposalNameLoading: state => state
+          .userService.isDraftProposalByProposalNameLoading,
+        proposal: state => state.userService.proposal,
+      }),
       proposalId() {
         return this.$route.params.slug ? this.$route.params.slug : '';
       },
@@ -151,7 +157,7 @@
         async handler() {
           if (!this.proposalId) {
             // proposal is in the getDraftByProposalName mixin
-            this.proposal = {};
+            this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({});
             return;
           }
           if (!await this.$_isProposalExist(this.proposalId)) {
@@ -159,7 +165,7 @@
             return;
           }
 
-          this.$_getDraftProposalByProposalName(this.proposalId);
+          this[ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME](this.proposalId);
         },
       },
       async currentStep() {
@@ -169,7 +175,7 @@
           return;
         }
 
-        this.$_getDraftProposalByProposalName(this.proposalId);
+        this[ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME](this.proposalId);
       },
       async isDraftModified() {
         if (!this.proposalId) return;
@@ -178,10 +184,16 @@
           return;
         }
 
-        this.$_getDraftProposalByProposalName(this.proposalId);
+        this[ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME](this.proposalId);
       },
     },
     methods: {
+      ...mapActions('userService', [
+        ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME,
+      ]),
+      ...mapMutations('userService', [
+        ActionType.SET_DRAFT_BY_PROPOSAL_NAME,
+      ]),
       setCurrentStep(stepNumber) {
         this.currentStep = stepNumber;
       },

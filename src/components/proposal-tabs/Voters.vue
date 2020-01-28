@@ -4,75 +4,45 @@
       <template
         v-if="votesByGroups"
       >
-        <v-row class="mb-12">
+        <v-row class="mb-10 mt-6">
           <v-col
             cols="12"
-            lg="4"
+            sm="3"
           >
-            <v-card
-              class="text-center"
-              color="pink darken-4 white--text"
-            >
-              <v-card-title class="justify-center pa-2">
-                {{ $t('common.yes') }}:
-              </v-card-title>
-              <v-card-text
-                class="white pt-4
-                   text-center
-                   text-uppercase
-                   word-break
-                   font-weight-bold
-                   green--text"
-              >
+            <div>
+              <div class="accent--text font-weight-semi-bold text-uppercase">
+                {{ $t('common.yes') }}
+              </div>
+              <div class="primary--text font-weight-semi-bold word-break fs-20">
                 {{ votesByGroups.yes }}
-              </v-card-text>
-            </v-card>
+              </div>
+            </div>
           </v-col>
           <v-col
             cols="12"
-            lg="4"
+            sm="3"
           >
-            <v-card
-              class="text-center"
-              color="pink darken-4 white--text"
-            >
-              <v-card-title class="justify-center pa-2">
-                {{ $t('common.no') }}:
-              </v-card-title>
-              <v-card-text
-                class="white pt-4
-                   text-center
-                   text-uppercase
-                   word-break
-                   font-weight-bold
-                   red--text"
-              >
-                {{ votesByGroups.no }}
-              </v-card-text>
-            </v-card>
-          </v-col>
-          <v-col
-            cols="12"
-            lg="4"
-          >
-            <v-card
-              class="text-center"
-              color="pink darken-4 white--text"
-            >
-              <v-card-title class="justify-center pa-2">
-                {{ $t('proposalPage.abstain') }}:
-              </v-card-title>
-              <v-card-text
-                class="white pt-4
-                   text-center
-                   text-uppercase
-                   word-break
-                   font-weight-bold
-                   indigo--text"
-              >
+            <div>
+              <div class="accent--text font-weight-semi-bold text-uppercase">
+                {{ $t('proposalPage.abstain') }}
+              </div>
+              <div class="font-weight-semi-bold word-break fs-20">
                 {{ votesByGroups.abstain }}
-              </v-card-text>
-            </v-card>
+              </div>
+            </div>
+          </v-col>
+          <v-col
+            cols="12"
+            sm="3"
+          >
+            <div>
+              <div class="accent--text font-weight-semi-bold text-uppercase">
+                {{ $t('common.no') }}
+              </div>
+              <div class="red--text font-weight-semi-bold word-break fs-20">
+                {{ votesByGroups.no }}
+              </div>
+            </div>
           </v-col>
         </v-row>
 
@@ -82,10 +52,10 @@
               <template v-slot:default>
                 <thead>
                   <tr>
-                    <th class="text-left font-weight-bold body-1">
+                    <th class="text-left font-weight-bold body-1 secondary--text">
                       {{ $t('proposalPage.voter') }}
                     </th>
-                    <th class="text-left font-weight-bold body-1">
+                    <th class="text-left font-weight-bold body-1 secondary--text">
                       {{ $t('proposalPage.vote') }}
                     </th>
                   </tr>
@@ -96,31 +66,30 @@
                     :key="item.name"
                   >
                     <td>
-                      <span class="cyan--darken-2--bold body-1">
+                      <span class="body-1 font-weight-semi-bold">
                         {{ item.key }}
                       </span>
                     </td>
                     <td>
                       <v-icon
                         v-if="item.value === 'yes'"
-                        small
-                        color="green"
+                        size="20"
+                        color="primary"
                       >
-                        mdi-thumb-up
+                        far fa-thumbs-up
                       </v-icon>
                       <v-icon
                         v-else-if="item.value === 'no'"
-                        small
+                        size="20"
                         color="red"
                       >
-                        mdi-thumb-down
+                        far fa-thumbs-down
                       </v-icon>
                       <v-icon
                         v-else
-                        small
-                        color="indigo"
+                        size="20"
                       >
-                        mdi-thumbs-up-down
+                        fas fa-minus
                       </v-icon>
                     </td>
                   </tr>
@@ -131,12 +100,11 @@
         </v-row>
       </template>
 
-      <div
-        v-else
-        class="text-center"
-      >
-        {{ $t('noDataTexts.noVoters') }}
-      </div>
+      <v-row v-else>
+        <v-col>
+          {{ $t('noDataTexts.noVoters') }}
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>

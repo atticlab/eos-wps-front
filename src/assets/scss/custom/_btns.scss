@@ -1,4 +1,7 @@
 .btn--alt {
+   @extend .text-transform-none;
+   @extend .font-weight-semi-bold;
    background-color: $white !important;
    border: 2px solid $grey--2 !important;
+   color: $black !important;
 }

@@ -4,6 +4,8 @@
     :items="budgetData"
     :hide-default-footer="true"
     :items-per-page="$constants.MAX_TABLE_ITEMS"
+    :hide-default-header="$vuetify.breakpoint.xs"
+    disable-sort
   >
     <template v-slot:top>
       <v-toolbar
@@ -18,7 +20,7 @@
           <template v-slot:activator="{ on }">
             <v-btn
               v-if="budgetData.length < $constants.MAX_TABLE_ITEMS"
-              class="btn--alt text-transform-none font-weight-bold ml-auto mb-2"
+              class="btn--alt ml-auto mb-2"
               :elevation="0"
               v-on="on"
             >
@@ -118,7 +120,7 @@
             <v-card-actions>
               <v-spacer />
               <v-btn
-                class="text-transform-none"
+                class="text-transform-none mb-2"
                 color="primary"
                 :elevation="0"
                 type="submit"
@@ -127,7 +129,7 @@
                 {{ $t('proposalCreationPage.save') }}
               </v-btn>
               <v-btn
-                class="text-transform-none"
+                class="text-transform-none mb-2"
                 color="error"
                 :elevation="0"
                 @click="closeDialogEdit"
@@ -159,7 +161,7 @@
             <v-card-actions>
               <v-spacer />
               <v-btn
-                class="text-transform-none"
+                class="text-transform-none mb-2"
                 color="error"
                 :elevation="0"
                 @click="deleteItem"
@@ -167,7 +169,7 @@
                 {{ $t('proposalCreationPage.delete') }}
               </v-btn>
               <v-btn
-                class="text-transform-none"
+                class="text-transform-none mb-2"
                 color="error"
                 :elevation="0"
                 @click="closeDialogDelete"
@@ -280,7 +282,7 @@
             {{ `${(totalBudgetEos).toFixed($constants.EOS_MAX_DIGITS)} EOS` }}
           </div>
         </td>
-        <td />
+        <td :class="{'border-none': !isEditable}" />
       </tr>
     </template>
     <template v-slot:no-data>

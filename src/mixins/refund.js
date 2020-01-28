@@ -33,7 +33,6 @@ export default {
         );
         return res.transaction_id;
       } catch (e) {
-        // TODO: notify about err
         console.error('$_refund', e);
         this.$errorsHandler.handleError(e);
         throw e;
