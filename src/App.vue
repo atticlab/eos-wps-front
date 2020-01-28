@@ -8,10 +8,13 @@
       <v-list dense>
         <v-list-item button>
           <v-list-item-content>
-            <v-list-item-title>
+            <v-list-item-title class="text-center">
               <v-btn
                 v-if="!getAccountNameWithAuthority"
+                large
+                height="50"
                 color="primary"
+                class="text-transform-none"
                 :disabled="isScatterLoginLoading"
                 @click="SCATTER_LOGIN"
               >
@@ -23,9 +26,19 @@
               >
                 <template v-slot:activator="{ on }">
                   <v-btn
-                    color="primary"
+                    text
+                    large
+                    class="font-weight-bold text-transform-none"
                     v-on="on"
                   >
+                    <v-icon
+                      size="12"
+                      left
+                      class="mt-1"
+                    >
+                      fas fa-chevron-down
+                    </v-icon>
+
                     {{ getAccountNameWithAuthority }}
                   </v-btn>
                 </template>
@@ -75,15 +88,16 @@
 
     <v-app-bar
       app
-      color="primary"
-      dark
+      height="80"
+      class="border"
+      :elevate-on-scroll="true"
     >
       <div class="d-flex align-center">
         <v-app-bar-nav-icon
-          class="d-flex d-md-none"
-          @click.stop="drawer = !drawer"
-        />
-        <v-app-bar-nav-icon :to="{ name: 'ProposalsActive' }">
+          :to="{ name: 'ProposalsActive' }"
+          color="primary"
+          class="w-100"
+        >
           <img
             src="@/assets/img/eos.svg"
             alt="EOS WPS"
@@ -91,57 +105,25 @@
           >
         </v-app-bar-nav-icon>
         <v-toolbar-title
-          class="ml-2"
+          class="ml-2 font-weight-bold"
         >
-          EOS WPS
+          EOS
+          <span class="primary--text">
+            WPS
+          </span>
         </v-toolbar-title>
       </div>
 
       <v-spacer />
 
-      <v-toolbar-items class="d-none d-md-flex mr-n4">
-        <v-btn
-          v-if="!getAccountNameWithAuthority"
-          text
-          :disabled="isScatterLoginLoading"
-          @click="SCATTER_LOGIN"
-        >
-          {{ $t('common.signInWithScatter') }}
-        </v-btn>
-        <v-menu
-          v-else
-          offset-y
-        >
-          <template v-slot:activator="{ on }">
-            <v-btn
-              text
-              v-on="on"
-            >
-              {{ getAccountNameWithAuthority }}
-            </v-btn>
-          </template>
-
-          <v-list>
-            <v-list-item
-              @click="SCATTER_LOGOUT($route.name)"
-            >
-              <v-list-item-title>
-                {{ $t('common.signOut') }}
-              </v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-
-        <v-divider vertical />
-
+      <v-toolbar-items class="d-none d-md-flex">
         <v-btn
           text
           :to="{ name: 'ProposalsActive' }"
+          class="font-weight-bold text-transform-none"
         >
           {{ $t('common.activeProposals') }}
         </v-btn>
-
-        <v-divider vertical />
 
         <v-btn
           v-if="getAccountNameWithAuthority
@@ -149,27 +131,87 @@
             && draftProposals.length !== 0"
           text
           :to="{ name: 'ProposalsDrafts' }"
+          class="font-weight-bold text-transform-none"
         >
           {{ $t('common.drafts') }}
         </v-btn>
 
         <v-divider vertical />
 
-        <v-btn
+        <v-menu
           v-if="getAccountNameWithAuthority"
-          :to="{ name: 'Proposal editor' }"
-          text
+          offset-y
         >
-          {{ $t('common.createProposal') }}
-        </v-btn>
+          <template v-slot:activator="{ on }">
+            <v-btn
+              text
+              class="font-weight-bold text-transform-none"
+              v-on="on"
+            >
+              <v-icon
+                size="12"
+                left
+                class="mt-1"
+              >
+                fas fa-chevron-down
+              </v-icon>
+
+              {{ getAccountNameWithAuthority }}
+
+              <span class="icon-circle">
+                {{ getAccountNameWithAuthority.split('')[0] }}
+              </span>
+            </v-btn>
+          </template>
+
+          <v-list>
+            <v-list-item
+              @click="SCATTER_LOGOUT()"
+            >
+              <v-list-item-title class="font-weight-medium">
+                {{ $t('common.signOut') }}
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </v-toolbar-items>
+
+      <v-btn
+        v-if="!getAccountNameWithAuthority"
+        color="primary"
+        class="d-none d-md-flex ml-4 text-transform-none"
+        :elevation="0"
+        :disabled="isScatterLoginLoading"
+        :large="true"
+        height="50"
+        @click="SCATTER_LOGIN"
+      >
+        {{ $t('common.signInWithScatter') }}
+      </v-btn>
+
+      <v-btn
+        v-else
+        :to="{ name: 'Proposal editor' }"
+        color="primary"
+        :elevation="0"
+        class="d-none d-md-flex text-transform-none"
+        :large="true"
+        height="50"
+      >
+        {{ $t('common.createProposal') }}
+      </v-btn>
+
+      <v-app-bar-nav-icon
+        class="d-flex d-md-none flex-stretch"
+        @click.stop="drawer = !drawer"
+      />
     </v-app-bar>
 
     <v-overlay v-if="isScatterLoginLoading">
       <v-alert
         transition="scale-transition"
         border-top
-        type="info"
+        color="primary"
         :class="{ 'alert-scatter': true }"
       >
         {{ $t('notifications.scatterInit') }}
@@ -188,15 +230,16 @@
     </v-content>
 
     <v-footer
-      color="primary"
+      color="white secondary--text"
+      height="80"
     >
-      <span class="white--text">&copy; 2019</span>
+      <span class="font-weight-bold">© {{ thisYear }} EOS WPS. All Rights Reserved</span>
     </v-footer>
 
     <v-snackbar
       v-if="!isScatterLoginLoading"
-      v-model="isScatterNotConnected"
-      color="info"
+      v-model="isSnackbarOpen"
+      color="primary"
       :timeout="30000"
       :top="true"
       :multi-line="true"
@@ -231,6 +274,7 @@
     data() {
       return {
         drawer: false,
+        isSnackbarOpen: true,
       };
     },
     computed: {
@@ -243,6 +287,10 @@
       ...mapGetters('userService', {
         getAccountNameWithAuthority: 'getAccountNameWithAuthority',
       }),
+      thisYear() {
+        const now = new Date();
+        return now.getFullYear();
+      },
     },
     watch: {
       getAccountNameWithAuthority: {
@@ -253,6 +301,12 @@
           if (this.routeTo && this.routeTo.meta.requiresAuth) {
             this.$router.push({ path: this.routeTo.path });
           }
+        },
+      },
+      isScatterNotConnected: {
+        immediate: true,
+        handler(val) {
+          this.isSnackbarOpen = val;
         },
       },
     },
@@ -303,5 +357,23 @@
 
     left: 0;
     top: 0;
+  }
+
+  .v-app-bar {
+    border-bottom: 1px solid $grey-white !important;
+  }
+
+  .icon-circle {
+    background-color: $primary;
+    border-radius: 50%;
+    color: $white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 5px;
+    text-transform: uppercase;
+    font-weight: 500;
+    height: 34px;
+    width: 34px;
   }
 </style>

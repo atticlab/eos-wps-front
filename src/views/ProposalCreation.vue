@@ -1,34 +1,48 @@
 <template>
   <div class="py-12 proposal-creation">
     <v-container class="container--custom">
-      <h1 class="display-1 font-weight-regular mb-3">
-        {{ $t('proposalCreationPage.proposalCreation') }}
-      </h1>
+      <div class="page-header">
+        <div class="page-header__top">
+          <h1 class="fs-35 mb-2">
+            {{ $t('proposalCreationPage.proposalCreation') }}
+          </h1>
+          <div class="font-weight-bold">
+            {{ $t('common.createProposalOnMainnet') }}
+          </div>
+        </div>
+        <div class="page-header__bottom" />
+      </div>
 
-      <v-divider class="my-12" />
-
+      <!--      :alt-labels="true"-->
       <v-stepper
         v-model="currentStep"
-        :alt-labels="true"
+        flat
+        :elevation="0"
       >
-        <v-stepper-header>
+        <v-stepper-header
+          class="justify-center font-weight-bold"
+        >
           <v-stepper-step
+            color="primary"
             :complete="currentStep > 1"
             :step="1"
             :editable="currentStep >= 1"
           >
             {{ $t('proposalCreationPage.setup') }}
           </v-stepper-step>
-          <v-divider />
+          <!--          <v-divider />-->
           <v-stepper-step
+            color="primary"
+            class="mx-sm-12"
             :complete="isOverviewAvailable"
             :step="2"
             :editable="isOverviewAvailable"
           >
             {{ $t('proposalCreationPage.description') }}
           </v-stepper-step>
-          <v-divider />
+          <!--          <v-divider />-->
           <v-stepper-step
+            color="primary"
             :complete="isMilestonesAvailable"
             :step="3"
             :editable="isMilestonesAvailable"
@@ -53,14 +67,20 @@
         </div>
 
         <v-stepper-items v-show="!isDraftProposalByProposalNameLoading">
-          <v-stepper-content step="1">
+          <v-stepper-content
+            step="1"
+            class="pb-12"
+          >
             <Setup
               :proposal-initial="$_proposalParsed"
               @step="setCurrentStep"
             />
           </v-stepper-content>
 
-          <v-stepper-content step="2">
+          <v-stepper-content
+            step="2"
+            class="pb-12"
+          >
             <Description
               :proposal-initial="$_proposalParsed"
               @step="setCurrentStep"
@@ -68,7 +88,10 @@
             />
           </v-stepper-content>
 
-          <v-stepper-content step="3">
+          <v-stepper-content
+            step="3"
+            class="pb-12"
+          >
             <TimelineEditable
               :proposal-initial="$_proposalParsed"
               @is-draft-modified="setIsDraftModified"
@@ -182,5 +205,32 @@
 </script>
 
 <style lang="scss" scoped>
+  @import "~@/assets/scss/variables";
 
+  .page-header {
+    background-color: $white;
+    margin-bottom: 30px;
+
+    &__top {
+      background-color: $primary--bg;
+      background-image: url("~@/assets/img/bg-top.png");
+      background-size: 35%;
+      background-position: center right;
+      padding: 30px;
+      height: 200px;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    &__bottom {
+      height: 60px;
+    }
+  }
+
+  @media (max-width: 599px) {
+    .page-header__top {
+      background-image: none;
+    }
+  }
 </style>

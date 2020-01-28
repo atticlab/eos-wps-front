@@ -1,5 +1,9 @@
 <template>
   <div>
+    <h2 class="body-1 font-weight-bold mb-4 mt-12 ml-4">
+      {{ $t('proposalCreationPage.description') }}
+    </h2>
+
     <v-text-field
       ref="textInput"
       v-model="text"
@@ -11,17 +15,21 @@
       v-model="text"
       :content="content"
       :options="editorOptions"
-      class="my-12 h"
+      class="h"
     />
 
-    <v-btn
-      color="success"
-      class="mr-2"
-      :disabled="isModifyProposalDraftLoading"
-      @click="modify"
-    >
-      {{ $t('proposalCreationPage.continue') }}
-    </v-btn>
+    <div class="d-flex justify-center">
+      <v-btn
+        color="primary"
+        large
+        height="50"
+        class="text-transform-none"
+        :disabled="isModifyProposalDraftLoading"
+        @click="modify"
+      >
+        {{ $t('proposalCreationPage.continue') }}
+      </v-btn>
+    </div>
   </div>
 </template>
 
@@ -65,6 +73,7 @@
         text: '',
         proposal: {},
         editorOptions: {
+          theme: 'snow',
           modules: {
             toolbar: [
               ['bold', 'italic', 'underline', 'strike'],

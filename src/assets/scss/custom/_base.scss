@@ -1,5 +1,5 @@
 .v-content__wrap {
-  background-color: $dark-blue--lighten;
+  background-color: $grey-white--2;
 }
 
 .border-right-divider {
@@ -8,6 +8,18 @@
 
 .border--grey {
   border: 1px solid rgba(0, 0, 0, 0.12) !important;
+}
+
+.v-divider {
+  border-bottom: 2px dotted $grey--2 !important;
+}
+
+.border-bottom {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.border-none {
+  border: none !important;
 }
 
 @media (min-width: 1904px) {

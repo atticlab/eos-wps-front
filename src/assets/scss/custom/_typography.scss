@@ -1,13 +1,53 @@
-.cyan--darken-2--bold {
-  font-weight: 700 !important;
-  color: $cyan--darken-2 !important;
+html,
+body,
+.v-application {
+  font-family: $body-font-family;
+  font-weight: 500;
+  font-size: 14px;
 }
 
-.teal--darken-4--bold {
-  font-weight: 700 !important;
-  color: $teal--darken-4 !important;
+.theme--light.v-application {
+  color: $black !important;
 }
 
 .word-break {
   word-break: break-all;
+}
+
+.fs-50 {
+  font-size: 50px !important;
+}
+
+.fs-40 {
+  font-size: 40px !important;
+}
+
+
+.fs-30 {
+  font-size: 30px !important;
+}
+
+.fs-35 {
+  font-size: 35px !important;
+}
+
+.fs-17 {
+  font-size: 17px !important;
+}
+
+.fs-12 {
+  font-size: 12px !important;
+}
+
+
+.fs-20 {
+  font-size: 20px !important;
+}
+
+.font-weight-semi-bold {
+  font-weight: 600 !important;
+}
+
+.text-transform-none {
+  text-transform: none !important;
 }

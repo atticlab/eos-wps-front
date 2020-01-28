@@ -1,74 +1,47 @@
 <template>
   <v-container fluid>
-    <v-row class="mb-12">
+    <v-row class="mb-10 mt-6">
       <v-col
         cols="12"
-        lg="4"
+        sm="6"
+        md="3"
       >
-        <v-card
-          class="text-center"
-          color="pink darken-4 white--text"
-        >
-          <v-card-title class="justify-center pa-2">
-            {{ $t('proposalPage.totalRequested') }}:
-          </v-card-title>
-          <v-card-text
-            class="white pt-4
-                   text-center
-                   text-uppercase
-                   word-break
-                   font-weight-bold
-                   indigo--text"
-          >
+        <div>
+          <div class="accent--text font-weight-semi-bold text-uppercase">
+            {{ $t('proposalPage.totalRequested') }}
+          </div>
+          <div class="font-weight-semi-bold word-break fs-20">
             {{ totalBudget }}
-          </v-card-text>
-        </v-card>
+          </div>
+        </div>
       </v-col>
       <v-col
         cols="12"
-        lg="4"
+        sm="6"
+        md="3"
       >
-        <v-card
-          class="text-center"
-          color="pink darken-4 white--text"
-        >
-          <v-card-title class="justify-center pa-2">
-            {{ $t('common.numberOfPayments') }}:
-          </v-card-title>
-          <v-card-text
-            class="white pt-4
-                   text-center
-                   text-uppercase
-                   word-break
-                   font-weight-bold
-                   indigo--text"
-          >
+        <div>
+          <div class="accent--text font-weight-semi-bold text-uppercase">
+            {{ $t('common.numberOfPayments') }}
+          </div>
+          <div class="font-weight-semi-bold word-break fs-20">
             {{ `${duration} ${$t('common.months')}` }}
-          </v-card-text>
-        </v-card>
+          </div>
+        </div>
       </v-col>
       <v-col
         cols="12"
-        lg="4"
+        sm="6"
+        md="3"
       >
-        <v-card
-          class="text-center"
-          color="pink darken-4 white--text"
-        >
-          <v-card-title class="justify-center pa-2">
-            {{ $t('proposalPage.monthlyRequested') }}:
-          </v-card-title>
-          <v-card-text
-            class="white pt-4
-                   text-center
-                   text-uppercase
-                   word-break
-                   font-weight-bold
-                   indigo--text"
-          >
+        <div>
+          <div class="accent--text font-weight-semi-bold text-uppercase">
+            {{ $t('proposalPage.monthlyRequested') }}
+          </div>
+          <div class="font-weight-semi-bold word-break fs-20">
             {{ monthlyBudget }}
-          </v-card-text>
-        </v-card>
+          </div>
+        </div>
       </v-col>
     </v-row>
 

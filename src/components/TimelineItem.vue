@@ -1,14 +1,9 @@
 <template>
-  <div
-    :class="{
-      'timeline-item pa-3 mb-3': true,
-      'timeline-item--completed': isCompleted,
-      'timeline-item--in-progress': isInProgress,
-      'timeline-item--scheduled': isScheduled,
-    }"
-  >
-    <h4>{{ title }}</h4>
-    <div class="body-2">
+  <div class="timeline-item">
+    <h4 class="font-weight-semi-bold text-uppercase mb-2">
+      {{ title }}
+    </h4>
+    <div class="fs-12 accent--text">
       {{ $moment(startsAt).format($constants.DATE_FORMAT) }} -
       {{ $moment(endsAt).format($constants.DATE_FORMAT) }}
     </div>
@@ -53,19 +48,4 @@
 
 <style lang="scss" scoped>
   @import '~@/assets/scss/variables';
-
-  .timeline-item {
-    background-color: $blue-grey--lighten-5;
-    border-left: 3px solid $blue-grey;
-
-    &--in-progress {
-      background-color: $indigo--lighten-5;
-      border-left-color: $dark-blue;
-    }
-
-    &--completed {
-      background-color: $green--lighten-5;
-      border-left-color: $green;
-    }
-  }
 </style>

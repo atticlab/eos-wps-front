@@ -3,8 +3,9 @@
     :headers="budgetHeaders"
     :items="budgetData"
     :hide-default-footer="true"
-    class="table"
     :items-per-page="$constants.MAX_TABLE_ITEMS"
+    :hide-default-header="$vuetify.breakpoint.xs"
+    disable-sort
   >
     <template v-slot:top>
       <v-toolbar
@@ -19,9 +20,8 @@
           <template v-slot:activator="{ on }">
             <v-btn
               v-if="budgetData.length < $constants.MAX_TABLE_ITEMS"
-              color="primary"
-              dark
-              class="ml-auto mb-2"
+              class="btn--alt ml-auto mb-2"
+              :elevation="0"
               v-on="on"
             >
               {{ $t('proposalCreationPage.addNewItem') }}
@@ -30,7 +30,7 @@
           <v-card>
             <!--            <form @submit.prevent="save">-->
             <v-card-title>
-              <span class="headline">{{ formTitle }}</span>
+              <span class="font-weight-bold">{{ formTitle }}</span>
             </v-card-title>
 
             <v-card-text>
@@ -108,7 +108,7 @@
                   >
                     <div>
                       <div>{{ $t('common.subtotal') }}</div>
-                      <div class="black--text body-1">
+                      <div class="black--text body-1 font-weight-medium">
                         {{ `$${subtotal}` }}
                       </div>
                     </div>
@@ -120,19 +120,21 @@
             <v-card-actions>
               <v-spacer />
               <v-btn
-                color="error"
-                text
-                @click="closeDialogEdit"
-              >
-                {{ $t('proposalCreationPage.cancel') }}
-              </v-btn>
-              <v-btn
-                color="success"
-                text
+                class="text-transform-none mb-2"
+                color="primary"
+                :elevation="0"
                 type="submit"
                 @click="save"
               >
                 {{ $t('proposalCreationPage.save') }}
+              </v-btn>
+              <v-btn
+                class="text-transform-none mb-2"
+                color="error"
+                :elevation="0"
+                @click="closeDialogEdit"
+              >
+                {{ $t('proposalCreationPage.cancel') }}
               </v-btn>
             </v-card-actions>
             <!--            </form>-->
@@ -145,13 +147,13 @@
         >
           <v-card>
             <v-card-title>
-              <span class="headline">
+              <span class="font-weight-bold">
                 {{ $t('proposalCreationPage.deleteItem') }}
               </span>
             </v-card-title>
 
             <v-card-text>
-              <p>
+              <p class="font-weight-medium">
                 {{ $t('proposalCreationPage.deleteConfirm') }}
               </p>
             </v-card-text>
@@ -159,18 +161,20 @@
             <v-card-actions>
               <v-spacer />
               <v-btn
+                class="text-transform-none mb-2"
                 color="error"
-                text
-                @click="closeDialogDelete"
-              >
-                {{ $t('proposalCreationPage.cancel') }}
-              </v-btn>
-              <v-btn
-                color="error"
-                text
+                :elevation="0"
                 @click="deleteItem"
               >
                 {{ $t('proposalCreationPage.delete') }}
+              </v-btn>
+              <v-btn
+                class="text-transform-none mb-2"
+                color="error"
+                :elevation="0"
+                @click="closeDialogDelete"
+              >
+                {{ $t('proposalCreationPage.cancel') }}
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -178,76 +182,78 @@
       </v-toolbar>
     </template>
     <template v-slot:item.title="{ item }">
-      <span class="body-1">
+      <span class="body-1 font-weight-semi-bold">
         {{ item.title }}
       </span>
     </template>
     <template v-slot:item.cost="{ item }">
-      <span class="body-1">
+      <span class="body-1 font-weight-semi-bold">
         {{ `$${item.cost}` }}
       </span>
     </template>
     <template v-slot:item.amount="{ item }">
-      <span class="body-1">
+      <span class="body-1 font-weight-semi-bold">
         {{ item.amount }}
       </span>
     </template>
     <template v-slot:item.unit="{ item }">
-      <span class="body-1">
+      <span class="body-1 font-weight-semi-bold">
         {{ item.unit }}
       </span>
     </template>
     <template v-slot:item.subtotal="{ item }">
-      <div class="body-1">
-        {{ `$${item.subtotal}` }}
-      </div>
-      <div class="body-2 font-weight-bold indigo--text">
-        {{ `${(item.subtotal / eosPrice).toFixed($constants.EOS_MAX_DIGITS)} EOS` }}
+      <div class="body-1 font-weight-semi-bold">
+        <div class="mb-1">
+          {{ `$${item.subtotal}` }}
+        </div>
+        <div class="primary--text">
+          {{ `${(item.subtotal / eosPrice).toFixed($constants.EOS_MAX_DIGITS)} EOS` }}
+        </div>
       </div>
     </template>
     <template
       v-slot:item.action="{ item }"
     >
       <v-btn
-        text
         icon
         color="primary"
       >
         <v-icon
-          small
+          :size="18"
           @click="editItem(item)"
         >
-          mdi-pencil
+          fas fa-edit
         </v-icon>
       </v-btn>
       <v-btn
-        text
         icon
         color="error"
       >
         <v-icon
-          small
+          :size="18"
           @click="openDeleteDialog(item)"
         >
-          mdi-delete
+          far fa-trash-alt
         </v-icon>
       </v-btn>
     </template>
     <template v-slot:footer>
-      <div class="d-flex d-sm-none justify-space-between pa-4">
-        <div class="title">
-          <div>
+      <div class="d-flex d-sm-none justify-space-between pa-4 border-bottom">
+        <div class="body-1 font-weight-bold">
+          <div class="mb-1">
             {{ $t('proposalPage.total') }}:
           </div>
-          <div class="body-1 font-weight-bold indigo--text">
+          <div class="body-2 font-weight-medium accent--text">
             {{ $t('proposalPage.eosConversionRate') }}:
             {{ `$${eosPrice}` }}
           </div>
         </div>
 
-        <div class="title">
-          <div>{{ `$${totalBudget}` }}</div>
-          <div class="font-weight-bold indigo--text">
+        <div class="body-1 font-weight-semi-bold">
+          <div class="mb-1">
+            {{ `$${totalBudget}` }}
+          </div>
+          <div class="body-2 font-weight-medium accent--text">
             {{ `${(totalBudgetEos).toFixed($constants.EOS_MAX_DIGITS)} EOS` }}
           </div>
         </div>
@@ -256,11 +262,11 @@
 
     <template v-slot:body.append>
       <tr class="d-none d-sm-table-row">
-        <td class="title">
-          <div>
+        <td class="body-1 font-weight-bold">
+          <div class="mb-1">
             {{ $t('proposalPage.total') }}:
           </div>
-          <div class="body-1 font-weight-bold indigo--text">
+          <div class="body-2 font-weight-medium accent--text">
             {{ $t('proposalPage.eosConversionRate') }}:
             {{ `$${eosPrice}` }}
           </div>
@@ -268,13 +274,15 @@
         <td />
         <td />
         <td />
-        <td class="title">
-          <div>{{ `$${totalBudget}` }}</div>
-          <div class="font-weight-bold indigo--text">
+        <td class="body-1 font-weight-semi-bold">
+          <div class="mb-1">
+            {{ `$${totalBudget}` }}
+          </div>
+          <div class="body-2 font-weight-medium accent--text">
             {{ `${(totalBudgetEos).toFixed($constants.EOS_MAX_DIGITS)} EOS` }}
           </div>
         </td>
-        <td />
+        <td :class="{'border-none': !isEditable}" />
       </tr>
     </template>
     <template v-slot:no-data>

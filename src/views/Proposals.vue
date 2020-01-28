@@ -1,9 +1,15 @@
 <template>
   <div class="py-12">
     <v-container class="container--custom">
-      <h1 class="display-1 font-weight-regular">
-        {{ proposalsTitle }}
-      </h1>
+      <div class="d-flex justify-space-between flex-wrap">
+        <h1 class="fs-50 font-weight-bold">
+          {{ proposalsTitle }}
+        </h1>
+
+        <div class="fs-50 font-weight-bold">
+          {{ proposalsNumber }}.
+        </div>
+      </div>
 
       <v-divider class="my-12" />
 
@@ -19,149 +25,214 @@
         />
       </div>
 
-      <template v-else-if="!isDrafts">
-        <!--        <v-row v-if="!isDrafts">-->
-        <!--          <v-col-->
-        <!--            sm="4"-->
-        <!--            md="3"-->
-        <!--          >-->
-        <!--            <div class="sort-by">-->
-        <!--              <v-select-->
-        <!--                v-model="selectedSortOption"-->
-        <!--                :items="sortByOptions"-->
-        <!--                label="Sort by"-->
-        <!--                outlined-->
-        <!--                dense-->
-        <!--                :menu-props="{ offsetY:true }"-->
-        <!--              />-->
-        <!--            </div>-->
-        <!--          </v-col>-->
-        <!--        </v-row>-->
+      <template v-else>
+        <template v-if="!isDrafts">
+          <!--        <v-row v-if="!isDrafts">-->
+          <!--          <v-col-->
+          <!--            sm="4"-->
+          <!--            md="3"-->
+          <!--          >-->
+          <!--            <div class="sort-by">-->
+          <!--              <v-select-->
+          <!--                v-model="selectedSortOption"-->
+          <!--                :items="sortByOptions"-->
+          <!--                label="Sort by"-->
+          <!--                outlined-->
+          <!--                dense-->
+          <!--                :menu-props="{ offsetY:true }"-->
+          <!--              />-->
+          <!--            </div>-->
+          <!--          </v-col>-->
+          <!--        </v-row>-->
 
-        <div>
-          <h2 class="font-weight-regular green--text mb-6">
-            {{ $t('common.paidProposals') }}
-          </h2>
-          <template
-            v-if="proposalsFullInfo.paidProposals
-              && proposalsFullInfo.paidProposals.length !== 0"
-          >
-            <ProposalItem
-              v-for="(proposal, index) in proposalsFullInfo.paidProposals"
-              :key="index"
-              :proposal-name="proposal.proposal_name"
-              :title="proposal.title"
-              :proposer="proposal.proposer"
-              :available-budget="proposal.available_budget"
-              :img="proposal.proposal_json.img || undefined"
-              :category="proposal.proposal_json.category"
-              :summary="proposal.proposal_json.summary"
-              :budget="proposal.total_budget"
-              :duration="proposal.duration"
-              :payments="proposal.payments"
-              :status-by-votes="proposal.statusByVotes"
-              :votes="proposal.total_net_votes"
-              :is-draft="proposal.isDraft"
-            />
-          </template>
-          <div v-else>
-            {{ $t('noDataTexts.nothingToDisplay') }}
+          <div class="mb-12">
+            <h2 class="fs-30 mb-12">
+              {{ $t('common.paidProposals') }}
+            </h2>
+
+            <v-row>
+              <template
+                v-if="proposalsFullInfo.paidProposals
+                  && proposalsFullInfo.paidProposals.length !== 0"
+              >
+                <v-col
+                  v-for="(proposal, index) in proposalsFullInfo.paidProposals"
+                  :key="index"
+                  md="6"
+                >
+                  <ProposalItem
+                    :proposal-name="proposal.proposal_name"
+                    :title="proposal.title"
+                    :proposer="proposal.proposer"
+                    :available-budget="proposal.available_budget"
+                    :img="proposal.proposal_json.img || undefined"
+                    :category="proposal.proposal_json.category"
+                    :summary="proposal.proposal_json.summary"
+                    :budget="proposal.total_budget"
+                    :duration="proposal.duration"
+                    :payments="proposal.payments"
+                    :status-by-votes="proposal.statusByVotes"
+                    :votes="proposal.total_net_votes"
+                    :is-draft="proposal.isDraft"
+                  />
+                </v-col>
+              </template>
+              <v-col v-else>
+                <span class="font-weight-bold">
+                  {{ $t('noDataTexts.nothingToDisplay') }}
+                </span>
+              </v-col>
+            </v-row>
           </div>
-        </div>
 
-        <v-divider class="my-12" />
+          <div class="mb-12">
+            <h2 class="fs-30 mb-12">
+              {{ $t('common.unpaidProposals') }}
+            </h2>
 
-        <div>
-          <h2 class="font-weight-regular red--text mb-6">
-            {{ $t('common.unpaidProposals') }}
-          </h2>
-
-          <div class="mb-6">
-            <h3 class="font-weight-regular warning--text mb-6">
-              {{ $t('proposalItem.insufficientBudget') }}
-            </h3>
             <template
               v-if="proposalsFullInfo.insufficientBudgetProposals
-                && proposalsFullInfo.insufficientBudgetProposals.length !== 0"
-            >
-              <ProposalItem
-                v-for="(proposal, index) in proposalsFullInfo.insufficientBudgetProposals"
-                :key="index"
-                :proposal-name="proposal.proposal_name"
-                :title="proposal.title"
-                :proposer="proposal.proposer"
-                :available-budget="proposal.available_budget"
-                :img="proposal.proposal_json.img || undefined"
-                :category="proposal.proposal_json.category"
-                :summary="proposal.proposal_json.summary"
-                :budget="proposal.total_budget"
-                :duration="proposal.duration"
-                :payments="proposal.payments"
-                :status-by-votes="proposal.statusByVotes"
-                :votes="proposal.total_net_votes"
-                :is-draft="proposal.isDraft"
-              />
-            </template>
-            <div v-else>
-              {{ $t('noDataTexts.nothingToDisplay') }}
-            </div>
-          </div>
-
-          <div class="mb-6">
-            <h3 class="font-weight-regular warning--text mb-6">
-              {{ $t('proposalItem.insufficientVotes') }}
-            </h3>
-            <template
-              v-if="proposalsFullInfo.insufficientVotesProposals
+                && proposalsFullInfo.insufficientBudgetProposals.length !== 0
+                || proposalsFullInfo.insufficientVotesProposals
                 && proposalsFullInfo.insufficientVotesProposals.length !== 0"
             >
-              <ProposalItem
-                v-for="(proposal, index) in proposalsFullInfo.insufficientVotesProposals"
-                :key="index"
-                :proposal-name="proposal.proposal_name"
-                :title="proposal.title"
-                :proposer="proposal.proposer"
-                :available-budget="proposal.available_budget"
-                :img="proposal.proposal_json.img || undefined"
-                :category="proposal.proposal_json.category"
-                :summary="proposal.proposal_json.summary"
-                :budget="proposal.total_budget"
-                :duration="proposal.duration"
-                :payments="proposal.payments"
-                :status-by-votes="proposal.statusByVotes"
-                :votes="proposal.total_net_votes"
-                :is-draft="proposal.isDraft"
-              />
+              <div
+                v-if="proposalsFullInfo.insufficientBudgetProposals
+                  && proposalsFullInfo.insufficientBudgetProposals.length !== 0"
+                class="mb-6"
+              >
+                <h3 class="red--text fs-20 mb-6">
+                  {{ $t('proposalItem.insufficientBudget') }}
+                </h3>
+
+                <v-row>
+                  <v-col
+                    v-for="(proposal, index) in proposalsFullInfo.insufficientBudgetProposals"
+                    :key="index"
+                    md="6"
+                  >
+                    <ProposalItem
+                      :proposal-name="proposal.proposal_name"
+                      :title="proposal.title"
+                      :proposer="proposal.proposer"
+                      :available-budget="proposal.available_budget"
+                      :img="proposal.proposal_json.img || undefined"
+                      :category="proposal.proposal_json.category"
+                      :summary="proposal.proposal_json.summary"
+                      :budget="proposal.total_budget"
+                      :duration="proposal.duration"
+                      :payments="proposal.payments"
+                      :status-by-votes="proposal.statusByVotes"
+                      :votes="proposal.total_net_votes"
+                      :is-draft="proposal.isDraft"
+                    />
+                  </v-col>
+                </v-row>
+              </div>
+
+              <div
+                v-if="proposalsFullInfo.insufficientVotesProposals
+                  && proposalsFullInfo.insufficientVotesProposals.length !== 0"
+                class="mb-6"
+              >
+                <h3 class="red--text fs-20 mb-6">
+                  {{ $t('proposalItem.insufficientVotes') }}
+                </h3>
+
+                <v-row>
+                  <v-col
+                    v-for="(proposal, index) in proposalsFullInfo.insufficientVotesProposals"
+                    :key="index"
+                    md="6"
+                  >
+                    <ProposalItem
+                      :proposal-name="proposal.proposal_name"
+                      :title="proposal.title"
+                      :proposer="proposal.proposer"
+                      :available-budget="proposal.available_budget"
+                      :img="proposal.proposal_json.img || undefined"
+                      :category="proposal.proposal_json.category"
+                      :summary="proposal.proposal_json.summary"
+                      :budget="proposal.total_budget"
+                      :duration="proposal.duration"
+                      :payments="proposal.payments"
+                      :status-by-votes="proposal.statusByVotes"
+                      :votes="proposal.total_net_votes"
+                      :is-draft="proposal.isDraft"
+                    />
+                  </v-col>
+                </v-row>
+              </div>
             </template>
-            <div v-else>
+
+            <span
+              v-else
+              class="font-weight-bold"
+            >
               {{ $t('noDataTexts.nothingToDisplay') }}
+            </span>
+          </div>
+        </template>
+
+        <template v-else>
+          <v-row class="mb-12">
+            <template v-if="proposalsParsed && proposalsParsed.length !== 0">
+              <v-col
+                v-for="(proposal, index) in proposalsParsed"
+                :key="index"
+                md="6"
+              >
+                <ProposalItem
+                  :proposal-name="proposal.proposal_name"
+                  :title="proposal.title"
+                  :proposer="proposal.proposer"
+                  :available-budget="proposal.available_budget"
+                  :img="proposal.proposal_json.img || undefined"
+                  :category="proposal.proposal_json.category"
+                  :summary="proposal.proposal_json.summary"
+                  :budget="proposal.total_budget"
+                  :duration="proposal.duration"
+                  :payments="proposal.payments"
+                  :status-by-votes="proposal.statusByVotes"
+                  :votes="proposal.total_net_votes"
+                  :is-draft="isDrafts"
+                />
+              </v-col>
+            </template>
+            <v-col v-else>
+              <span class="font-weight-bold">
+                {{ $t('noDataTexts.nothingToDisplay') }}
+              </span>
+            </v-col>
+          </v-row>
+        </template>
+
+        <div
+          v-if="getAccountNameWithAuthority"
+          class="create-proposal"
+        >
+          <div class="d-flex align-center justify-center flex-column">
+            <v-btn
+              fab
+              color="primary"
+              class="mb-4"
+              :elevation="0"
+              :large="true"
+              height="68"
+              width="68"
+              :to="{ name: 'Proposal editor' }"
+            >
+              <v-icon
+                class="fs-17"
+                dark
+              >
+                mdi-plus
+              </v-icon>
+            </v-btn>
+            <div class="font-weight-bold">
+              {{ $t('common.createProposal') }}
             </div>
           </div>
-        </div>
-      </template>
-
-      <template v-else>
-        <template v-if="proposalsParsed && proposalsParsed.length !== 0">
-          <ProposalItem
-            v-for="(proposal, index) in proposalsParsed"
-            :key="index"
-            :proposal-name="proposal.proposal_name"
-            :title="proposal.title"
-            :proposer="proposal.proposer"
-            :available-budget="proposal.available_budget"
-            :img="proposal.proposal_json.img || undefined"
-            :category="proposal.proposal_json.category"
-            :summary="proposal.proposal_json.summary"
-            :budget="proposal.total_budget"
-            :duration="proposal.duration"
-            :payments="proposal.payments"
-            :status-by-votes="proposal.statusByVotes"
-            :votes="proposal.total_net_votes"
-            :is-draft="isDrafts"
-          />
-        </template>
-        <div v-else>
-          {{ $t('noDataTexts.nothingToDisplay') }}
         </div>
       </template>
     </v-container>
@@ -169,7 +240,7 @@
 </template>
 
 <script>
-  import { mapState, mapActions } from 'vuex';
+  import { mapState, mapGetters, mapActions } from 'vuex';
   import ProposalItem from '@/components/ProposalItem.vue';
   import ActionType from '@/store/constants';
 
@@ -199,6 +270,9 @@
         isDraftProposalByAccountNameLoading: state => state
           .userService.isDraftProposalByAccountNameLoading,
       }),
+      ...mapGetters('userService', {
+        getAccountNameWithAuthority: 'getAccountNameWithAuthority',
+      }),
       isDrafts() {
         return this.$route.path.includes('drafts');
       },
@@ -222,6 +296,15 @@
           .map(
             proposal => this.$helpers.parseProposal(proposal),
           );
+      },
+      proposalsNumber() {
+        if (!this.proposalsParsed || this.proposalsParsed.length === 0) return 0;
+
+        const numOfProposals = this.proposalsParsed.length;
+
+        return numOfProposals < 10 && numOfProposals > 0
+               ? `0${numOfProposals}`
+               : `${numOfProposals}`;
       },
       proposalsFullInfo() {
         if (!this.proposalsParsed || this.proposalsParsed.length === 0
@@ -337,7 +420,7 @@
             }
 
             // eslint-disable-next-line no-param-reassign
-            proposal.available_budget = `${budget} EOS`;
+            proposal.available_budget = `${budget.toFixed(this.$constants.EOS_MAX_DIGITS)} EOS`;
             if (proposalsType in acc) {
               acc[proposalsType].push(proposal);
             } else {
@@ -353,6 +436,14 @@
   };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+  @import "~@/assets/scss/variables";
 
+  .create-proposal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px dotted $grey--2;
+    height: 235px;
+  }
 </style>

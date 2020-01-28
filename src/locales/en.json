@@ -4,6 +4,7 @@
     "signInWithScatter": "Sign in with Scatter",
     "signOut": "Sign out",
     "createProposal": "Create proposal",
+    "createProposalOnMainnet": "Create proposal on EOS mainnet",
     "activeProposals": "Active proposals",
     "drafts": "Drafts",
     "requested": "Requested",
@@ -55,10 +56,14 @@
     "downvote": "Downvote",
     "abstain": "Abstain",
     "eosConversionRate": "EOS conversion rate",
-    "activate": "Activate proposal",
+    "activateProposal": "Activate proposal",
+    "activate": "Activate",
+    "edit": "Edit",
     "refund": "Refund",
     "deleteProposal": "Delete proposal",
     "payFee": "Pay deposit fee (100 EOS)",
+    "payDepositFee": "Pay deposit fee",
+    "payFeeShort": "Pay fee",
     "videoLink": "Video link",
     "voters": "Voters",
     "voter": "Voter",
@@ -67,7 +72,17 @@
     "next": "next",
     "current": "current",
     "sureToActivate": "Are you sure you want to activate your proposal for the current voting period?",
-    "currentVotingPeriodEndsIn": "The current voting period ends in {daysTillEnd} days"
+    "currentVotingPeriodEndsIn": "The current voting period ends in {daysTillEnd} days",
+    "proposalInfo": "Proposal info",
+    "proposalActivation": "Proposal activation",
+    "payFeeDesc": "In order to activate your proposal and make it eligible for voting you have to pay a deposit fee (100 EOS).",
+    "activateDesc": "Note, clicking this button pushes the proposal onchain. This action is irreversible.",
+    "refundDesc": "You can get your deposit fee back if you don't want to make your proposal public. Note, this action is only possible if you haven't activated the proposal.",
+    "editDesc": "You can edit a proposal that hasn't been activated yet.",
+    "deleteDesc": "This action removes a proposal from drafts and you won't be able to access it again.",
+    "voteFor": "Vote for proposal",
+    "abstainIn": "Abstain in voting",
+    "voteAgainst": "Vote against proposal"
   },
   "proposalCreationPage": {
     "proposalCreation": "Proposal creation",
@@ -167,7 +182,7 @@
   "noDataTexts": {
     "noData": "No data",
     "noOverview": "No overview is provided",
-    "noDesc": "No description is provided",
+    "noSummary": "No summary is provided",
     "noBudgetItems": "No budget details are provided",
     "noTimeline": "No timeline milestones are provided",
     "noProposer": "Proposer is unknown",
@@ -177,6 +192,7 @@
     "noTotalBudget": "No total budget",
     "nothingToDisplay": "Nothing to display yet",
     "noVideo": "No video",
-    "noVoters": "No voters"
+    "noVoters": "No voters",
+    "noDate": "No date"
   }
 }

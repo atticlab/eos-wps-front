@@ -1,9 +1,5 @@
 .v-data-table td, .v-data-table th {
   padding-top: 10px !important;
   padding-bottom: 10px !important;
-}
-
-.v-data-table__wrapper {
-  //border: 2px solid rgba(0, 0, 0, 0.12) !important;
-  //border-radius: 4px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
