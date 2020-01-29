@@ -3,8 +3,15 @@ body,
 .v-application {
   font-family: $body-font-family;
   font-weight: 500;
-  font-size: 14px;
 }
+
+//.v-application .body-2 {
+//  font-size: 14px !important;
+//}
+//
+//.v-application .body-1 {
+//  font-size: 16px !important;
+//}
 
 .theme--light.v-application {
   color: $black !important;
@@ -39,6 +46,9 @@ body,
   font-size: 12px !important;
 }
 
+.fs-14 {
+  font-size: 14px !important;
+}
 
 .fs-20 {
   font-size: 20px !important;

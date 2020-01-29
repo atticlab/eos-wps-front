@@ -78,7 +78,7 @@
                 </v-col>
               </template>
               <v-col v-else>
-                <span class="font-weight-bold">
+                <span class="font-weight-bold body-2">
                   {{ $t('noDataTexts.nothingToDisplay') }}
                 </span>
               </v-col>
@@ -167,7 +167,7 @@
 
             <span
               v-else
-              class="font-weight-bold"
+              class="font-weight-bold body-2"
             >
               {{ $t('noDataTexts.nothingToDisplay') }}
             </span>
@@ -200,7 +200,7 @@
               </v-col>
             </template>
             <v-col v-else>
-              <span class="font-weight-bold">
+              <span class="font-weight-bold body-2">
                 {{ $t('noDataTexts.nothingToDisplay') }}
               </span>
             </v-col>
@@ -229,7 +229,7 @@
                 mdi-plus
               </v-icon>
             </v-btn>
-            <div class="font-weight-bold">
+            <div class="font-weight-bold body-2">
               {{ $t('common.createProposal') }}
             </div>
           </div>

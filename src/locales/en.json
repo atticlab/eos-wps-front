@@ -65,6 +65,7 @@
     "payDepositFee": "Pay deposit fee",
     "payFeeShort": "Pay fee",
     "videoLink": "Video link",
+    "video": "Video",
     "voters": "Voters",
     "voter": "Voter",
     "vote": "Vote",
@@ -82,7 +83,8 @@
     "deleteDesc": "This action removes a proposal from drafts and you won't be able to access it again.",
     "voteFor": "Vote for proposal",
     "abstainIn": "Abstain in voting",
-    "voteAgainst": "Vote against proposal"
+    "voteAgainst": "Vote against proposal",
+    "published": "Published"
   },
   "proposalCreationPage": {
     "proposalCreation": "Proposal creation",

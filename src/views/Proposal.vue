@@ -28,52 +28,44 @@
                 fluid
                 class="secondary--text font-weight-medium"
               >
-                <div class="text-uppercase font-weight-medium accent--text body-2 mb-1 mt-2">
+                <div class="text-uppercase font-weight-semi-bold accent--text body-2 mt-2">
                   {{ $t('proposalPage.proposalInfo') }}
                 </div>
 
-                <h1 class="fs-40 secondary--text mb-4">
+                <h1 class="fs-40 secondary--text mb-2">
                   {{ $_proposalParsed.title }}
                 </h1>
-
-                <p
-                  v-if="$_proposalParsed.proposal_json
-                    && $_proposalParsed.proposal_json.summary"
-                  class="mb-4"
-                >
-                  {{ $_proposalParsed.proposal_json.summary }}
-                </p>
 
                 <v-row>
                   <v-col
                     cols="12"
-                    sm="3"
+                    sm="4"
                     :md="!isBp && !isDraft ? '4' : '6'"
-                    :lg="!isBp && !isDraft ? '2' : '3'"
+                    :lg="!isBp && !isDraft ? '2' : '4'"
                   >
                     <div>
-                      <div class="text-uppercase accent--text font-weight-semi-bold">
+                      <div class="text-uppercase accent--text font-weight-semi-bold body-2 mb-1">
                         {{ $t('proposalPage.proposedBy') }}
                       </div>
-                      <div class="font-weight-bold">
+                      <div class="font-weight-semi-bold fs-20">
                         {{ $_proposalParsed.proposer }}
                       </div>
                     </div>
                   </v-col>
                   <v-col
                     cols="12"
-                    sm="3"
+                    sm="4"
                     :md="!isBp && !isDraft ? '4' : '6'"
-                    :lg="!isBp && !isDraft ? '2' : '3'"
+                    :lg="!isBp && !isDraft ? '2' : '4'"
                   >
                     <div>
-                      <div class="text-uppercase accent--text font-weight-semi-bold">
+                      <div class="text-uppercase accent--text font-weight-semi-bold body-2 mb-1">
                         {{ $t('proposalPage.category') }}
                       </div>
                       <div
                         v-if="$_proposalParsed.proposal_json
                           && $_proposalParsed.proposal_json.category"
-                        class="primary--text font-weight-bold text-capitalize"
+                        class="primary--text font-weight-semi-bold text-capitalize fs-20"
                       >
                         {{ $_proposalParsed.proposal_json.category }}
                       </div>
@@ -82,30 +74,30 @@
                   <v-col
                     v-if="!isDraft"
                     cols="12"
-                    sm="3"
+                    sm="4"
                     :md="!isBp && !isDraft ? '4' : '6'"
-                    :lg="!isBp && !isDraft ? '2' : '3'"
+                    :lg="!isBp && !isDraft ? '2' : '4'"
                   >
                     <div>
-                      <div class="text-uppercase accent--text font-weight-semi-bold">
+                      <div class="text-uppercase accent--text font-weight-semi-bold body-2 mb-1">
                         {{ $t('common.payments') }}
                       </div>
-                      <div class="primary--text font-weight-bold text-capitalize">
+                      <div class="primary--text font-weight-semi-bold fs-20 text-capitalize">
                         {{ $_proposalParsed.payouts }}
                       </div>
                     </div>
                   </v-col>
                   <v-col
                     cols="12"
-                    sm="3"
+                    sm="4"
                     :md="!isBp && !isDraft ? '4' : '6'"
-                    :lg="!isBp && !isDraft ? '2' : '3'"
+                    :lg="!isBp && !isDraft ? '2' : '4'"
                   >
                     <div>
-                      <div class="text-uppercase accent--text font-weight-semi-bold">
+                      <div class="text-uppercase accent--text font-weight-semi-bold body-2 mb-1">
                         {{ $t('common.requested') }}
                       </div>
-                      <div class="font-weight-bold">
+                      <div class="font-weight-semi-bold fs-20">
                         {{ $_proposalParsed.total_budget }}
                       </div>
                     </div>
@@ -113,20 +105,65 @@
                   <v-col
                     v-if="!isDraft"
                     cols="12"
-                    sm="3"
+                    sm="4"
                     :md="!isBp && !isDraft ? '4' : '6'"
-                    :lg="!isBp && !isDraft ? '2' : '3'"
+                    :lg="!isBp && !isDraft ? '2' : '4'"
                   >
                     <div>
-                      <div class="text-uppercase accent--text font-weight-semi-bold">
+                      <div class="text-uppercase accent--text font-weight-semi-bold body-2 mb-1">
                         {{ $t('common.votes') }}
                       </div>
-                      <div class="font-weight-bold">
+                      <div
+                        :class="{'font-weight-semi-bold fs-20': true,
+                                 'primary--text': $_proposalParsed.total_net_votes > 0,
+                                 'error--text': $_proposalParsed.total_net_votes < 0}"
+                      >
                         {{ $_proposalParsed.total_net_votes }}
                       </div>
                     </div>
                   </v-col>
+                  <v-col
+                    v-if="!isDraft"
+                    cols="12"
+                    sm="4"
+                    :md="!isBp && !isDraft ? '4' : '6'"
+                    :lg="!isBp && !isDraft ? '2' : '4'"
+                  >
+                    <div>
+                      <div class="text-uppercase accent--text font-weight-semi-bold body-2 mb-1">
+                        {{ $t('proposalPage.published') }}
+                      </div>
+                      <div class="font-weight-semi-bold fs-20">
+                        {{ $moment($_proposalParsed.created).format($constants.DATE_FORMAT) }}
+                      </div>
+                    </div>
+                  </v-col>
                 </v-row>
+
+                <p
+                  v-if="$_proposalParsed.proposal_json
+                    && $_proposalParsed.proposal_json.summary"
+                  class="my-4 body-2 font-weight-medium"
+                >
+                  {{ $_proposalParsed.proposal_json.summary }}
+                </p>
+
+                <p
+                  v-if="$_proposalParsed.proposal_json
+                    && $_proposalParsed.proposal_json.video"
+                  class="mt-8 mb-4 body-2 font-weight-medium"
+                >
+                  <span>
+                    {{ $t('proposalPage.video') }}:
+                  </span>
+                  <a
+                    :href="$_proposalParsed.proposal_json.video"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {{ $_proposalParsed.proposal_json.video }}
+                  </a>
+                </p>
               </v-container>
             </v-card>
           </v-col>
@@ -142,9 +179,9 @@
             >
               <v-container
                 fluid
-                class="secondary--text font-weight-medium"
+                class="secondary--text font-weight-semi-bold"
               >
-                <div class="text-uppercase font-weight-medium accent--text body-2 mb-4 mt-2">
+                <div class="text-uppercase font-weight-medium accent--text fs-14 mb-4 mt-2">
                   {{ $t('common.actions') }}
                 </div>
 
@@ -415,9 +452,9 @@
         </v-row>
 
         <v-tabs
-          background-color="rgb(250, 250, 250)"
           hide-slider
           show-arrows
+          class="font-weight-medium body-2"
         >
           <v-tab
             class="text-transform-none font-weight-semi-bold body-1"
@@ -661,6 +698,7 @@
 
   .actions-left {
     max-width: 230px;
+    font-size: 14px;
   }
 
   .actions-btn-container {

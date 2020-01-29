@@ -20,12 +20,12 @@
               {{ title }}
             </h2>
 
-            <span class="primary--text font-weight-bold text-capitalize">
+            <span class="primary--text font-weight-bold text-capitalize body-2">
               {{ category }}
             </span>
           </div>
 
-          <div class="mb-3 font-weight-medium">
+          <div class="mb-3 font-weight-medium body-2">
             by
             <span class="font-weight-bold primary--text">{{ proposer }}</span>
           </div>
@@ -38,7 +38,7 @@
             >
               <div
                 v-if="!isDraft"
-                class="font-weight-bold mb-2"
+                class="font-weight-bold mb-2 body-2"
               >
                 {{ $t('proposalItem.availableBudget') }}:
                 <span class="font-weight-medium">{{ availableBudget }}</span>
@@ -46,7 +46,7 @@
 
               <div
                 v-if="!isDraft"
-                class="font-weight-bold mb-2"
+                class="font-weight-bold mb-2 body-2"
               >
                 {{ $t('proposalItem.status') }}:
                 <span
@@ -59,7 +59,7 @@
                 </span>
               </div>
 
-              <div class="font-weight-bold mb-2">
+              <div class="font-weight-bold mb-2 body-2">
                 {{ $t('common.requested') }}:
                 <span class="font-weight-medium">{{ budget }}</span>
               </div>
@@ -71,7 +71,7 @@
             >
               <div
                 v-if="isDraft"
-                class="font-weight-bold mb-2"
+                class="font-weight-bold mb-2 body-2"
               >
                 {{ $t('common.paymentsDuration') }}:
                 <span class="font-weight-medium">
@@ -82,7 +82,7 @@
 
               <div
                 v-if="!isDraft"
-                class="font-weight-bold mb-2"
+                class="font-weight-bold mb-2 body-2"
               >
                 {{ $t('common.payments') }}:
                 <span class="font-weight-medium">{{ payments }}</span>
@@ -90,7 +90,7 @@
 
               <div
                 v-if="!isDraft"
-                class="font-weight-bold mb-2"
+                class="font-weight-bold mb-2 body-2"
               >
                 {{ $t('common.votes') }}:
                 <span
@@ -104,7 +104,7 @@
             </v-col>
           </v-row>
 
-          <div class=" font-weight-medium mb-6">
+          <div class=" font-weight-medium my-2 body-2">
             {{ summary }}
           </div>
         </div>
