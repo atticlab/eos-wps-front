@@ -89,7 +89,7 @@
     <v-app-bar
       app
       height="80"
-      class="border"
+      class="border fs-14"
       :elevate-on-scroll="true"
     >
       <div class="d-flex align-center">

@@ -121,7 +121,11 @@
                       <div class="text-uppercase accent--text font-weight-semi-bold">
                         {{ $t('common.votes') }}
                       </div>
-                      <div class="font-weight-bold">
+                      <div
+                        :class="{'font-weight-bold': true,
+                                 'primary--text': $_proposalParsed.total_net_votes > 0,
+                                 'error--text': $_proposalParsed.total_net_votes < 0}"
+                      >
                         {{ $_proposalParsed.total_net_votes }}
                       </div>
                     </div>
@@ -414,8 +418,10 @@
           </v-col>
         </v-row>
 
+        <!--        background-color="rgb(250, 250, 250)"-->
+        <!--background-color="#f3f3f3"-->
+        <!--background-color="#fcfcfc"-->
         <v-tabs
-          background-color="rgb(250, 250, 250)"
           hide-slider
           show-arrows
         >
