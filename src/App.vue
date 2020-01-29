@@ -89,7 +89,7 @@
     <v-app-bar
       app
       height="80"
-      class="border"
+      class="border fs-14"
       :elevate-on-scroll="true"
     >
       <div class="d-flex align-center">
@@ -230,7 +230,7 @@
     </v-content>
 
     <v-footer
-      color="white secondary--text"
+      color="white secondary--text body-2"
       height="80"
     >
       <span class="font-weight-bold">© {{ thisYear }} EOS WPS. All Rights Reserved</span>

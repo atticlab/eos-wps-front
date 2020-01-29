@@ -7,7 +7,7 @@
         md="3"
       >
         <div>
-          <div class="accent--text font-weight-semi-bold text-uppercase">
+          <div class="accent--text font-weight-semi-bold text-uppercase mb-1">
             {{ $t('proposalPage.totalRequested') }}
           </div>
           <div class="font-weight-semi-bold word-break fs-20">
@@ -21,7 +21,7 @@
         md="3"
       >
         <div>
-          <div class="accent--text font-weight-semi-bold text-uppercase">
+          <div class="accent--text font-weight-semi-bold text-uppercase mb-1">
             {{ $t('common.numberOfPayments') }}
           </div>
           <div class="font-weight-semi-bold word-break fs-20">
@@ -35,7 +35,7 @@
         md="3"
       >
         <div>
-          <div class="accent--text font-weight-semi-bold text-uppercase">
+          <div class="accent--text font-weight-semi-bold text-uppercase mb-1">
             {{ $t('proposalPage.monthlyRequested') }}
           </div>
           <div class="font-weight-semi-bold word-break fs-20">
