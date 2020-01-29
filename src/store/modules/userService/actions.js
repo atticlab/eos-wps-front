@@ -19,14 +19,16 @@ ScatterJS.plugins(new ScatterEOS());
 export default {
   [ActionType.SCATTER_INIT]: async ({ commit }) => {
     try {
+      commit(ActionType.SET_IS_SCATTER_LOGIN_LOADING, true);
       const connected = await ScatterJS.connect(config.appName, { network: config.eos });
       if (!connected) {
         throw new Error('Scatter not connected');
       }
-      if (ScatterJS.isExtension) {
+      const { scatter } = ScatterJS;
+      if (scatter.isExtension) {
         throw new Error('Web scatter not supported');
       }
-      const { scatter } = ScatterJS;
+
       commit(ActionType.SET_EOS, scatter.eos(config.eos, Eos));
       if (scatter.identity) {
         commit(ActionType.SET_EOS_ACCOUNT, scatter.account('eos'));
@@ -37,27 +39,30 @@ export default {
       return true;
     } catch (e) {
       console.error('ActionType.SCATTER_INIT', e);
+      commit(ActionType.SET_IS_SCATTER_NOT_CONNECTED, true);
       return false;
+    } finally {
+      commit(ActionType.SET_IS_SCATTER_LOGIN_LOADING, false);
     }
   },
   [ActionType.SCATTER_LOGIN]: async ({ commit, dispatch }) => {
     try {
-      commit(ActionType.SET_IS_SCATTER_LOGIN_LOADING, true);
-
-      if ((!ScatterJS.scatter
-          && !await dispatch(ActionType.SCATTER_INIT))
-          || !ScatterJS.scatter.login) {
-        throw new Error('Failed to SCATTER_INIT');
+      if (!ScatterJS.scatter || !ScatterJS.scatter.login) {
+        try {
+          await dispatch(ActionType.SCATTER_INIT);
+        } catch (e) {
+          throw e;
+        }
       }
+      // SET_IS_SCATTER_LOGIN_LOADING if the SCATTER_INIT called
+      // commit(ActionType.SET_IS_SCATTER_LOGIN_LOADING, true);
+
       if (!await ScatterJS.scatter.login()) return new Error('no identity');
       commit(ActionType.SET_EOS_ACCOUNT, ScatterJS.scatter.account('eos'));
       return true;
     } catch (e) {
       console.error('ActionType.SCATTER_LOGIN', e);
-      commit(ActionType.SET_IS_SCATTER_NOT_CONNECTED, true);
       return false;
-    } finally {
-      commit(ActionType.SET_IS_SCATTER_LOGIN_LOADING, false);
     }
   },
   [ActionType.SCATTER_LOGOUT]: ({ commit, dispatch }, data) => {
