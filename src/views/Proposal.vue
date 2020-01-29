@@ -555,12 +555,11 @@
         proposalId: this.$route.params.slug,
         activationDialog: false,
         isDataLoading: true,
-        isBp: true,
       };
     },
     computed: {
       ...mapState({
-        // isBp: state => state.userService.isBp,
+        isBp: state => state.userService.isBp,
         proposal: state => state.userService.proposal,
         draftProposal: state => state.userService.draftProposal,
         proposalState: state => state.userService.proposalState,
