@@ -47,7 +47,6 @@ export default {
   },
   [ActionType.SCATTER_LOGIN]: async ({ commit, dispatch }) => {
     try {
-      // reset variable
       if (!ScatterJS.scatter || !ScatterJS.scatter.login) {
         try {
           await dispatch(ActionType.SCATTER_INIT);
