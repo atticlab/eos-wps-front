@@ -235,17 +235,17 @@
           </v-toolbar>
         </template>
         <template v-slot:item.title="{ item }">
-          <span class="d-block body-1">
+          <span class="d-block body-1 font-weight-medium">
             {{ item.title }}
           </span>
         </template>
         <template v-slot:item.startsAt="{ item }">
-          <span class="body-1">
+          <span class="body-1 font-weight-medium">
             {{ $moment(item.startsAt).format($constants.DATE_FORMAT) }}
           </span>
         </template>
         <template v-slot:item.endsAt="{ item }">
-          <span class="body-1">
+          <span class="body-1 font-weight-medium">
             {{ $moment(item.endsAt).format($constants.DATE_FORMAT) }}
           </span>
         </template>

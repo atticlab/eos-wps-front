@@ -10,7 +10,7 @@
             sm="3"
           >
             <div>
-              <div class="accent--text font-weight-semi-bold text-uppercase">
+              <div class="accent--text font-weight-semi-bold text-uppercase mb-1">
                 {{ $t('common.yes') }}
               </div>
               <div class="primary--text font-weight-semi-bold word-break fs-20">
@@ -23,7 +23,7 @@
             sm="3"
           >
             <div>
-              <div class="accent--text font-weight-semi-bold text-uppercase">
+              <div class="accent--text font-weight-semi-bold text-uppercase mb-1">
                 {{ $t('proposalPage.abstain') }}
               </div>
               <div class="font-weight-semi-bold word-break fs-20">
@@ -36,7 +36,7 @@
             sm="3"
           >
             <div>
-              <div class="accent--text font-weight-semi-bold text-uppercase">
+              <div class="accent--text font-weight-semi-bold text-uppercase mb-1">
                 {{ $t('common.no') }}
               </div>
               <div class="red--text font-weight-semi-bold word-break fs-20">

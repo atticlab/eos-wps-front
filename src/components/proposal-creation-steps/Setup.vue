@@ -132,7 +132,7 @@
           <h2 class="body-1 font-weight-bold mb-1">
             {{ $t('proposalCreationPage.buildBudget') }}
           </h2>
-          <p class="accent--text font-weight-medium">
+          <p class="accent--text font-weight-medium body-2">
             {{ $t('proposalCreationPage.budgetEos') }}
           </p>
         </div>

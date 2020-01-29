@@ -8,7 +8,7 @@
           cols="12"
           sm="4"
         >
-          <h4 class="accent--text text-uppercase mb-4">
+          <h4 class="accent--text text-uppercase mb-8 font-weight-semi-bold body-2">
             {{ $t('proposalPage.scheduled') }}
           </h4>
           <TimelineItem
@@ -23,7 +23,7 @@
           cols="12"
           sm="4"
         >
-          <h4 class="accent--text text-uppercase mb-4">
+          <h4 class="accent--text text-uppercase mb-8 font-weight-semi-bold">
             {{ $t('proposalPage.inProgress') }}
           </h4>
           <TimelineItem
@@ -38,7 +38,7 @@
           cols="12"
           sm="4"
         >
-          <h4 class="accent--text text-uppercase mb-4">
+          <h4 class="accent--text text-uppercase mb-8 font-weight-semi-bold">
             {{ $t('proposalPage.completed') }}
           </h4>
           <TimelineItem
