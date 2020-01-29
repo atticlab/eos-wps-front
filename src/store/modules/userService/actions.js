@@ -21,14 +21,14 @@ export default {
     try {
       commit(ActionType.SET_IS_SCATTER_LOGIN_LOADING, true);
       const connected = await ScatterJS.connect(config.appName, { network: config.eos });
-      // console.log(ScatterJS.scatter, Object.keys(ScatterJS.scatter));
       if (!connected) {
         throw new Error('Scatter not connected');
       }
-      if (ScatterJS.isExtension) {
+      const { scatter } = ScatterJS;
+      if (scatter.isExtension) {
         throw new Error('Web scatter not supported');
       }
-      const { scatter } = ScatterJS;
+
       commit(ActionType.SET_EOS, scatter.eos(config.eos, Eos));
       if (scatter.identity) {
         commit(ActionType.SET_EOS_ACCOUNT, scatter.account('eos'));
@@ -48,7 +48,6 @@ export default {
   [ActionType.SCATTER_LOGIN]: async ({ commit, dispatch }) => {
     try {
       // reset variable
-      console.log(ScatterJS.scatter, Object.keys(ScatterJS.scatter));
       if (!ScatterJS.scatter || !ScatterJS.scatter.login) {
         try {
           await dispatch(ActionType.SCATTER_INIT);
@@ -58,8 +57,6 @@ export default {
       }
       // SET_IS_SCATTER_LOGIN_LOADING if the SCATTER_INIT called
       // commit(ActionType.SET_IS_SCATTER_LOGIN_LOADING, true);
-      // console.log('isConnected', ScatterJS.scatter.isConnected());
-      // console.log('isPaired', ScatterJS.scatter.isPaired());
 
       if (!await ScatterJS.scatter.login()) return new Error('no identity');
       commit(ActionType.SET_EOS_ACCOUNT, ScatterJS.scatter.account('eos'));
