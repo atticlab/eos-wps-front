@@ -11,7 +11,7 @@
         </div>
       </div>
 
-      <v-divider class="my-12" />
+      <v-divider class="v-divider--custom my-12" />
 
       <div
         v-if="isAllDataLoading || isDraftProposalByAccountNameLoading"
@@ -70,7 +70,7 @@
                     :summary="proposal.proposal_json.summary"
                     :budget="proposal.total_budget"
                     :duration="proposal.duration"
-                    :payments="proposal.payments"
+                    :payments="proposal.payouts"
                     :status-by-votes="proposal.statusByVotes"
                     :votes="proposal.total_net_votes"
                     :is-draft="proposal.isDraft"
@@ -121,7 +121,7 @@
                       :summary="proposal.proposal_json.summary"
                       :budget="proposal.total_budget"
                       :duration="proposal.duration"
-                      :payments="proposal.payments"
+                      :payments="proposal.payouts"
                       :status-by-votes="proposal.statusByVotes"
                       :votes="proposal.total_net_votes"
                       :is-draft="proposal.isDraft"
@@ -155,7 +155,7 @@
                       :summary="proposal.proposal_json.summary"
                       :budget="proposal.total_budget"
                       :duration="proposal.duration"
-                      :payments="proposal.payments"
+                      :payments="proposal.payouts"
                       :status-by-votes="proposal.statusByVotes"
                       :votes="proposal.total_net_votes"
                       :is-draft="proposal.isDraft"
@@ -192,7 +192,7 @@
                   :summary="proposal.proposal_json.summary"
                   :budget="proposal.total_budget"
                   :duration="proposal.duration"
-                  :payments="proposal.payments"
+                  :payments="proposal.payouts"
                   :status-by-votes="proposal.statusByVotes"
                   :votes="proposal.total_net_votes"
                   :is-draft="isDrafts"
@@ -443,7 +443,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px dotted $grey--2;
+    /*<!--border: 2px dotted $grey&#45;&#45;2;-->*/
     height: 235px;
+
+    background-image:
+      radial-gradient(circle at 2px, #4a4a4a 1px, rgba(255,255,255,0) 1px),
+      radial-gradient(circle at 4.5px, #4a4a4a 1px, rgba(255,255,255,0) 1px),
+      radial-gradient(circle at 2px, #4a4a4a 1px, rgba(255,255,255,0) 1px),
+      radial-gradient(circle at 4.5px, #4a4a4a 1px, rgba(255,255,255,0) 1px);
+    background-position: top, right, bottom, left;
+    background-size: 15px 5px, 5px 15px;
+    background-repeat: repeat-x, repeat-y;
   }
 </style>

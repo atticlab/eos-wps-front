@@ -5,13 +5,9 @@ body,
   font-weight: 500;
 }
 
-//.v-application .body-2 {
-//  font-size: 14px !important;
-//}
-//
-//.v-application .body-1 {
-//  font-size: 16px !important;
-//}
+body .v-application .title {
+  font-family: $body-font-family;
+}
 
 .theme--light.v-application {
   color: $black !important;
@@ -60,4 +56,31 @@ body,
 
 .text-transform-none {
   text-transform: none !important;
+}
+
+.text-underline {
+  text-decoration: underline !important;
+  background: white;
+}
+
+@media (max-width: 599px) {
+  .fs-50 {
+    font-size: 26px !important;
+  }
+
+  .fs-40 {
+    font-size: 26px !important;
+  }
+
+  .fs-35 {
+    font-size: 26px !important;
+  }
+
+  .fs-30 {
+    font-size: 20px !important;
+  }
+
+  .fs-20 {
+    font-size: 16px !important;
+  }
 }
