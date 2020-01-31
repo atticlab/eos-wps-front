@@ -4,11 +4,11 @@
       {{ $t('about.wpsFull') }}
     </h1>
 
-    <v-divider class="v-divider--custom my-12" />
+    <v-divider class="v-divider--custom mt-8 mb-12" />
 
     <v-card
       flat
-      class="secondary--text py-12 px-9 mb-12"
+      class="secondary--text py-7 px-4 px-sm-9 py-xm-12 mb-12"
     >
       <div class="sections-wrapper">
         <section class="mb-9">
@@ -109,7 +109,7 @@
               {{ $t('about.proposalThreshold') }}:
             </h3>
 
-            <div class="d-flex align-center mb-6">
+            <div class="d-flex align-sm-center flex-column flex-sm-row mb-6">
               <div class="mr-9 num">
                 01.
               </div>
@@ -120,7 +120,7 @@
               </div>
             </div>
 
-            <div class="d-flex align-center">
+            <div class="d-flex align-sm-center flex-column flex-sm-row">
               <div class="mr-9 num">
                 02.
               </div>
@@ -173,8 +173,11 @@
         </h2>
 
         <v-container fluid>
-          <v-row class="mb-12">
-            <v-col>
+          <v-row class="mb-sm-12">
+            <v-col
+              cols="12"
+              sm="4"
+            >
               <div class="guide-item">
                 <div class="guide-item__icon">
                   <i class="wps-ic-wallet fs-70" />
@@ -187,7 +190,10 @@
                 </div>
               </div>
             </v-col>
-            <v-col>
+            <v-col
+              cols="12"
+              sm="4"
+            >
               <div class="guide-item">
                 <div class="guide-item__icon">
                   <i class="wps-ic-clock fs-70" />
@@ -200,7 +206,10 @@
                 </div>
               </div>
             </v-col>
-            <v-col>
+            <v-col
+              cols="12"
+              sm="4"
+            >
               <div class="guide-item">
                 <div class="guide-item__icon">
                   <i class="wps-ic-cert fs-70" />
@@ -215,8 +224,11 @@
             </v-col>
           </v-row>
 
-          <v-row class="mb-12">
-            <v-col>
+          <v-row class="mb-sm-12">
+            <v-col
+              cols="12"
+              sm="6"
+            >
               <div class="guide-item">
                 <div class="guide-item__icon">
                   <i class="wps-ic-screens fs-70" />
@@ -229,7 +241,10 @@
                 </div>
               </div>
             </v-col>
-            <v-col>
+            <v-col
+              cols="12"
+              sm="6"
+            >
               <div class="guide-item">
                 <div class="guide-item__icon">
                   <i class="wps-ic-planchette fs-70" />
@@ -244,8 +259,11 @@
             </v-col>
           </v-row>
 
-          <v-row class="mb-12">
-            <v-col>
+          <v-row class="mb-sm-12">
+            <v-col
+              cols="12"
+              sm="6"
+            >
               <div class="guide-item">
                 <div class="guide-item__icon">
                   <i class="wps-ic-people-rotation fs-70" />
@@ -258,7 +276,10 @@
                 </div>
               </div>
             </v-col>
-            <v-col>
+            <v-col
+              cols="12"
+              sm="6"
+            >
               <div class="guide-item">
                 <div class="guide-item__icon">
                   <i class="wps-ic-system-blocks fs-70" />
@@ -278,7 +299,7 @@
 
     <v-card
       flat
-      class="secondary--text py-12 px-9"
+      class="secondary--text py-7 px-4 px-sm-9 py-xm-12 mb-12"
     >
       <section>
         <h2 class="fs-40 mb-12">
@@ -304,7 +325,7 @@
               hide-actions
             >
               <div class="d-flex">
-                <v-icon class="mr-2">
+                <v-icon class="mr-4">
                   mdi-plus
                 </v-icon>
 
@@ -493,6 +514,18 @@
   .highlight-header {
     .v-expansion-panel-header {
       color: $primary;
+    }
+  }
+
+  @media (max-width: 959px) {
+    .guide-item {
+      flex-direction: column;
+      align-items: flex-start;
+
+      &__icon {
+        margin-right: 0;
+        margin-bottom: 15px;
+      }
     }
   }
 </style>
