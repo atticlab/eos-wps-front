@@ -57,6 +57,13 @@
           class="text-center"
           dense
         >
+          <v-list-item :to="{ name: 'About' }">
+            <v-list-item-content>
+              <v-list-item-title class="font-weight-bold body-2">
+                {{ $t('common.about') }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
           <v-list-item :to="{ name: 'ProposalsActive' }">
             <v-list-item-content>
               <v-list-item-title class="font-weight-bold body-2">
@@ -179,8 +186,17 @@
       <v-toolbar-items class="d-none d-md-flex">
         <v-btn
           text
+          :to="{ name: 'About' }"
+          class="font-weight-bold text-transform-none px-lg-6"
+          exact-active-class="custom-before-underline"
+        >
+          {{ $t('common.about') }}
+        </v-btn>
+
+        <v-btn
+          text
           :to="{ name: 'ProposalsActive' }"
-          class="font-weight-bold text-transform-none px-6"
+          class="font-weight-bold text-transform-none px-lg-6"
           exact-active-class="custom-before-underline"
         >
           {{ $t('common.activeProposals') }}
@@ -192,7 +208,7 @@
             && draftProposals.length !== 0"
           text
           :to="{ name: 'ProposalsDrafts' }"
-          class="font-weight-bold text-transform-none px-6"
+          class="font-weight-bold text-transform-none px-lg-6"
           exact-active-class="custom-before-underline"
         >
           {{ $t('common.drafts') }}
@@ -207,7 +223,7 @@
           <template v-slot:activator="{ on }">
             <v-btn
               text
-              class="font-weight-bold text-transform-none px-6"
+              class="font-weight-bold text-transform-none px-lg-6"
               v-on="on"
             >
               <v-icon

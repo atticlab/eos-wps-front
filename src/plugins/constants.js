@@ -93,6 +93,9 @@ const constants = {
   MAX_TABLE_ITEMS: 15,
   // Min deposit is '100 EOS'. Number is used for simplicity of calculations
   MIN_DEPOSIT: 100,
+  MAX_MONTHLY_BUDGET: '50000.0000 EOS',
+  VOTING_PERIOD: 30,
+  VOTE_MARGIN: 15,
 };
 
 // Use the constants as a plugin globally
