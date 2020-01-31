@@ -172,22 +172,22 @@
     "faqs": {
       "1": {
         "question": "Who can request funds through the EOS Worker Proposal System?",
-        "answer": "Anyone with an EOS account who pays the 100 EOS proposal fee."
+        "answer": "Anyone with an EOS account who pays the {depositFee} proposal fee."
       },
       "2": {
         "question": "Who can participate in voting on EOS WPS proposals?",
         "answer": "Block Producers on the EOS Public Network who have met the 100 EOS/day reward threshold for at least 24 hours."
       },
       "3": {
-        "question": "Why is there a 100 EOS fee to submit a proposal?",
+        "question": "Why is there a {depositFee} fee to submit a proposal?",
         "answer": "To limit spam so that Block Producers can focus on reviewing only serious proposals."
       },
       "4": {
-        "question": "Where does the 100 EOS fee go?",
+        "question": "Where does the {depositFee} fee go?",
         "answer": "The fee goes into the eosio.wps account to be redistributed to passing proposals."
       },
       "5": {
-        "question": "Is the 100 EOS fee ever refunded?",
+        "question": "Is the {depositFee} fee ever refunded?",
         "answer": "No, the fee is non-refundable."
       },
       "6": {
@@ -208,7 +208,7 @@
       },
       "10": {
         "question": "Do I need to pay a fee for each voting period for my multi-period proposal?",
-        "answer": "No, the 100 EOS fee paid to publish the proposal covers you for up to 6 periods."
+        "answer": "No, the {depositFee} fee paid to publish the proposal covers you for up to 6 periods."
       },
       "11": {
         "question": "Can I adjust my proposal after it has been published?",

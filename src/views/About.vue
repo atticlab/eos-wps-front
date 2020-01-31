@@ -224,7 +224,7 @@
                 <div class="guide-item__para">
                   <h5>{{ $t('about.passingThreshold') }}</h5>
                   <div class="body-2 font-weight-medium">
-                    {{ $t('about.votesAtClose', { votes: voteMargin }) }}
+                    {{ $t('about.votesAtClose', { votes: `+${voteMargin}` }) }}
                   </div>
                 </div>
               </div>
@@ -329,60 +329,6 @@
 
   export default {
     name: 'About',
-    data() {
-      return {
-        faq: [
-          {
-            question: this.$t('about.faqs.1.question'),
-            answer: this.$t('about.faqs.1.answer'),
-          },
-          {
-            question: this.$t('about.faqs.2.question'),
-            answer: this.$t('about.faqs.2.answer'),
-          },
-          {
-            question: this.$t('about.faqs.3.question'),
-            answer: this.$t('about.faqs.3.answer'),
-          },
-          {
-            question: this.$t('about.faqs.4.question'),
-            answer: this.$t('about.faqs.4.answer'),
-          },
-          {
-            question: this.$t('about.faqs.5.question'),
-            answer: this.$t('about.faqs.5.answer'),
-          },
-          {
-            question: this.$t('about.faqs.6.question'),
-            answer: this.$t('about.faqs.6.answer'),
-          },
-          {
-            question: this.$t('about.faqs.7.question'),
-            answer: this.$t('about.faqs.7.answer'),
-          },
-          {
-            question: this.$t('about.faqs.8.question'),
-            answer: this.$t('about.faqs.8.answer'),
-          },
-          {
-            question: this.$t('about.faqs.9.question'),
-            answer: this.$t('about.faqs.9.answer'),
-          },
-          {
-            question: this.$t('about.faqs.10.question'),
-            answer: this.$t('about.faqs.10.answer'),
-          },
-          {
-            question: this.$t('about.faqs.11.question'),
-            answer: this.$t('about.faqs.11.answer'),
-          },
-          {
-            question: this.$t('about.faqs.12.question'),
-            answer: this.$t('about.faqs.12.answer'),
-          },
-        ],
-      };
-    },
     computed: {
       ...mapState({
         proposalsSettings: state => state.userService.proposalsSettings,
@@ -410,6 +356,58 @@
         }
 
         return this.proposalsSettings.vote_margin;
+      },
+      faq() {
+        return [
+          {
+            question: this.$t('about.faqs.1.question'),
+            answer: this.$t('about.faqs.1.answer', { depositFee: this.depositRequired }),
+          },
+          {
+            question: this.$t('about.faqs.2.question'),
+            answer: this.$t('about.faqs.2.answer'),
+          },
+          {
+            question: this.$t('about.faqs.3.question', { depositFee: this.depositRequired }),
+            answer: this.$t('about.faqs.3.answer'),
+          },
+          {
+            question: this.$t('about.faqs.4.question', { depositFee: this.depositRequired }),
+            answer: this.$t('about.faqs.4.answer'),
+          },
+          {
+            question: this.$t('about.faqs.5.question', { depositFee: this.depositRequired }),
+            answer: this.$t('about.faqs.5.answer'),
+          },
+          {
+            question: this.$t('about.faqs.6.question'),
+            answer: this.$t('about.faqs.6.answer'),
+          },
+          {
+            question: this.$t('about.faqs.7.question'),
+            answer: this.$t('about.faqs.7.answer'),
+          },
+          {
+            question: this.$t('about.faqs.8.question'),
+            answer: this.$t('about.faqs.8.answer'),
+          },
+          {
+            question: this.$t('about.faqs.9.question'),
+            answer: this.$t('about.faqs.9.answer'),
+          },
+          {
+            question: this.$t('about.faqs.10.question'),
+            answer: this.$t('about.faqs.10.answer', { depositFee: this.depositRequired }),
+          },
+          {
+            question: this.$t('about.faqs.11.question'),
+            answer: this.$t('about.faqs.11.answer'),
+          },
+          {
+            question: this.$t('about.faqs.12.question'),
+            answer: this.$t('about.faqs.12.answer'),
+          },
+        ];
       },
     },
     created() {
