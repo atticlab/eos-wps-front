@@ -466,7 +466,7 @@
             active-class="v-tab--active"
             :ripple="false"
           >
-            {{ $t('proposalPage.overview') }}
+            {{ $t('common.overview') }}
           </v-tab>
           <v-tab
             class="text-transform-none font-weight-semi-bold body-1 px-12"

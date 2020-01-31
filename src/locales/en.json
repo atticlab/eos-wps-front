@@ -29,7 +29,9 @@
     "unpaidProposals": "Unpaid proposals",
     "paymentsDuration": "Duration of payments",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "about": "About",
+    "overview": "Overview"
   },
   "proposalItem": {
     "availableBudget": "Available budget",
@@ -45,7 +47,6 @@
     "category": "Category",
     "created": "Created",
     "hash": "Hash",
-    "overview": "Overview",
     "totalRequested": "Total requested",
     "monthlyRequested": "Monthly requested",
     "total": "Total",
@@ -132,6 +133,92 @@
     "removeProposal": "Remove proposal",
     "chooseDuration": "Choose a duration of payments",
     "budgetEos": "Budget is allocated and paid in EOS!"
+  },
+  "about": {
+    "wpsFull": "EOS Worker Proposal System",
+    "overviewP1": "The EOS Worker Proposal System (WPS) is a funding mechanism for the EOS Public Network, enabling developers and other value creators to seek funding from the EOS blockchain for their projects outside of EOS block rewards. It’s modeled closely after the {dashNexus} which has been successfully funding projects benefiting the DASH ecosystem for over 5 years.",
+    "dashProposalSystem": "DASH Budget Proposal System",
+    "overviewP2": "This decentralized voting & distribution mechanism is governed by the rules coded within the WPS smart contracts, which allows any EOS account to propose a budget for their specific project and Block Producers elected by token holders vote on them. Each proposal that passes is paid directly from the {eosio} account to the EOS account that proposed the work.",
+    "votingPeriodsAndFunding": "Voting periods and funding",
+    "votingPeriodsAndFundingP1": "A maximum budget of {maxMonthlyBudget} will be made available for each {votingPeriod}. The period budget and duration are settings within the WPS smart contract that can be adjusted by MSIG approval from 15 of the top 21 Block Producers.",
+    "votingPeriod": "{days}-day voting period",
+    "votingPeriodsAndFundingP2": "{eosio} is funded from the fees accumulated in the eosio.names and eosio.ramfee accounts prior to the deployment of REX. Prior to REX, these accounts accumulated roughly 3.5 million EOS from EOS premium name auctions and RAM purchase fees. An MSIG approval from 15 of the top 21 Block Producers is required to move those funds to eosio.wps. For now, MSIG proposals will be issued every 90 days to fund eosio.wps with enough EOS to cover 3 periods (150,000 EOS).",
+    "votingPeriodsAndFundingP3": "Any on-going fees being collected by `eosio.names` & `eosio.ramfee` will continue to flow to REX holders and shall not be transferred to `eosio.wps`",
+    "passingProposals": "Passing proposals",
+    "passingProposalsP": "To pass a proposal, it must meet the following {proposalThreshold} at the close of the voting period",
+    "proposalThresholdSmall": "proposal threshold",
+    "proposalThreshold": "Proposal threshold",
+    "proposalThresholdP1": "A minimum of {voteMargin} net positive votes are required from eligible voters.",
+    "proposalThresholdP2": "The cumulative budget of all passing proposals cannot exceed the allocated period budget of {maxMonthlyBudget}.",
+    "proposalThresholdP3": "a) If the cumulative budget of proposals that meet the voting threshold exceeds the allocated period budget, proposals will be awarded their requested budgets in order of voting rank only until the maximum budget is met.",
+    "eligibleVoter": "Eligible voter",
+    "eligibleVoterP1": "Any Block Producer who meets the 100-EOS-per-day vote pay reward threshold on the EOS Public Network within the last 24 hours is considered an {eligibleVoter}. All eligible voters have an equal vote weight and can cast a plus 1 (+1),  minus 1 (-1), or abstain (0) vote for each proposal.",
+    "eligibleVoterSmall": "eligible voter",
+    "eligibleVoterP2": "The proposal threshold, eligible voter requirements, and vote weights are all settings within the WPS smart contract that can be adjusted with an MSIG approval from 15 of the top 21 Block producers.",
+    "requirements":"Proposer requirements",
+    "requirementsP":"Any account on the EOS Public Network can submit a draft proposal. To limit spam, a non-refundable fee of {depositFee} must be paid to eosio.wps to publish a proposal.",
+    "guide": "Quick reference guide",
+    "periodBudget": "Period budget",
+    "periodDuration": "Period duration",
+    "proposalFee": "Proposal fee",
+    "passingThreshold": "Passing threshold",
+    "votesAtClose": "{votes} votes at close of period",
+    "eligibleVoterThreshold": "BPs who have met 100 EOS/day reward threshold for a minimum of 24 hours at the close of each period",
+    "voteWeight": "Vote weight",
+    "voteWeightP": "All eligible BPs have an equal vote weight and can cast a plus 1 (+1),  minus 1 (-1), or abstain (0) vote for each proposal",
+    "fundSource": "Fund source",
+    "fundSourceP": "Legacy (pre-REX) eosio.names and eosio.ramfee accumulated administrative fees",
+    "faq": "Frequently Asked Questions",
+    "faqs": {
+      "1": {
+        "question": "Who can request funds through the EOS Worker Proposal System?",
+        "answer": "Anyone with an EOS account who pays the 100 EOS proposal fee."
+      },
+      "2": {
+        "question": "Who can participate in voting on EOS WPS proposals?",
+        "answer": "Block Producers on the EOS Public Network who have met the 100 EOS/day reward threshold for at least 24 hours."
+      },
+      "3": {
+        "question": "Why is there a 100 EOS fee to submit a proposal?",
+        "answer": "To limit spam so that Block Producers can focus on reviewing only serious proposals."
+      },
+      "4": {
+        "question": "Where does the 100 EOS fee go?",
+        "answer": "The fee goes into the eosio.wps account to be redistributed to passing proposals."
+      },
+      "5": {
+        "question": "Is the 100 EOS fee ever refunded?",
+        "answer": "No, the fee is non-refundable."
+      },
+      "6": {
+        "question": "Can my proposal be eligible for the next period if it does not meet the threshold in during the voting period it was published?",
+        "answer": "No, if your proposal doesn’t pass in the period it was published, it is closed and not eligible for voting in the next period. If you’re publishing a proposal near the end of a period, consider waiting to publish it until the start of the next period."
+      },
+      "7": {
+        "question": "When will funds for passed proposals be transferred to the proposer?",
+        "answer": "On closing of the voting period, EOS will be automatically transferred to proposers whose proposals have passed."
+      },
+      "8": {
+        "question": "Can I request to be paid in Fiat or something other than EOS?",
+        "answer": "No, budgets will only be paid in EOS."
+      },
+      "9": {
+        "question": "Can I request payment in milestones, or does it need to be a lump sum?",
+        "answer": "Yes, you can request to split your payment across a maximum of 6 30-day periods, coinciding with the voting periods. But payment is subject to continued voting for each period. Votes for multi-period proposals roll over to subsequent voting periods. Payment will only be transferred during periods where the proposal meets the proposal threshold. If threshold is not met during a period, the proposal will remain active for the next voting periods."
+      },
+      "10": {
+        "question": "Do I need to pay a fee for each voting period for my multi-period proposal?",
+        "answer": "No, the 100 EOS fee paid to publish the proposal covers you for up to 6 periods."
+      },
+      "11": {
+        "question": "Can I adjust my proposal after it has been published?",
+        "answer": "No, a proposal can’t be changed after it’s been published."
+      },
+      "12": {
+        "question": "What if the EOS price changes drastically? Can I edit my budget in that case?",
+        "answer": "No, a proposal can’t be changed after it’s been published."
+      }
+    }
   },
   "notFoundPage": {
     "notFound": "Not found",

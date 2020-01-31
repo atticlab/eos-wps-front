@@ -8,6 +8,7 @@ import ActionType from '../store/constants';
 const Proposals = () => import('../views/Proposals.vue');
 const Proposal = () => import('../views/Proposal.vue');
 const ProposalCreation = () => import('../views/ProposalCreation.vue');
+const About = () => import('../views/About.vue');
 const NotFound = () => import('../views/NotFound.vue');
 
 Vue.use(VueRouter);
@@ -54,6 +55,11 @@ const routes = [
     meta: {
       requiresAuth: true,
     },
+  },
+  {
+    path: '/about',
+    name: 'About',
+    component: About,
   },
   {
     path: '/404',
