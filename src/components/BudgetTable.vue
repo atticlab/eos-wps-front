@@ -22,6 +22,7 @@
               v-if="budgetData.length < $constants.MAX_TABLE_ITEMS"
               class="btn--alt ml-auto mb-2"
               :elevation="0"
+              :ripple="false"
               v-on="on"
             >
               {{ $t('proposalCreationPage.addNewItem') }}

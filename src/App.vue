@@ -4,86 +4,146 @@
       v-model="drawer"
       :temporary="true"
       app
+      width="100%"
     >
-      <v-list dense>
-        <v-list-item button>
-          <v-list-item-content>
-            <v-list-item-title class="text-center">
+      <v-list-item class="drawer-header">
+        <v-list-item-content>
+          <v-list-item-title class="title">
+            <div class="d-flex align-center justify-space-between">
+              <div class="d-flex align-center">
+                <v-app-bar-nav-icon
+                  :to="{ name: 'ProposalsActive' }"
+                  color="primary"
+                  class="w-100"
+                  height="48"
+                  width="48"
+                  large
+                >
+                  <img
+                    src="@/assets/img/eos.svg"
+                    alt="EOS WPS"
+                    width="40"
+                  >
+                </v-app-bar-nav-icon>
+
+                <v-toolbar-title
+                  class="ml-2 font-weight-bold"
+                >
+                  EOS
+                  <span class="primary--text">
+                    WPS
+                  </span>
+                </v-toolbar-title>
+              </div>
+
               <v-btn
-                v-if="!getAccountNameWithAuthority"
-                large
-                height="50"
-                color="primary"
-                class="text-transform-none"
-                :disabled="isScatterLoginLoading"
-                @click="SCATTER_LOGIN"
+                color="error"
+                text
+                icon
+                @click.stop="drawer = false"
               >
-                {{ $t('common.signInWithScatter') }}
+                <v-icon>
+                  mdi-close
+                </v-icon>
               </v-btn>
-              <v-menu
-                v-else
-                offset-y
-              >
-                <template v-slot:activator="{ on }">
-                  <v-btn
-                    text
-                    large
-                    class="font-weight-bold text-transform-none"
-                    v-on="on"
-                  >
-                    <v-icon
-                      size="12"
-                      left
-                      class="mt-1"
+            </div>
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
+      <div class="list-wrapper">
+        <v-list
+          nav
+          class="text-center"
+          dense
+        >
+          <v-list-item :to="{ name: 'ProposalsActive' }">
+            <v-list-item-content>
+              <v-list-item-title class="font-weight-bold body-2">
+                {{ $t('common.activeProposals') }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item
+            v-if="getAccountNameWithAuthority && draftProposals && draftProposals.length !== 0"
+            :to="{ name: 'ProposalsDrafts' }"
+          >
+            <v-list-item-content>
+              <v-list-item-title class="font-weight-bold body-2">
+                {{ $t('common.drafts') }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item class="px-0">
+            <v-list-item-content class="pt-0">
+              <v-list-item-title class="text-center">
+                <v-btn
+                  v-if="!getAccountNameWithAuthority"
+                  large
+                  height="50"
+                  color="primary"
+                  class="text-transform-none mt-8"
+                  :disabled="isScatterLoginLoading"
+                  @click="SCATTER_LOGIN"
+                >
+                  {{ $t('common.signInWithScatter') }}
+                </v-btn>
+                <v-menu
+                  v-else
+                  offset-y
+                >
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      text
+                      height="40"
+                      block
+                      class="font-weight-bold text-transform-none body-2 acc"
+                      v-on="on"
                     >
-                      fas fa-chevron-down
-                    </v-icon>
+                      <v-icon
+                        size="12"
+                        left
+                        class="mt-1"
+                      >
+                        fas fa-chevron-down
+                      </v-icon>
 
-                    {{ getAccountNameWithAuthority }}
-                  </v-btn>
-                </template>
+                      {{ getAccountNameWithAuthority }}
+                    </v-btn>
+                  </template>
 
-                <v-list>
-                  <v-list-item
-                    @click="SCATTER_LOGOUT"
-                  >
-                    <v-list-item-title>
-                      {{ $t('common.signOut') }}
-                    </v-list-item-title>
-                  </v-list-item>
-                </v-list>
-              </v-menu>
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item :to="{ name: 'ProposalsActive' }">
-          <v-list-item-content>
-            <v-list-item-title>
-              {{ $t('common.activeProposals') }}
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item
-          v-if="getAccountNameWithAuthority && draftProposals && draftProposals.length !== 0"
-          :to="{ name: 'ProposalsDrafts' }"
-        >
-          <v-list-item-content>
-            <v-list-item-title>
-              {{ $t('common.drafts') }}
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item
-          v-if="getAccountNameWithAuthority"
-          :to="{ name: 'Proposal editor' }"
-        >
-          <v-list-item-content>
-            <v-list-item-title>
-              {{ $t('common.createProposal') }}
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
+                  <v-list>
+                    <v-list-item
+                      @click="SCATTER_LOGOUT"
+                    >
+                      <v-list-item-title class="body-2 font-weight-medium">
+                        {{ $t('common.signOut') }}
+                      </v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item
+            v-if="getAccountNameWithAuthority"
+            class="mt-8"
+          >
+            <v-list-item-content>
+              <v-list-item-title>
+                <v-btn
+                  color="primary"
+                  class="text-transform-none"
+                  height="50"
+                  :to="{ name: 'Proposal editor' }"
+                >
+                  {{ $t('common.createProposal') }}
+                </v-btn>
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </div>
     </v-navigation-drawer>
 
     <v-app-bar
@@ -120,7 +180,8 @@
         <v-btn
           text
           :to="{ name: 'ProposalsActive' }"
-          class="font-weight-bold text-transform-none"
+          class="font-weight-bold text-transform-none px-6"
+          exact-active-class="custom-before-underline"
         >
           {{ $t('common.activeProposals') }}
         </v-btn>
@@ -131,7 +192,8 @@
             && draftProposals.length !== 0"
           text
           :to="{ name: 'ProposalsDrafts' }"
-          class="font-weight-bold text-transform-none"
+          class="font-weight-bold text-transform-none px-6"
+          exact-active-class="custom-before-underline"
         >
           {{ $t('common.drafts') }}
         </v-btn>
@@ -145,7 +207,7 @@
           <template v-slot:activator="{ on }">
             <v-btn
               text
-              class="font-weight-bold text-transform-none"
+              class="font-weight-bold text-transform-none px-6"
               v-on="on"
             >
               <v-icon
@@ -349,12 +411,10 @@
   @import '~@/assets/scss/main';
 
   .alert-scatter {
-    /*margin-top: 64px;*/
     width: 100%;
     text-align: center;
     position: fixed !important;
     z-index: 2;
-
     left: 0;
     top: 0;
   }
@@ -375,5 +435,21 @@
     font-weight: 500;
     height: 34px;
     width: 34px;
+  }
+
+  .drawer-header {
+    height: 80px;
+
+    .v-list-item__content {
+      height: 80px;
+    }
+  }
+
+  .list-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: calc(100vh - 80px);
+    min-height: 266px;
   }
 </style>

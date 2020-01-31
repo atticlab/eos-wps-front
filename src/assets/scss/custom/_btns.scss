@@ -4,8 +4,19 @@
    background-color: $white !important;
    border: 2px solid $grey--2 !important;
    color: $black !important;
-}
+   transition: all 0.2s !important;
 
-//.v-btn.v-size--default, .v-btn.v-size--large {
-//   font-size: 14px !important;
-//}
+   &:hover, &:focus, &:active {
+      background-color: $primary !important;
+      color: $white !important;
+      border-color: $primary !important;
+   }
+
+   &:before {
+      box-sizing: border-box;
+      height: calc(100% + 4px);
+      width: calc(100% + 4px);
+      top: -2px !important;
+      left: -2px !important;
+   }
+}

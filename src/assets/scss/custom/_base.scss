@@ -10,8 +10,12 @@
   border: 1px solid rgba(0, 0, 0, 0.12) !important;
 }
 
-.v-divider {
-  border-bottom: 2px dotted $grey--2 !important;
+.v-divider--custom {
+  border: 1px dotted transparent !important;
+  background-image: radial-gradient(circle at 2px, #4a4a4a 1px, rgba(255,255,255,0) 1px);
+  background-position: top;
+  background-size: 15px 1px;
+  background-repeat: repeat-x;
 }
 
 .border-bottom {
@@ -20,6 +24,16 @@
 
 .border-none {
   border: none !important;
+}
+
+.custom-before-underline {
+  &:before {
+    background-color: $primary !important;
+    height: 2px !important;
+    width: 100% !important;
+    top: calc(100% - 2px) !important;
+    opacity: 1 !important;
+  }
 }
 
 @media (min-width: 1904px) {

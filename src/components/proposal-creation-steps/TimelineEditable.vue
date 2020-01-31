@@ -8,7 +8,7 @@
         <h2 class="body-1 font-weight-bold mb-3">
           {{ $t('proposalCreationPage.setupTimeline') }}
         </h2>
-        <p class="font-weight-medium accent--text timeline-subtitle">
+        <p class="font-weight-medium accent--text timeline-subtitle body-2">
           {{ $t('proposalCreationPage.setupTimelineP') }}
         </p>
       </div>
@@ -18,6 +18,8 @@
         :items="milestones"
         :hide-default-footer="true"
         :items-per-page="$constants.MAX_TABLE_ITEMS"
+        :hide-default-header="$vuetify.breakpoint.xs"
+        disable-sort
       >
         <template v-slot:top>
           <v-toolbar
@@ -33,6 +35,7 @@
                   v-if="milestones.length < $constants.MAX_TABLE_ITEMS"
                   class="btn--alt ml-auto mb-2"
                   :elevation="0"
+                  :ripple="false"
                   v-on="on"
                 >
                   {{ $t('proposalCreationPage.addNewItem') }}

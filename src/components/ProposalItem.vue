@@ -70,22 +70,19 @@
               class="pt-0 pt-sm-3"
             >
               <div
-                v-if="isDraft"
-                class="font-weight-bold mb-2 body-2"
-              >
-                {{ $t('common.paymentsDuration') }}:
-                <span class="font-weight-medium">
-                  {{ duration }}
-                  {{ $t('common.months') }}
-                </span>
-              </div>
-
-              <div
                 v-if="!isDraft"
                 class="font-weight-bold mb-2 body-2"
               >
                 {{ $t('common.payments') }}:
                 <span class="font-weight-medium">{{ payments }}</span>
+              </div>
+
+              <div class="font-weight-bold mb-2 body-2">
+                {{ $t('common.paymentsDuration') }}:
+                <span class="font-weight-medium">
+                  {{ duration }}
+                  {{ $t('common.months') }}
+                </span>
               </div>
 
               <div

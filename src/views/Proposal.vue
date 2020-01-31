@@ -168,12 +168,12 @@
             </v-card>
           </v-col>
           <v-col
+            v-if="isDraft || isBp"
             cols="12"
             class="d-flex"
             md="5"
           >
             <v-card
-              v-if="isDraft || isBp"
               class="flex-fill"
               flat
             >
@@ -253,7 +253,7 @@
                     class="d-flex justify-space-between align-center flex-wrap mb-4"
                   >
                     <div class="actions-left">
-                      <div class="font-weight-semi-bold text-uppercase">
+                      <div class="font-weight-semi-bold text-uppercase mb-1">
                         {{ $t('proposalPage.payDepositFee') }}
                       </div>
                       <div class="accent--text fs-12">
@@ -267,6 +267,7 @@
                         :elevation="0"
                         class="btn--alt"
                         :disabled="isSendDepositLoading"
+                        :ripple="false"
                         @click="transfer"
                       >
                         {{ $t('proposalPage.payFeeShort') }}
@@ -278,7 +279,7 @@
                     class="d-flex justify-space-between align-center flex-wrap mb-4"
                   >
                     <div class="actions-left">
-                      <div class="font-weight-semi-bold text-uppercase">
+                      <div class="font-weight-semi-bold text-uppercase mb-1">
                         {{ $t('proposalPage.activateProposal') }}
                       </div>
                       <div class="accent--text fs-12">
@@ -296,6 +297,7 @@
                             block
                             :elevation="0"
                             class="btn--alt"
+                            :ripple="false"
                             v-on="on"
                           >
                             {{ $t('proposalPage.activate') }}
@@ -366,7 +368,7 @@
                     class="d-flex justify-space-between align-center flex-wrap mb-4"
                   >
                     <div class="actions-left">
-                      <div class="font-weight-semi-bold text-uppercase">
+                      <div class="font-weight-semi-bold text-uppercase mb-1">
                         {{ $t('proposalPage.refund') }}
                       </div>
                       <div class="accent--text fs-12">
@@ -380,6 +382,7 @@
                         :elevation="0"
                         class="btn--alt"
                         :disabled="isRefundLoading"
+                        :ripple="false"
                         @click="refund"
                       >
                         {{ $t('proposalPage.refund') }}
@@ -389,7 +392,7 @@
 
                   <div class="d-flex justify-space-between align-center flex-wrap mb-4">
                     <div class="actions-left">
-                      <div class="font-weight-semi-bold text-uppercase">
+                      <div class="font-weight-semi-bold text-uppercase mb-1">
                         {{ $t('proposalCreationPage.editProposal') }}
                       </div>
                       <div class="accent--text fs-12">
@@ -402,6 +405,7 @@
                         block
                         :elevation="0"
                         class="btn--alt"
+                        :ripple="false"
                         :to="`/proposal-editor/${proposalId}`"
                       >
                         {{ $t('proposalPage.edit') }}
@@ -411,7 +415,7 @@
 
                   <div class="d-flex justify-space-between align-center flex-wrap mb-4">
                     <div class="actions-left">
-                      <div class="font-weight-semi-bold text-uppercase">
+                      <div class="font-weight-semi-bold text-uppercase mb-1">
                         {{ $t('proposalPage.deleteProposal') }}
                       </div>
                       <div class="accent--text fs-12">
@@ -424,6 +428,7 @@
                         block
                         :elevation="0"
                         class="btn--alt"
+                        :ripple="false"
                         :disabled="isCancelProposalDraftLoading"
                         @click="deleteProposal"
                       >
@@ -457,28 +462,28 @@
           class="font-weight-medium body-2"
         >
           <v-tab
-            class="text-transform-none font-weight-semi-bold body-1"
+            class="text-transform-none font-weight-semi-bold body-1 px-12"
             active-class="v-tab--active"
             :ripple="false"
           >
             {{ $t('proposalPage.overview') }}
           </v-tab>
           <v-tab
-            class="text-transform-none font-weight-semi-bold body-1"
+            class="text-transform-none font-weight-semi-bold body-1 px-12"
             active-class="v-tab--active"
             :ripple="false"
           >
             {{ $t('common.budget') }}
           </v-tab>
           <v-tab
-            class="text-transform-none font-weight-semi-bold body-1"
+            class="text-transform-none font-weight-semi-bold body-1 px-12"
             active-class="v-tab--active"
             :ripple="false"
           >
             {{ $t('common.timeline') }}
           </v-tab>
           <v-tab
-            class="text-transform-none font-weight-semi-bold body-1"
+            class="text-transform-none font-weight-semi-bold body-1 px-12"
             active-class="v-tab--active"
             :ripple="false"
           >
@@ -718,6 +723,12 @@
       max-width: 60%;
       margin-right: 16px;
       margin-bottom: 16px;
+    }
+  }
+
+  @media (max-width: 599px) {
+    .actions-left {
+      max-width: 100%;
     }
   }
 </style>
