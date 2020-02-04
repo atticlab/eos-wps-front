@@ -31,19 +31,20 @@ export default {
             actionName: 'modifydraft',
             data: {
               proposer: this.getAccountName,
-              proposal_name: data.proposalName,
+              proposal_name: data.proposal_name,
               title: data.title,
-              proposal_json: data.proposalJson,
+              proposal_json: data.proposal_json,
             },
           },
         ];
-        if (data.monthlyBudget && data.duration) {
+        if (data.monthly_budget && data.duration) {
+          console.log(payload);
           payload.push({
             actionName: 'modifybudget',
             data: {
               proposer: this.getAccountName,
-              proposal_name: data.proposalName,
-              monthly_budget: data.monthlyBudget,
+              proposal_name: data.proposal_name,
+              monthly_budget: data.monthly_budget,
               duration: data.duration,
             },
           });

@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import mutations from './mutations';
 import actions from './actions';
 
@@ -44,6 +45,11 @@ const getters = {
   getAccountPermission(state) {
     return state.eosAccount ?  state.eosAccount.authority : '';
   },
+  getProposalParsed(state) {
+    return state.proposal && Object.keys(state.proposal).length
+           ? Vue.prototype.$helpers.parseProposal(state.proposal)
+           : {};
+  }
 };
 /* eslint-enable */
 

@@ -32,7 +32,7 @@ const helpers = {
   // The function for transforming the array of additional data
   // in a proposal object ot an object
   parseProposal(proposal) {
-    const proposalCopy = proposal;
+    const proposalCopy = this.copyDeep(proposal);
     let obj = {};
 
     // proposal_json is an array of objects for additional data in a proposal object

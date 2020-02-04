@@ -300,12 +300,14 @@
 </template>
 
 <script>
+  import { mapGetters, mapMutations } from 'vuex';
   import { validationMixin } from 'vuelidate';
   import {
  required, minLength, maxLength, helpers,
 } from 'vuelidate/lib/validators';
   import modifyProposalDraft from '@/mixins/modifyProposalDraft';
   import notification from '@/mixins/notification';
+  import ActionType from '@/store/constants';
 
   export default {
     name: 'TimelineEditable',
@@ -329,12 +331,12 @@
         },
       },
     },
-    props: {
-      proposalInitial: {
-        type: Object,
-        default: () => {},
-      },
-    },
+    // props: {
+    //   proposalInitial: {
+    //     type: Object,
+    //     default: () => {},
+    //   },
+    // },
     data() {
       return {
         startsAtMenu: false,
@@ -344,7 +346,7 @@
         headers: this.$constants.MILESTONES_HEADERS,
         milestones: [],
         editedIndex: -1,
-        proposal: {},
+        // proposal: {},
         editedItem: {
           title: '',
           startsAt: '',
@@ -358,6 +360,9 @@
       };
     },
     computed: {
+      ...mapGetters('userService', {
+        getProposalParsed: 'getProposalParsed',
+      }),
       proposalId() {
         return this.$route.params.slug ? this.$route.params.slug : '';
       },
@@ -420,23 +425,33 @@
         // eslint-disable-next-line no-unused-expressions
         val || this.closeDialogDelete();
       },
-      proposalInitial: {
-        immediate: true,
-        handler(val) {
-          if (this.proposalId) {
-            this.proposal = this.$helpers.copyDeep(val);
-          }
-        },
-      },
-      $route: {
-        immediate: true,
-        handler() {
-          if (this.proposalId) {
-            this.proposal = this.$helpers.copyDeep(this.proposalInitial);
-          }
-        },
-      },
-      proposal: {
+      // proposalInitial: {
+      //   immediate: true,
+      //   handler(val) {
+      //     if (this.proposalId) {
+      //       this.proposal = this.$helpers.copyDeep(val);
+      //     }
+      //   },
+      // },
+      // $route: {
+      //   immediate: true,
+      //   handler() {
+      //     if (this.proposalId) {
+      //       this.proposal = this.$helpers.copyDeep(this.proposalInitial);
+      //     }
+      //   },
+      // },
+      // proposal: {
+      //   immediate: true,
+      //   deep: true,
+      //   handler(val) {
+      //     if (!val || Object.keys(val).length === 0) return;
+      //     this.milestones = val.proposal_json.milestones
+      //                       ? JSON.parse(val.proposal_json.milestones)
+      //                       : [];
+      //   },
+      // },
+      getProposalParsed: {
         immediate: true,
         deep: true,
         handler(val) {
@@ -448,6 +463,9 @@
       },
     },
     methods: {
+      ...mapMutations('userService', [
+        ActionType.SET_DRAFT_BY_PROPOSAL_NAME,
+      ]),
       validateSingleField(val) {
         this.$v.editedItem[val].$touch();
       },
@@ -502,7 +520,7 @@
           return;
         }
 
-        const proposalAdditionalInfo = this.$helpers.copyDeep(this.proposal.proposal_json);
+        const proposalAdditionalInfo = this.$helpers.copyDeep(this.getProposalParsed.proposal_json);
 
         proposalAdditionalInfo.milestones = JSON.stringify(this.$helpers.copyDeep(this.milestones));
         const proposalAdditionalInfoRestructured = this.$helpers.restructureProposalAdditionalInfo(
@@ -510,9 +528,9 @@
         );
 
         const payload = {
-          proposalName: this.proposal.proposal_name,
-          title: this.proposal.title,
-          proposalJson: proposalAdditionalInfoRestructured,
+          proposal_name: this.getProposalParsed.proposal_name,
+          title: this.getProposalParsed.title,
+          proposal_json: proposalAdditionalInfoRestructured,
         };
 
         if (await this.$_modifyProposalDraft(payload)) {

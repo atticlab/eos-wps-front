@@ -15,7 +15,7 @@
       v-model="text"
       :content="content"
       :options="editorOptions"
-      class="h"
+      class="editor"
     />
 
     <div class="d-flex justify-center">
@@ -23,9 +23,20 @@
         color="primary"
         large
         height="50"
+        class="text-transform-none mr-2"
+        :disabled="isModifyProposalDraftLoading"
+        @click="modify(true)"
+      >
+        {{ $t('proposalCreationPage.saveDraft') }}
+      </v-btn>
+
+      <v-btn
+        color="primary"
+        large
+        height="50"
         class="text-transform-none"
         :disabled="isModifyProposalDraftLoading"
-        @click="modify"
+        @click="modify(false)"
       >
         {{ $t('proposalCreationPage.continue') }}
       </v-btn>
@@ -35,11 +46,13 @@
 
 <script>
   import Vue from 'vue';
+  import { mapGetters, mapMutations } from 'vuex';
   import VueQuillEditor from 'vue-quill-editor';
   import { validationMixin } from 'vuelidate';
   import { required, maxLength } from 'vuelidate/lib/validators';
   import modifyProposalDraft from '@/mixins/modifyProposalDraft';
   import notification from '@/mixins/notification';
+  import ActionType from '@/store/constants';
 
   // require styles
   // eslint-disable-next-line import/no-extraneous-dependencies
@@ -61,17 +74,10 @@
         maxLength: maxLength(12000),
       },
     },
-    props: {
-      proposalInitial: {
-        type: Object,
-        default: () => {},
-      },
-    },
     data() {
       return {
         content: '',
         text: '',
-        proposal: {},
         editorOptions: {
           theme: 'snow',
           modules: {
@@ -99,28 +105,15 @@
       };
     },
     computed: {
+      ...mapGetters('userService', {
+        getProposalParsed: 'getProposalParsed',
+      }),
       proposalId() {
         return this.$route.params.slug ? this.$route.params.slug : '';
       },
     },
     watch: {
-      proposalInitial: {
-        immediate: true,
-        handler(val) {
-          if (this.proposalId) {
-            this.proposal = this.$helpers.copyDeep(val);
-          }
-        },
-      },
-      $route: {
-        immediate: true,
-        handler() {
-          if (this.proposalId) {
-            this.proposal = this.$helpers.copyDeep(this.proposalInitial);
-          }
-        },
-      },
-      proposal: {
+      getProposalParsed: {
         immediate: true,
         deep: true,
         handler(val) {
@@ -131,6 +124,9 @@
       },
     },
     methods: {
+      ...mapMutations('userService', [
+        ActionType.SET_DRAFT_BY_PROPOSAL_NAME,
+      ]),
       changeCurrentStep(val) {
         this.$emit('step', val);
       },
@@ -138,13 +134,13 @@
         this.$v.$touch();
         return !this.$v.text.$anyError;
       },
-      async modify() {
+      async modify(pushTransaction = true) {
         if (!this.validateAll()) {
           this.showErrorMsg(this.$t('notifications.overviewEmpty'));
           return;
         }
 
-        const proposalAdditionalInfo = this.$helpers.copyDeep(this.proposal.proposal_json);
+        const proposalAdditionalInfo = this.$helpers.copyDeep(this.getProposalParsed.proposal_json);
         proposalAdditionalInfo.overview = this.text;
 
         const proposalAdditionalInfoRestructured = this.$helpers.restructureProposalAdditionalInfo(
@@ -152,10 +148,17 @@
         );
 
         const payload = {
-          proposalName: this.proposal.proposal_name,
-          title: this.proposal.title,
-          proposalJson: proposalAdditionalInfoRestructured,
+          proposal_name: this.getProposalParsed.proposal_name,
+          title: this.getProposalParsed.title,
+          proposal_json: proposalAdditionalInfoRestructured,
         };
+
+        this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
+
+        if (!pushTransaction) {
+          this.changeCurrentStep(3);
+          return;
+        }
 
         if (await this.$_modifyProposalDraft(payload)) {
           this.$emit('is-draft-modified', true);
@@ -167,7 +170,7 @@
 </script>
 
 <style lang="scss" scoped>
-  .h {
+  .editor {
     min-height: 400px;
   }
 </style>
