@@ -38,7 +38,6 @@ export default {
           },
         ];
         if (data.monthly_budget && data.duration) {
-          console.log(payload);
           payload.push({
             actionName: 'modifybudget',
             data: {

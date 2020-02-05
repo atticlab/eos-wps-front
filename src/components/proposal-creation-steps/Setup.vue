@@ -534,26 +534,116 @@
       proposalId() {
         return this.$route.params.slug ? this.$route.params.slug : '';
       },
+
+      // Workaround to watch, validate and save every field of the setupData when being edited!
+      // proposalName() {
+      //   return this.setupData.proposal_name;
+      // },
+      // proposalTitle() {
+      //   return this.setupData.title;
+      // },
+      // proposalSummary() {
+      //   return this.setupData.summary;
+      // },
     },
     watch: {
-      // setupData: {
-      //   deep: true,
-      //   handler() {
-      //     if (this.proposalId) {
-      //       if (this.validateBeforeModify()) {
-      //         const payload = this.formPayloadBeforeModify();
+
+      // Workaround to watch, validate and save every field of the setupData when being edited!
+      // proposalName(val) {
+      //   this.$v.setupData.proposal_name.$touch();
+      //   if (this.$v.setupData.proposal_name.$anyError) {
+      //     return false;
+      //   }
       //
-      //         this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](payload);
-      //       }
-      //     } else {
-      //       if (this.validateBeforePropose()) {
-      //         const payload = this.formPayloadBeforePropose();
+      //   const payload = this.formPayloadBeforePropose();
+      //   const res = val;
       //
-      //         this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](payload);
-      //       }
-      //     }
-      //   },
+      //   payload.proposal_title = res;
+      //
+      //   this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
+      //   return true;
       // },
+      // proposalTitle(val) {
+      //   this.$v.setupData.title.$touch();
+      //   if (this.$v.setupData.title.$anyError) {
+      //     return false;
+      //   }
+      //
+      //   const payload = this.formPayloadBeforePropose();
+      //   const res = val;
+      //
+      //   payload.title = res;
+      //
+      //   this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
+      //   return true;
+      // },
+      // proposalSummary(val) {
+      //   this.$v.setupData.summary.$touch();
+      //   if (this.$v.setupData.summary.$anyError) {
+      //     return false;
+      //   }
+      //
+      //   const payload = this.formPayloadBeforePropose();
+      //   const res = val;
+      //
+      //   payload.proposal_json = res;
+      //
+      //   this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
+      //   return true;
+      // },
+
+      setupData: {
+        deep: true,
+        async handler() {
+          if (!this.proposalId) {
+            if (!this.validateBeforePropose(false)) return;
+            console.log('setupData');
+
+            const payload = this.formPayloadBeforePropose();
+
+            if (await this.$_isProposalExist(payload.proposal_name)) {
+              this.showErrorMsg(this.$t('notifications.proposalNameExists'));
+              return;
+            }
+
+            this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
+          }
+        },
+      },
+      async monthlyBudget() {
+        if (!this.proposalId) {
+          if (!this.validateBeforePropose(false)) return;
+          console.log('monthlyBudget');
+
+          const payload = this.formPayloadBeforePropose();
+
+          if (await this.$_isProposalExist(payload.proposal_name)) {
+            this.showErrorMsg(this.$t('notifications.proposalNameExists'));
+            return;
+          }
+
+          this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
+        }
+      },
+      budgetItemsNew: {
+        deep: true,
+        async handler() {
+          if (!this.proposalId) {
+            if (!this.validateBeforePropose(false)) return;
+            console.log('budgetItemsNew');
+
+            const payload = this.formPayloadBeforePropose();
+
+            if (await this.$_isProposalExist(payload.proposal_name)) {
+              this.showErrorMsg(this.$t('notifications.proposalNameExists'));
+              return;
+            }
+
+            this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
+          }
+        },
+      },
+
       $route: {
         immediate: true,
         handler() {
@@ -616,33 +706,43 @@
         this.$v.$touch();
         return !this.$v.setupData.$anyError;
       },
-      validateBeforePropose() {
+      validateBeforePropose(showMsg = true) {
         if (!this.validateAll()) {
-          this.showErrorMsg(this.$t('notifications.fillFields'));
+          if (showMsg) {
+            this.showErrorMsg(this.$t('notifications.fillFields'));
+          }
           return false;
         }
 
         if (!this.setupData.duration) {
-          this.showErrorMsg(this.$t('notifications.durationErr'));
+          if (showMsg) {
+            this.showErrorMsg(this.$t('notifications.durationErr'));
+          }
           return false;
         }
 
         if (!this.monthlyBudget || this.monthlyBudget.split(' ')[0] < 100) {
-          this.showErrorMsg(this.$t('notifications.budgetErr'));
+          if (showMsg) {
+            this.showErrorMsg(this.$t('notifications.budgetErr'));
+          }
           return false;
         }
 
         if (Number(this.monthlyBudget.split(' ')[0])
           > Number(this.proposalsSettings.max_monthly_budget.split(' ')[0])) {
-          this.showErrorMsg(this.$t(
-            'notifications.budgetErrMax',
-            { maxMonthlyBudget: this.proposalsSettings.max_monthly_budget },
-          ));
+          if (showMsg) {
+            this.showErrorMsg(this.$t(
+              'notifications.budgetErrMax',
+              { maxMonthlyBudget: this.proposalsSettings.max_monthly_budget },
+            ));
+          }
           return false;
         }
 
         if (this.budgetItemsNew.length > this.$constants.MAX_TABLE_ITEMS) {
-          this.showErrorMsg(this.$t('notifications.tooManyItems'));
+          if (showMsg) {
+            this.showErrorMsg(this.$t('notifications.tooManyItems'));
+          }
           return false;
         }
 
