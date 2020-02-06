@@ -19,27 +19,52 @@
     />
 
     <div class="d-flex justify-center">
-      <v-btn
-        color="primary"
-        large
-        height="50"
-        class="text-transform-none mr-2"
-        :disabled="isModifyProposalDraftLoading"
-        @click="modify(true)"
-      >
-        {{ $t('proposalCreationPage.saveDraft') }}
-      </v-btn>
+      <template v-if="!proposalId">
+        <v-btn
+          color="primary"
+          large
+          height="50"
+          class="text-transform-none mr-2"
+          :disabled="isCreateProposalDraftLoading"
+          @click="propose(true)"
+        >
+          {{ $t('proposalCreationPage.saveDraft') }}
+        </v-btn>
 
-      <v-btn
-        color="primary"
-        large
-        height="50"
-        class="text-transform-none"
-        :disabled="isModifyProposalDraftLoading"
-        @click="modify(false)"
-      >
-        {{ $t('proposalCreationPage.continue') }}
-      </v-btn>
+        <v-btn
+          color="primary"
+          large
+          height="50"
+          class="text-transform-none"
+          :disabled="isCreateProposalDraftLoading"
+          @click="propose(false)"
+        >
+          {{ $t('proposalCreationPage.continue') }}
+        </v-btn>
+      </template>
+      <template v-else>
+        <v-btn
+          color="primary"
+          large
+          height="50"
+          class="text-transform-none mr-2"
+          :disabled="isModifyProposalDraftLoading"
+          @click="modify(true)"
+        >
+          {{ $t('proposalCreationPage.saveDraft') }}
+        </v-btn>
+
+        <v-btn
+          color="primary"
+          large
+          height="50"
+          class="text-transform-none"
+          :disabled="isModifyProposalDraftLoading"
+          @click="modify(false)"
+        >
+          {{ $t('proposalCreationPage.continue') }}
+        </v-btn>
+      </template>
     </div>
   </div>
 </template>
@@ -51,6 +76,7 @@
   import { validationMixin } from 'vuelidate';
   import { required, maxLength } from 'vuelidate/lib/validators';
   import modifyProposalDraft from '@/mixins/modifyProposalDraft';
+  import createProposalDraft from '@/mixins/createProposalDraft';
   import notification from '@/mixins/notification';
   import ActionType from '@/store/constants';
 
@@ -67,7 +93,7 @@
 
   export default {
     name: 'Description',
-    mixins: [validationMixin, modifyProposalDraft, notification],
+    mixins: [validationMixin, createProposalDraft, modifyProposalDraft, notification],
     validations: {
       text: {
         required,
@@ -113,6 +139,13 @@
       },
     },
     watch: {
+      text() {
+        if (!this.proposalId) {
+          this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](
+            { ...this.getProposalParsed, ...this.formProposalJSON() },
+            );
+        }
+      },
       getProposalParsed: {
         immediate: true,
         deep: true,
@@ -134,26 +167,56 @@
         this.$v.$touch();
         return !this.$v.text.$anyError;
       },
+      formProposalJSON() {
+        const proposalAdditionalInfo = this.$helpers.copyDeep(this.getProposalParsed.proposal_json);
+        proposalAdditionalInfo.overview = this.text;
+        if (this.getProposalParsed
+          && Object.keys(this.getProposalParsed).length !== 0
+          && this.getProposalParsed.proposal_json.milestones
+          && JSON.parse(this.getProposalParsed.proposal_json.milestones).length !== 0) {
+          proposalAdditionalInfo.milestones = this.getProposalParsed.proposal_json.milestones;
+        } else {
+          delete proposalAdditionalInfo.milestones;
+        }
+
+        const proposalAdditionalInfoRestructured = this.$helpers.restructureProposalAdditionalInfo(
+          proposalAdditionalInfo,
+        );
+
+        return {
+          proposal_json: proposalAdditionalInfoRestructured,
+        };
+      },
+      async propose(pushTransaction = true) {
+        if (!this.validateAll()) {
+          this.showErrorMsg(this.$t('notifications.overviewEmpty'));
+          return;
+        }
+
+        const payload = { ...this.getProposalParsed, ...this.formProposalJSON() };
+
+        this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](payload);
+
+        if (!pushTransaction) {
+          this.changeCurrentStep(3);
+          return;
+        }
+
+        if (await this.$_createProposalDraft(payload)) {
+          this.$eventBus.$emit('proposal-created', true);
+          this.$router.push(`proposal-editor/${this.getProposalParsed.proposal_name}`);
+          this.changeCurrentStep(3);
+        }
+      },
       async modify(pushTransaction = true) {
         if (!this.validateAll()) {
           this.showErrorMsg(this.$t('notifications.overviewEmpty'));
           return;
         }
 
-        const proposalAdditionalInfo = this.$helpers.copyDeep(this.getProposalParsed.proposal_json);
-        proposalAdditionalInfo.overview = this.text;
+        const payload = { ...this.getProposalParsed, ...this.formProposalJSON() };
 
-        const proposalAdditionalInfoRestructured = this.$helpers.restructureProposalAdditionalInfo(
-            proposalAdditionalInfo,
-        );
-
-        const payload = {
-          proposal_name: this.getProposalParsed.proposal_name,
-          title: this.getProposalParsed.title,
-          proposal_json: proposalAdditionalInfoRestructured,
-        };
-
-        this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
+        this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](payload);
 
         if (!pushTransaction) {
           this.changeCurrentStep(3);

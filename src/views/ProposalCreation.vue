@@ -32,17 +32,17 @@
           <v-stepper-step
             color="primary"
             class="mx-sm-12"
-            :complete="isOverviewAvailable"
+            :complete="isOverviewAvailable && setupValidationResult"
             :step="2"
-            :editable="isOverviewAvailable"
+            :editable="isOverviewAvailable && setupValidationResult"
           >
             {{ $t('proposalCreationPage.description') }}
           </v-stepper-step>
           <v-stepper-step
             color="primary"
-            :complete="isMilestonesAvailable"
+            :complete="setupValidationResult && isOverviewAvailable && isMilestonesAvailable"
             :step="3"
-            :editable="isMilestonesAvailable"
+            :editable="setupValidationResult && isOverviewAvailable && isMilestonesAvailable"
           >
             {{ $t('common.timeline') }}
           </v-stepper-step>
@@ -69,6 +69,7 @@
             class="pb-12"
           >
             <Setup
+              @setup-validation-result="setSetupValidationResult"
               @step="setCurrentStep"
               @is-draft-modified="setIsDraftModified"
             />
@@ -120,6 +121,7 @@ mapState, mapGetters, mapActions, mapMutations,
       return {
         currentStep: 1,
         isDraftModified: false,
+        setupValidationResult: false,
       };
     },
     computed: {
@@ -145,7 +147,7 @@ mapState, mapGetters, mapActions, mapMutations,
           return false;
         }
         return !!(this.getProposalParsed.proposal_json.milestones
-          && this.getProposalParsed.proposal_json.milestones.length !== 0);
+          && JSON.parse(this.getProposalParsed.proposal_json.milestones).length !== 0);
       },
     },
     watch: {
@@ -201,6 +203,9 @@ mapState, mapGetters, mapActions, mapMutations,
       },
       setIsDraftModified(bool) {
         this.isDraftModified = bool;
+      },
+      setSetupValidationResult(bool) {
+        this.setupValidationResult = bool;
       },
     },
   };

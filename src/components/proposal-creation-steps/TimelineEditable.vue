@@ -78,8 +78,9 @@
                           offset-y
                         >
                           <template v-slot:activator="{ on }">
+                            <!--                            v-model="editedItem.startsAt"-->
                             <v-text-field
-                              v-model="editedItem.startsAt"
+                              :value="formattedStartsAt"
                               label="Start"
                               readonly
                               class="mr-3"
@@ -132,8 +133,9 @@
                           offset-y
                         >
                           <template v-slot:activator="{ on }">
+                            <!--                            v-model="editedItem.endsAt"-->
                             <v-text-field
-                              v-model="editedItem.endsAt"
+                              :value="formattedEndsAt"
                               label="End"
                               readonly
                               required
@@ -286,6 +288,18 @@
 
     <div class="d-flex justify-center">
       <v-btn
+        v-if="!proposalId"
+        class="text-transform-none"
+        color="primary"
+        large
+        height="50"
+        :disabled="isCreateProposalDraftLoading"
+        @click="propose"
+      >
+        {{ $t('proposalCreationPage.saveDraft') }}
+      </v-btn>
+      <v-btn
+        v-else
         class="text-transform-none"
         color="primary"
         large
@@ -300,18 +314,19 @@
 </template>
 
 <script>
-  import { mapGetters, mapMutations } from 'vuex';
+  import { mapState, mapGetters, mapMutations } from 'vuex';
   import { validationMixin } from 'vuelidate';
   import {
  required, minLength, maxLength, helpers,
 } from 'vuelidate/lib/validators';
+  import createProposalDraft from '@/mixins/createProposalDraft';
   import modifyProposalDraft from '@/mixins/modifyProposalDraft';
   import notification from '@/mixins/notification';
   import ActionType from '@/store/constants';
 
   export default {
     name: 'TimelineEditable',
-    mixins: [validationMixin, modifyProposalDraft, notification],
+    mixins: [validationMixin, createProposalDraft, modifyProposalDraft, notification],
     validations: {
       editedItem: {
         title: {
@@ -331,12 +346,6 @@
         },
       },
     },
-    // props: {
-    //   proposalInitial: {
-    //     type: Object,
-    //     default: () => {},
-    //   },
-    // },
     data() {
       return {
         startsAtMenu: false,
@@ -346,7 +355,6 @@
         headers: this.$constants.MILESTONES_HEADERS,
         milestones: [],
         editedIndex: -1,
-        // proposal: {},
         editedItem: {
           title: '',
           startsAt: '',
@@ -360,6 +368,10 @@
       };
     },
     computed: {
+      ...mapState({
+        isDraftProposalByProposalNameLoading: state => state
+          .userService.isDraftProposalByProposalNameLoading,
+      }),
       ...mapGetters('userService', {
         getProposalParsed: 'getProposalParsed',
       }),
@@ -413,6 +425,17 @@
 
         return errors;
       },
+
+      formattedStartsAt() {
+        return this.editedItem.startsAt
+               ? this.$moment(this.editedItem.startsAt).format(this.$constants.DATE_FORMAT)
+               : '';
+      },
+      formattedEndsAt() {
+        return this.editedItem.endsAt
+               ? this.$moment(this.editedItem.endsAt).format(this.$constants.DATE_FORMAT)
+               : '';
+      },
     },
     watch: {
       // needed to clear editedIndex on an outside click
@@ -425,40 +448,24 @@
         // eslint-disable-next-line no-unused-expressions
         val || this.closeDialogDelete();
       },
-      // proposalInitial: {
-      //   immediate: true,
-      //   handler(val) {
-      //     if (this.proposalId) {
-      //       this.proposal = this.$helpers.copyDeep(val);
-      //     }
-      //   },
-      // },
-      // $route: {
-      //   immediate: true,
-      //   handler() {
-      //     if (this.proposalId) {
-      //       this.proposal = this.$helpers.copyDeep(this.proposalInitial);
-      //     }
-      //   },
-      // },
-      // proposal: {
-      //   immediate: true,
-      //   deep: true,
-      //   handler(val) {
-      //     if (!val || Object.keys(val).length === 0) return;
-      //     this.milestones = val.proposal_json.milestones
-      //                       ? JSON.parse(val.proposal_json.milestones)
-      //                       : [];
-      //   },
-      // },
-      getProposalParsed: {
-        immediate: true,
+      isDraftProposalByProposalNameLoading: {
+        // immediate: true,
         deep: true,
         handler(val) {
           if (!val || Object.keys(val).length === 0) return;
           this.milestones = val.proposal_json.milestones
                             ? JSON.parse(val.proposal_json.milestones)
                             : [];
+        },
+      },
+      milestones: {
+        deep: true,
+        handler() {
+          if (!this.proposalId) {
+            this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](
+              { ...this.getProposalParsed, ...this.formProposalJSON() },
+            );
+          }
         },
       },
     },
@@ -475,8 +482,8 @@
       },
       editItem(item) {
         const itemCopy = item;
-        itemCopy.startsAt = this.$moment(item.startsAt).format(this.$constants.DATE_FORMAT);
-        itemCopy.endsAt = this.$moment(item.endsAt).format(this.$constants.DATE_FORMAT);
+        itemCopy.startsAt = this.$moment(item.startsAt).format('YYYY-MM-DD');
+        itemCopy.endsAt = this.$moment(item.endsAt).format('YYYY-MM-DD');
         this.editedIndex = this.milestones.indexOf(itemCopy);
         this.editedItem = Object.assign({}, itemCopy);
         this.dialogEdit = true;
@@ -509,6 +516,36 @@
         }
         this.closeDialogEdit();
       },
+      formProposalJSON() {
+        const proposalAdditionalInfo = this.$helpers.copyDeep(this.getProposalParsed.proposal_json);
+        proposalAdditionalInfo.milestones = JSON.stringify(this.$helpers.copyDeep(this.milestones));
+
+        const proposalAdditionalInfoRestructured = this.$helpers.restructureProposalAdditionalInfo(
+          proposalAdditionalInfo,
+        );
+
+        return {
+          proposal_json: proposalAdditionalInfoRestructured,
+        };
+      },
+      async propose() {
+        if (this.milestones.length === 0) {
+          this.showErrorMsg(this.$t('notifications.milestonesEmpty'));
+          return;
+        }
+
+        if (this.milestones.length > this.$constants.MAX_TABLE_ITEMS) {
+          this.showErrorMsg(this.$t('notifications.tooManyItems'));
+          return;
+        }
+
+        const payload = { ...this.getProposalParsed, ...this.formProposalJSON() };
+
+        if (await this.$_createProposalDraft(payload)) {
+          this.$eventBus.$emit('proposal-created', true);
+          this.$router.push('/proposals/drafts');
+        }
+      },
       async modify() {
         if (this.milestones.length === 0) {
           this.showErrorMsg(this.$t('notifications.milestonesEmpty'));
@@ -520,18 +557,7 @@
           return;
         }
 
-        const proposalAdditionalInfo = this.$helpers.copyDeep(this.getProposalParsed.proposal_json);
-
-        proposalAdditionalInfo.milestones = JSON.stringify(this.$helpers.copyDeep(this.milestones));
-        const proposalAdditionalInfoRestructured = this.$helpers.restructureProposalAdditionalInfo(
-          proposalAdditionalInfo,
-        );
-
-        const payload = {
-          proposal_name: this.getProposalParsed.proposal_name,
-          title: this.getProposalParsed.title,
-          proposal_json: proposalAdditionalInfoRestructured,
-        };
+        const payload = { ...this.getProposalParsed, ...this.formProposalJSON() };
 
         if (await this.$_modifyProposalDraft(payload)) {
           this.$emit('is-draft-modified', true);

@@ -391,6 +391,8 @@
       ...mapState({
         proposalsSettings: state => state.userService.proposalsSettings,
         eosPrice: state => state.userService.eosPrice,
+        isDraftProposalByProposalNameLoading: state => state
+          .userService.isDraftProposalByProposalNameLoading,
       }),
       ...mapGetters('userService', {
         getProposalParsed: 'getProposalParsed',
@@ -534,70 +536,16 @@
       proposalId() {
         return this.$route.params.slug ? this.$route.params.slug : '';
       },
-
-      // Workaround to watch, validate and save every field of the setupData when being edited!
-      // proposalName() {
-      //   return this.setupData.proposal_name;
-      // },
-      // proposalTitle() {
-      //   return this.setupData.title;
-      // },
-      // proposalSummary() {
-      //   return this.setupData.summary;
-      // },
     },
     watch: {
-
-      // Workaround to watch, validate and save every field of the setupData when being edited!
-      // proposalName(val) {
-      //   this.$v.setupData.proposal_name.$touch();
-      //   if (this.$v.setupData.proposal_name.$anyError) {
-      //     return false;
-      //   }
-      //
-      //   const payload = this.formPayloadBeforePropose();
-      //   const res = val;
-      //
-      //   payload.proposal_title = res;
-      //
-      //   this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
-      //   return true;
-      // },
-      // proposalTitle(val) {
-      //   this.$v.setupData.title.$touch();
-      //   if (this.$v.setupData.title.$anyError) {
-      //     return false;
-      //   }
-      //
-      //   const payload = this.formPayloadBeforePropose();
-      //   const res = val;
-      //
-      //   payload.title = res;
-      //
-      //   this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
-      //   return true;
-      // },
-      // proposalSummary(val) {
-      //   this.$v.setupData.summary.$touch();
-      //   if (this.$v.setupData.summary.$anyError) {
-      //     return false;
-      //   }
-      //
-      //   const payload = this.formPayloadBeforePropose();
-      //   const res = val;
-      //
-      //   payload.proposal_json = res;
-      //
-      //   this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
-      //   return true;
-      // },
-
       setupData: {
         deep: true,
         async handler() {
           if (!this.proposalId) {
-            if (!this.validateBeforePropose(false)) return;
-            console.log('setupData');
+            if (!this.validateBeforePropose(false)) {
+              this.$emit('setup-validation-result', false);
+              return;
+            }
 
             const payload = this.formPayloadBeforePropose();
 
@@ -605,6 +553,7 @@
               this.showErrorMsg(this.$t('notifications.proposalNameExists'));
               return;
             }
+            this.$emit('setup-validation-result', true);
 
             this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
           }
@@ -612,8 +561,10 @@
       },
       async monthlyBudget() {
         if (!this.proposalId) {
-          if (!this.validateBeforePropose(false)) return;
-          console.log('monthlyBudget');
+          if (!this.validateBeforePropose(false)) {
+            this.$emit('setup-validation-result', false);
+            return;
+          }
 
           const payload = this.formPayloadBeforePropose();
 
@@ -621,6 +572,7 @@
             this.showErrorMsg(this.$t('notifications.proposalNameExists'));
             return;
           }
+          this.$emit('setup-validation-result', true);
 
           this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
         }
@@ -629,8 +581,10 @@
         deep: true,
         async handler() {
           if (!this.proposalId) {
-            if (!this.validateBeforePropose(false)) return;
-            console.log('budgetItemsNew');
+            if (!this.validateBeforePropose(false)) {
+              this.$emit('setup-validation-result', false);
+              return;
+            }
 
             const payload = this.formPayloadBeforePropose();
 
@@ -638,6 +592,12 @@
               this.showErrorMsg(this.$t('notifications.proposalNameExists'));
               return;
             }
+
+            // if ((Number(this.monthlyBudget.split(' ')[0])
+            //   > Number(this.proposalsSettings.max_monthly_budget.split(' ')[0]))) {
+            //   return;
+            // }
+            this.$emit('setup-validation-result', true);
 
             this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
           }
@@ -663,20 +623,17 @@
           }
         },
       },
-      getProposalParsed: {
-        immediate: true,
-        deep: true,
-        handler(val) {
-          if (!val || Object.keys(val).length === 0) return {};
-          this.setupData.proposal_name = val.proposal_name;
-          this.setupData.title = val.title;
-          this.setupData.summary = val.proposal_json.summary || '';
-          this.setupData.category = val.proposal_json.category;
-          this.setupData.img = val.proposal_json.img || '';
-          this.setupData.video = val.proposal_json.video || '';
-          this.setupData.monthlyBudgetAlt = Number(val.monthly_budget.split(' ')[0]);
-          return null;
-        },
+      isDraftProposalByProposalNameLoading(val) {
+        if (val) return;
+        if (!this.getProposalParsed && Object.keys(this.getProposalParsed).length === 0) return;
+
+        this.setupData.proposal_name = this.getProposalParsed.proposal_name;
+        this.setupData.title = this.getProposalParsed.title;
+        this.setupData.summary = this.getProposalParsed.proposal_json.summary || '';
+        this.setupData.category = this.getProposalParsed.proposal_json.category;
+        this.setupData.img = this.getProposalParsed.proposal_json.img || '';
+        this.setupData.video = this.getProposalParsed.proposal_json.video || '';
+        this.setupData.monthlyBudgetAlt = Number(this.getProposalParsed.monthly_budget.split(' ')[0]);
       },
     },
     created() {
@@ -746,6 +703,17 @@
           return false;
         }
 
+        if (!this.getProposalParsed
+            && !this.getProposalParsed.proposal_json
+            && !this.getProposalParsed.proposal_json.overview
+            && this.this.getProposalParsed.proposal_json.overview.length === 0
+            && this.this.getProposalParsed.proposal_json.overview.length > 12000) {
+          if (showMsg) {
+            this.showErrorMsg(this.$t('overview err'));
+          }
+          return false;
+        }
+
         return true;
       },
       validateBeforeModify() {
@@ -796,6 +764,17 @@
 
         if (this.setupData.img) proposalAdditionalInfo.img = this.setupData.img;
         if (this.setupData.video) proposalAdditionalInfo.video = this.setupData.video;
+        if (this.getProposalParsed
+            && Object.keys(this.getProposalParsed).length !== 0
+            && this.getProposalParsed.proposal_json.overview) {
+          proposalAdditionalInfo.overview = this.getProposalParsed.proposal_json.overview;
+        }
+        if (this.getProposalParsed
+          && Object.keys(this.getProposalParsed).length !== 0
+          && this.getProposalParsed.proposal_json.milestones
+          && JSON.parse(this.getProposalParsed.proposal_json.milestones).length !== 0) {
+          proposalAdditionalInfo.milestones = this.getProposalParsed.proposal_json.milestones;
+        }
 
         return {
           proposal_name: this.setupData.proposal_name,
@@ -849,6 +828,7 @@
         }
 
         this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](payload);
+        this.$emit('setup-validation-result', true);
 
         if (!pushTransaction) {
           this.changeCurrentStep(2);
