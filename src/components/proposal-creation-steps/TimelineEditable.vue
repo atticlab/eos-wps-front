@@ -461,6 +461,12 @@
       milestones: {
         deep: true,
         handler() {
+          if (!this.validateMilestones()) {
+            this.$emit('timeline-validation-result', false);
+          } else {
+            this.$emit('timeline-validation-result', true);
+          }
+
           if (!this.proposalId) {
             this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](
               { ...this.getProposalParsed, ...this.formProposalJSON() },
@@ -528,16 +534,20 @@
           proposal_json: proposalAdditionalInfoRestructured,
         };
       },
-      async propose() {
+      validateMilestones() {
         if (this.milestones.length === 0) {
           this.showErrorMsg(this.$t('notifications.milestonesEmpty'));
-          return;
+          return false;
         }
 
         if (this.milestones.length > this.$constants.MAX_TABLE_ITEMS) {
           this.showErrorMsg(this.$t('notifications.tooManyItems'));
-          return;
+          return false;
         }
+        return true;
+      },
+      async propose() {
+        if (!this.validateMilestones()) return;
 
         const payload = { ...this.getProposalParsed, ...this.formProposalJSON() };
 
@@ -547,15 +557,7 @@
         }
       },
       async modify() {
-        if (this.milestones.length === 0) {
-          this.showErrorMsg(this.$t('notifications.milestonesEmpty'));
-          return;
-        }
-
-        if (this.milestones.length > this.$constants.MAX_TABLE_ITEMS) {
-          this.showErrorMsg(this.$t('notifications.tooManyItems'));
-          return;
-        }
+        if (!this.validateMilestones()) return;
 
         const payload = { ...this.getProposalParsed, ...this.formProposalJSON() };
 

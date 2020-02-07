@@ -23,26 +23,26 @@
         >
           <v-stepper-step
             color="primary"
-            :complete="currentStep > 1"
+            :complete="isSetupComplete"
             :step="1"
-            :editable="currentStep >= 1"
+            :editable="isStepEditable"
           >
             {{ $t('proposalCreationPage.setup') }}
           </v-stepper-step>
           <v-stepper-step
             color="primary"
             class="mx-sm-12"
-            :complete="isOverviewAvailable && setupValidationResult"
+            :complete="isDescriptionComplete"
             :step="2"
-            :editable="isOverviewAvailable && setupValidationResult"
+            :editable="isStepEditable"
           >
             {{ $t('proposalCreationPage.description') }}
           </v-stepper-step>
           <v-stepper-step
             color="primary"
-            :complete="setupValidationResult && isOverviewAvailable && isMilestonesAvailable"
+            :complete="isTimelineComplete"
             :step="3"
-            :editable="setupValidationResult && isOverviewAvailable && isMilestonesAvailable"
+            :editable="isStepEditable"
           >
             {{ $t('common.timeline') }}
           </v-stepper-step>
@@ -80,6 +80,7 @@
             class="pb-12"
           >
             <Description
+              @description-validation-result="setDescriptionValidationResult"
               @step="setCurrentStep"
               @is-draft-modified="setIsDraftModified"
             />
@@ -90,6 +91,7 @@
             class="pb-12"
           >
             <TimelineEditable
+              @timeline-validation-result="setTimelineValidationResult"
               @is-draft-modified="setIsDraftModified"
             />
           </v-stepper-content>
@@ -121,7 +123,9 @@ mapState, mapGetters, mapActions, mapMutations,
       return {
         currentStep: 1,
         isDraftModified: false,
-        setupValidationResult: false,
+        setupValidationResult: true,
+        descriptionValidationResult: true,
+        timelineValidationResult: true,
       };
     },
     computed: {
@@ -148,6 +152,24 @@ mapState, mapGetters, mapActions, mapMutations,
         }
         return !!(this.getProposalParsed.proposal_json.milestones
           && JSON.parse(this.getProposalParsed.proposal_json.milestones).length !== 0);
+      },
+      isSetupComplete() {
+        return this.currentStep !== 1 && this.setupValidationResult;
+      },
+      isDescriptionComplete() {
+        return this.currentStep !== 2
+          && this.descriptionValidationResult
+          && this.isOverviewAvailable;
+      },
+      isTimelineComplete() {
+        return this.currentStep !== 3
+          && this.timelineValidationResult
+          && this.isMilestonesAvailable;
+      },
+      isStepEditable() {
+        return this.setupValidationResult
+          && this.descriptionValidationResult
+          && this.timelineValidationResult;
       },
     },
     watch: {
@@ -206,6 +228,12 @@ mapState, mapGetters, mapActions, mapMutations,
       },
       setSetupValidationResult(bool) {
         this.setupValidationResult = bool;
+      },
+      setDescriptionValidationResult(bool) {
+        this.descriptionValidationResult = bool;
+      },
+      setTimelineValidationResult(bool) {
+        this.timelineValidationResult = bool;
       },
     },
   };
