@@ -140,18 +140,18 @@
     },
     watch: {
       text() {
-        if (!this.proposalId) {
-          if (!this.validateAll()) {
-            this.$emit('description-validation-result', false);
-          } else {
-            this.$emit('description-validation-result', true);
-          }
+        // if (!this.proposalId) {
+        if (!this.validateAll()) {
+          this.$emit('description-validation-result', false);
+        } else {
+          this.$emit('description-validation-result', true);
+        }
 
 
-          this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](
+        this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](
             { ...this.getProposalParsed, ...this.formProposalJSON() },
           );
-        }
+        // }
       },
       getProposalParsed: {
         immediate: true,

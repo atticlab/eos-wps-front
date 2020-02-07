@@ -542,18 +542,9 @@
         deep: true,
         async handler() {
           if (!this.proposalId) {
-            if (!this.validateBeforePropose(false)) {
-              this.$emit('setup-validation-result', false);
-              return;
-            }
+            const payload = await this.prepareDataBeforePropose(false);
 
-            const payload = this.formPayloadBeforePropose();
-
-            if (await this.$_isProposalExist(payload.proposal_name)) {
-              this.showErrorMsg(this.$t('notifications.proposalNameExists'));
-              return;
-            }
-            this.$emit('setup-validation-result', true);
+            if (!payload) return;
 
             this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
           }
@@ -561,18 +552,9 @@
       },
       async monthlyBudget() {
         if (!this.proposalId) {
-          if (!this.validateBeforePropose(false)) {
-            this.$emit('setup-validation-result', false);
-            return;
-          }
+          const payload = await this.prepareDataBeforePropose(false);
 
-          const payload = this.formPayloadBeforePropose();
-
-          if (await this.$_isProposalExist(payload.proposal_name)) {
-            this.showErrorMsg(this.$t('notifications.proposalNameExists'));
-            return;
-          }
-          this.$emit('setup-validation-result', true);
+          if (!payload) return;
 
           this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
         }
@@ -581,23 +563,9 @@
         deep: true,
         async handler() {
           if (!this.proposalId) {
-            if (!this.validateBeforePropose(false)) {
-              this.$emit('setup-validation-result', false);
-              return;
-            }
+            const payload = await this.prepareDataBeforePropose(false);
 
-            const payload = this.formPayloadBeforePropose();
-
-            if (await this.$_isProposalExist(payload.proposal_name)) {
-              this.showErrorMsg(this.$t('notifications.proposalNameExists'));
-              return;
-            }
-
-            // if ((Number(this.monthlyBudget.split(' ')[0])
-            //   > Number(this.proposalsSettings.max_monthly_budget.split(' ')[0]))) {
-            //   return;
-            // }
-            this.$emit('setup-validation-result', true);
+            if (!payload) return;
 
             this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
           }
@@ -817,8 +785,11 @@
                             .restructureProposalAdditionalInfo(proposalAdditionalInfo),
         };
       },
-      async propose(pushTransaction = true) {
-        if (!this.validateBeforePropose()) return;
+      async prepareDataBeforePropose(showMsg = true) {
+        if (!this.validateBeforePropose(showMsg)) {
+          this.$emit('setup-validation-result', false);
+          return;
+        }
 
         const payload = this.formPayloadBeforePropose();
 
@@ -827,8 +798,30 @@
           return;
         }
 
-        this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](payload);
         this.$emit('setup-validation-result', true);
+
+        // eslint-disable-next-line consistent-return
+        return payload;
+      },
+      prepareDataBeforeModify(showMsg = true) {
+        if (!this.validateBeforeModify(showMsg)) {
+          this.$emit('setup-validation-result', false);
+          return;
+        }
+
+        const payload = this.formPayloadBeforeModify();
+
+        this.$emit('setup-validation-result', true);
+
+        // eslint-disable-next-line consistent-return
+        return payload;
+      },
+      async propose(pushTransaction = true) {
+        const payload = await this.prepareDataBeforePropose(true);
+
+        if (!payload) return;
+
+        this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](payload);
 
         if (!pushTransaction) {
           this.changeCurrentStep(2);
@@ -842,9 +835,9 @@
         }
       },
       async modify(pushTransaction = true) {
-        if (!this.validateBeforeModify()) return;
+        const payload = this.prepareDataBeforeModify(true);
 
-        const payload = this.formPayloadBeforeModify();
+        if (!payload) return;
 
         this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](payload);
 
