@@ -71,12 +71,13 @@
 
 <script>
   import Vue from 'vue';
-  import { mapGetters, mapMutations } from 'vuex';
+  import { mapState, mapGetters, mapMutations } from 'vuex';
   import VueQuillEditor from 'vue-quill-editor';
   import { validationMixin } from 'vuelidate';
   import { required, maxLength } from 'vuelidate/lib/validators';
   import modifyProposalDraft from '@/mixins/modifyProposalDraft';
   import createProposalDraft from '@/mixins/createProposalDraft';
+  import isProposalExist from '@/mixins/isProposalExist';
   import notification from '@/mixins/notification';
   import ActionType from '@/store/constants';
 
@@ -93,7 +94,13 @@
 
   export default {
     name: 'Description',
-    mixins: [validationMixin, createProposalDraft, modifyProposalDraft, notification],
+    mixins: [
+      validationMixin,
+      createProposalDraft,
+      modifyProposalDraft,
+      isProposalExist,
+      notification,
+    ],
     validations: {
       text: {
         required,
@@ -131,6 +138,10 @@
       };
     },
     computed: {
+      ...mapState({
+        proposalInitialDuration: state => state.userService.proposalInitialDuration,
+        proposalInitialMonthlyBudget: state => state.userService.proposalInitialMonthlyBudget,
+      }),
       ...mapGetters('userService', {
         getProposalParsed: 'getProposalParsed',
       }),
@@ -141,12 +152,15 @@
     watch: {
       text() {
         // if (!this.proposalId) {
-        if (!this.validateAll()) {
-          this.$emit('description-validation-result', false);
-        } else {
-          this.$emit('description-validation-result', true);
-        }
+        // if (!this.validateAll()) {
+        //   this.$emit('description-validation-result', false);
+        // } else {
+        //   this.$emit('description-validation-result', true);
+        // }
+        const payload = this.formPayload(false);
+        // console.log(payload);
 
+        if (!payload) return;
 
         this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](
             { ...this.getProposalParsed, ...this.formProposalJSON() },
@@ -194,13 +208,28 @@
           proposal_json: proposalAdditionalInfoRestructured,
         };
       },
-      async propose(pushTransaction = true) {
+      formPayload(showMsg = true) {
         if (!this.validateAll()) {
-          this.showErrorMsg(this.$t('notifications.overviewEmpty'));
-          return;
+          this.$emit('description-validation-result', false);
+          if (showMsg) {
+            this.showErrorMsg(this.$t('notifications.overviewEmpty'));
+          }
+          return false;
         }
 
-        const payload = { ...this.getProposalParsed, ...this.formProposalJSON() };
+        this.$emit('description-validation-result', true);
+
+        return { ...this.getProposalParsed, ...this.formProposalJSON() };
+      },
+      async propose(pushTransaction = true) {
+        const payload = this.formPayload();
+
+        if (!payload) return;
+
+        if (await this.$_isProposalExist(payload.proposal_name)) {
+          this.showErrorMsg(this.$t('notifications.proposalNameExists'));
+          return;
+        }
 
         this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](payload);
 
@@ -216,14 +245,17 @@
         }
       },
       async modify(pushTransaction = true) {
-        if (!this.validateAll()) {
-          this.showErrorMsg(this.$t('notifications.overviewEmpty'));
-          return;
+        const payload = this.formPayload();
+
+        if (!payload) return;
+
+        this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
+
+        if (payload.duration === this.proposalInitialDuration
+          && payload.monthly_budget === this.proposalInitialMonthlyBudget) {
+          delete payload.duration;
+          delete payload.monthly_budget;
         }
-
-        const payload = { ...this.getProposalParsed, ...this.formProposalJSON() };
-
-        this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](payload);
 
         if (!pushTransaction) {
           this.changeCurrentStep(3);

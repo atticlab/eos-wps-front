@@ -32,6 +32,9 @@ const state = {
   proposalState: {},
   proposalsVotes: [],
   votesByProposalName: [],
+
+  proposalInitialDuration: 0,
+  proposalInitialMonthlyBudget: '',
 };
 
 /* eslint-disable */

@@ -1,3 +1,16 @@
 .mini-toastr__notification {
-  opacity: 1 !important;
+  opacity: 0.95 !important;
+  transition: all 0.2s;
+
+  &:hover {
+    opacity: 1 !important;
+  }
+}
+
+.mini-toastr__notification.-error {
+  background-color: $red !important;
+}
+
+.mini-toastr__notification.-success {
+  background-color: $green !important;
 }

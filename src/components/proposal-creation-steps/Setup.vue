@@ -393,6 +393,8 @@
         eosPrice: state => state.userService.eosPrice,
         isDraftProposalByProposalNameLoading: state => state
           .userService.isDraftProposalByProposalNameLoading,
+        proposalInitialDuration: state => state.userService.proposalInitialDuration,
+        proposalInitialMonthlyBudget: state => state.userService.proposalInitialMonthlyBudget,
       }),
       ...mapGetters('userService', {
         getProposalParsed: 'getProposalParsed',
@@ -547,12 +549,24 @@
             if (!payload) return;
 
             this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
+          } else {
+            const payload = await this.prepareDataBeforeModify(false);
+
+            if (!payload) return;
+
+            this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
           }
         },
       },
       async monthlyBudget() {
         if (!this.proposalId) {
           const payload = await this.prepareDataBeforePropose(false);
+
+          if (!payload) return;
+
+          this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
+        } else {
+          const payload = await this.prepareDataBeforeModify(false);
 
           if (!payload) return;
 
@@ -564,6 +578,12 @@
         async handler() {
           if (!this.proposalId) {
             const payload = await this.prepareDataBeforePropose(false);
+
+            if (!payload) return;
+
+            this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
+          } else {
+            const payload = await this.prepareDataBeforeModify(false);
 
             if (!payload) return;
 
@@ -631,7 +651,7 @@
         this.$v.$touch();
         return !this.$v.setupData.$anyError;
       },
-      validateBeforePropose(showMsg = true) {
+      async validateBeforePropose(showMsg = true) {
         if (!this.validateAll()) {
           if (showMsg) {
             this.showErrorMsg(this.$t('notifications.fillFields'));
@@ -682,42 +702,61 @@
           return false;
         }
 
+        if (await this.$_isProposalExist(this.setupData.proposal_name)) {
+          if (showMsg) {
+            this.showErrorMsg(this.$t('notifications.proposalNameExists'));
+          }
+          return false;
+        }
+
         return true;
       },
-      validateBeforeModify() {
+      validateBeforeModify(showMsg = true) {
         if (!this.validateAll()) {
-          this.showErrorMsg(this.$t('notifications.fillFields'));
+          if (showMsg) {
+            this.showErrorMsg(this.$t('notifications.fillFields'));
+          }
           return false;
         }
 
         if (!this.setupData.duration) {
-          this.showErrorMsg(this.$t('notifications.durationErr'));
+          if (showMsg) {
+            this.showErrorMsg(this.$t('notifications.durationErr'));
+          }
           return false;
         }
 
         if (this.isExistingProposalWithoutBudgets) {
           if (!this.monthlyBudgetAltEos || this.monthlyBudgetAltEos.split(' ')[0] < 100) {
-            this.showErrorMsg(this.$t('notifications.budgetErr'));
+            if (showMsg) {
+              this.showErrorMsg(this.$t('notifications.budgetErr'));
+            }
             return false;
           }
 
           if (Number(this.monthlyBudgetAltEos.split(' ')[0])
             > Number(this.proposalsSettings.max_monthly_budget.split(' ')[0])) {
+            if (showMsg) {
+              this.showErrorMsg(this.$t(
+                'notifications.budgetErrMax',
+                { maxMonthlyBudget: this.proposalsSettings.max_monthly_budget },
+              ));
+            }
+            return false;
+          }
+        } else if (!this.monthlyBudget || this.monthlyBudget.split(' ')[0] < 100) {
+          if (showMsg) {
+            this.showErrorMsg(this.$t('notifications.budgetErr'));
+          }
+          return false;
+        } else if (Number(this.monthlyBudget.split(' ')[0])
+          > Number(this.proposalsSettings.max_monthly_budget.split(' ')[0])) {
+          if (showMsg) {
             this.showErrorMsg(this.$t(
               'notifications.budgetErrMax',
               { maxMonthlyBudget: this.proposalsSettings.max_monthly_budget },
             ));
-            return false;
           }
-        } else if (!this.monthlyBudget || this.monthlyBudget.split(' ')[0] < 100) {
-          this.showErrorMsg(this.$t('notifications.budgetErr'));
-          return false;
-        } else if (Number(this.monthlyBudget.split(' ')[0])
-          > Number(this.proposalsSettings.max_monthly_budget.split(' ')[0])) {
-          this.showErrorMsg(this.$t(
-            'notifications.budgetErrMax',
-            { maxMonthlyBudget: this.proposalsSettings.max_monthly_budget },
-          ));
           return false;
         }
 
@@ -758,7 +797,7 @@
         proposalAdditionalInfo.summary = this.setupData.summary;
         proposalAdditionalInfo.category = this.setupData.category;
 
-        if (this.setupData.budgets) {
+        if (this.budgetData) {
           proposalAdditionalInfo.budgets = JSON.stringify(this.budgetItemsNew);
         }
 
@@ -774,29 +813,26 @@
           delete proposalAdditionalInfo.video;
         }
 
-        return {
+        const payload = {
           proposal_name: this.setupData.proposal_name,
           title: this.setupData.title,
-          monthly_budget: this.isExistingProposalWithoutBudgets
-                         ? this.monthlyBudgetAltEos
-                         : this.monthlyBudget,
           duration: this.setupData.duration,
+          monthly_budget: this.isExistingProposalWithoutBudgets
+                                 ? this.monthlyBudgetAltEos
+                                 : this.monthlyBudget,
           proposal_json: this.$helpers
-                            .restructureProposalAdditionalInfo(proposalAdditionalInfo),
+                             .restructureProposalAdditionalInfo(proposalAdditionalInfo),
         };
+
+        return payload;
       },
       async prepareDataBeforePropose(showMsg = true) {
-        if (!this.validateBeforePropose(showMsg)) {
+        if (!await this.validateBeforePropose(showMsg)) {
           this.$emit('setup-validation-result', false);
           return;
         }
 
         const payload = this.formPayloadBeforePropose();
-
-        if (await this.$_isProposalExist(payload.proposal_name)) {
-          this.showErrorMsg(this.$t('notifications.proposalNameExists'));
-          return;
-        }
 
         this.$emit('setup-validation-result', true);
 
@@ -839,7 +875,20 @@
 
         if (!payload) return;
 
-        this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](payload);
+        // this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](payload);
+        this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
+
+        if (payload.duration !== this.proposalInitialDuration
+          || payload.monthly_budget !== this.proposalInitialMonthlyBudget) {
+          payload.duration = this.setupData.duration;
+          payload.monthly_budget = this.isExistingProposalWithoutBudgets
+                                   ? this.monthlyBudgetAltEos
+                                   : this.monthlyBudget;
+        } else {
+          delete payload.duration;
+          delete payload.monthly_budget;
+        }
+
 
         if (!pushTransaction) {
           this.changeCurrentStep(2);

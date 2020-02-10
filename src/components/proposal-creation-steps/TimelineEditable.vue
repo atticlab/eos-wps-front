@@ -321,12 +321,19 @@
 } from 'vuelidate/lib/validators';
   import createProposalDraft from '@/mixins/createProposalDraft';
   import modifyProposalDraft from '@/mixins/modifyProposalDraft';
+  import isProposalExist from '@/mixins/isProposalExist';
   import notification from '@/mixins/notification';
   import ActionType from '@/store/constants';
 
   export default {
     name: 'TimelineEditable',
-    mixins: [validationMixin, createProposalDraft, modifyProposalDraft, notification],
+    mixins: [
+      validationMixin,
+      createProposalDraft,
+      modifyProposalDraft,
+      isProposalExist,
+      notification,
+    ],
     validations: {
       editedItem: {
         title: {
@@ -371,6 +378,8 @@
       ...mapState({
         isDraftProposalByProposalNameLoading: state => state
           .userService.isDraftProposalByProposalNameLoading,
+        proposalInitialDuration: state => state.userService.proposalInitialDuration,
+        proposalInitialMonthlyBudget: state => state.userService.proposalInitialMonthlyBudget,
       }),
       ...mapGetters('userService', {
         getProposalParsed: 'getProposalParsed',
@@ -448,30 +457,35 @@
         // eslint-disable-next-line no-unused-expressions
         val || this.closeDialogDelete();
       },
+      $route() {
+        if (!this.proposalId) {
+          this.milestones = [];
+        }
+      },
       isDraftProposalByProposalNameLoading: {
         // immediate: true,
-        deep: true,
+        // deep: true,
         handler(val) {
-          if (!val || Object.keys(val).length === 0) return;
-          this.milestones = val.proposal_json.milestones
-                            ? JSON.parse(val.proposal_json.milestones)
+          if (val) return;
+          this.milestones = this.getProposalParsed.proposal_json.milestones
+                            ? JSON.parse(this.getProposalParsed.proposal_json.milestones)
                             : [];
         },
       },
       milestones: {
         deep: true,
         handler() {
-          if (!this.validateMilestones()) {
+          if (!this.validateMilestones(false)) {
             this.$emit('timeline-validation-result', false);
           } else {
             this.$emit('timeline-validation-result', true);
           }
 
-          if (!this.proposalId) {
-            this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](
+          // if (!this.proposalId) {
+          this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](
               { ...this.getProposalParsed, ...this.formProposalJSON() },
             );
-          }
+          // }
         },
       },
     },
@@ -534,22 +548,36 @@
           proposal_json: proposalAdditionalInfoRestructured,
         };
       },
-      validateMilestones() {
+      validateMilestones(showMsg = true) {
         if (this.milestones.length === 0) {
-          this.showErrorMsg(this.$t('notifications.milestonesEmpty'));
+          if (showMsg) {
+            this.showErrorMsg(this.$t('notifications.milestonesEmpty'));
+          }
           return false;
         }
 
         if (this.milestones.length > this.$constants.MAX_TABLE_ITEMS) {
-          this.showErrorMsg(this.$t('notifications.tooManyItems'));
+          if (showMsg) {
+            this.showErrorMsg(this.$t('notifications.tooManyItems'));
+          }
           return false;
         }
         return true;
       },
       async propose() {
-        if (!this.validateMilestones()) return;
+        if (!this.validateMilestones(true)) {
+          this.$emit('timeline-validation-result', false);
+          return;
+        }
+        this.$emit('timeline-validation-result', true);
+
 
         const payload = { ...this.getProposalParsed, ...this.formProposalJSON() };
+
+        if (await this.$_isProposalExist(payload.proposal_name)) {
+          this.showErrorMsg(this.$t('notifications.proposalNameExists'));
+          return;
+        }
 
         if (await this.$_createProposalDraft(payload)) {
           this.$eventBus.$emit('proposal-created', true);
@@ -557,9 +585,19 @@
         }
       },
       async modify() {
-        if (!this.validateMilestones()) return;
+        if (!this.validateMilestones(true)) {
+          this.$emit('timeline-validation-result', false);
+          return;
+        }
+        this.$emit('timeline-validation-result', true);
 
         const payload = { ...this.getProposalParsed, ...this.formProposalJSON() };
+
+        if (payload.duration === this.proposalInitialDuration
+          && payload.monthly_budget === this.proposalInitialMonthlyBudget) {
+          delete payload.duration;
+          delete payload.monthly_budget;
+        }
 
         if (await this.$_modifyProposalDraft(payload)) {
           this.$emit('is-draft-modified', true);
