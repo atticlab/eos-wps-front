@@ -26,6 +26,7 @@
             :complete="isSetupComplete"
             :step="1"
             :editable="isSetupEditable"
+            @click="showSetupError"
           >
             {{ $t('proposalCreationPage.setup') }}
           </v-stepper-step>
@@ -35,6 +36,7 @@
             :complete="isDescriptionComplete"
             :step="2"
             :editable="isDescriptionEditable"
+            @click="showDescriptionError"
           >
             {{ $t('proposalCreationPage.description') }}
           </v-stepper-step>
@@ -43,6 +45,7 @@
             :complete="isTimelineComplete"
             :step="3"
             :editable="isTimelineEditable"
+            @click="showTimelineError"
           >
             {{ $t('common.timeline') }}
           </v-stepper-step>
@@ -110,6 +113,7 @@ mapState, mapGetters, mapActions, mapMutations,
   import Description from '@/components/proposal-creation-steps/Description.vue';
   import TimelineEditable from '@/components/proposal-creation-steps/TimelineEditable.vue';
   import isProposalExist from '@/mixins/isProposalExist';
+  import notification from '@/mixins/notification';
 
   export default {
     name: 'ProposalCreation',
@@ -118,7 +122,7 @@ mapState, mapGetters, mapActions, mapMutations,
       Description,
       TimelineEditable,
     },
-    mixins: [isProposalExist],
+    mixins: [isProposalExist, notification],
     data() {
       return {
         currentStep: 1,
@@ -219,6 +223,21 @@ mapState, mapGetters, mapActions, mapMutations,
       ...mapMutations('userService', [
         ActionType.SET_DRAFT_BY_PROPOSAL_NAME,
       ]),
+      showSetupError() {
+        if (this.isSetupComplete && !this.isSetupEditable) {
+          this.showErrorMsg(this.$t('notifications.mustFinishTheStep'));
+        }
+      },
+      showDescriptionError() {
+        if (this.isDescriptionComplete && !this.isDescriptionEditable) {
+          this.showErrorMsg(this.$t('notifications.mustFinishTheStep'));
+        }
+      },
+      showTimelineError() {
+        if (this.isTimelineComplete && !this.isTimelineEditable) {
+          this.showErrorMsg(this.$t('notifications.mustFinishTheStep'));
+        }
+      },
       setCurrentStep(stepNumber) {
         this.currentStep = stepNumber;
       },
