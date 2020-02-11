@@ -544,7 +544,7 @@
         deep: true,
         async handler() {
           if (!this.proposalId) {
-            const payload = await this.prepareDataBeforePropose(false);
+            const payload = await this.prepareDataBeforePropose(false, false);
 
             if (!payload) return;
 
@@ -560,7 +560,7 @@
       },
       async monthlyBudget() {
         if (!this.proposalId) {
-          const payload = await this.prepareDataBeforePropose(false);
+          const payload = await this.prepareDataBeforePropose(false, false);
 
           if (!payload) return;
 
@@ -577,7 +577,7 @@
         deep: true,
         async handler() {
           if (!this.proposalId) {
-            const payload = await this.prepareDataBeforePropose(false);
+            const payload = await this.prepareDataBeforePropose(false, false);
 
             if (!payload) return;
 
@@ -647,12 +647,14 @@
       setBudgetItemsNew(val) {
         this.budgetItemsNew = val;
       },
-      validateAll() {
-        this.$v.$touch();
+      validateAll(touchFields = true) {
+        if (touchFields) {
+          this.$v.$touch();
+        }
         return !this.$v.setupData.$anyError;
       },
-      async validateBeforePropose(showMsg = true) {
-        if (!this.validateAll()) {
+      async validateBeforePropose(showMsg = true, touchFields = true) {
+        if (!this.validateAll(touchFields)) {
           if (showMsg) {
             this.showErrorMsg(this.$t('notifications.fillFields'));
           }
@@ -826,8 +828,8 @@
 
         return payload;
       },
-      async prepareDataBeforePropose(showMsg = true) {
-        if (!await this.validateBeforePropose(showMsg)) {
+      async prepareDataBeforePropose(showMsg = true, touchFields = true) {
+        if (!await this.validateBeforePropose(showMsg, touchFields)) {
           this.$emit('setup-validation-result', false);
           return;
         }
@@ -875,7 +877,6 @@
 
         if (!payload) return;
 
-        // this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](payload);
         this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
 
         if (payload.duration !== this.proposalInitialDuration

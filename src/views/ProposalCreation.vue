@@ -25,7 +25,7 @@
             color="primary"
             :complete="isSetupComplete"
             :step="1"
-            :editable="isStepEditable"
+            :editable="isSetupEditable"
           >
             {{ $t('proposalCreationPage.setup') }}
           </v-stepper-step>
@@ -34,7 +34,7 @@
             class="mx-sm-12"
             :complete="isDescriptionComplete"
             :step="2"
-            :editable="isStepEditable"
+            :editable="isDescriptionEditable"
           >
             {{ $t('proposalCreationPage.description') }}
           </v-stepper-step>
@@ -42,7 +42,7 @@
             color="primary"
             :complete="isTimelineComplete"
             :step="3"
-            :editable="isStepEditable"
+            :editable="isTimelineEditable"
           >
             {{ $t('common.timeline') }}
           </v-stepper-step>
@@ -166,7 +166,15 @@ mapState, mapGetters, mapActions, mapMutations,
           && this.timelineValidationResult
           && this.isMilestonesAvailable;
       },
-      isStepEditable() {
+      isSetupEditable() {
+        return this.setupValidationResult
+          && this.descriptionValidationResult;
+      },
+      isDescriptionEditable() {
+        return this.setupValidationResult
+          && this.descriptionValidationResult;
+      },
+      isTimelineEditable() {
         return this.setupValidationResult
           && this.descriptionValidationResult
           && this.timelineValidationResult;
@@ -194,15 +202,6 @@ mapState, mapGetters, mapActions, mapMutations,
           this[ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME](this.proposalId);
         },
       },
-      // async currentStep() {
-      //   if (!this.proposalId) return;
-      //   if (!await this.$_isProposalExist(this.proposalId)) {
-      //     this.$router.push({ name: 'Not found' });
-      //     return;
-      //   }
-      //
-      //   this[ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME](this.proposalId);
-      // },
       async isDraftModified() {
         if (!this.proposalId) return;
         if (!await this.$_isProposalExist(this.proposalId)) {

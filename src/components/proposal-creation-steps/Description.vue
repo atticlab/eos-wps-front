@@ -151,21 +151,13 @@
     },
     watch: {
       text() {
-        // if (!this.proposalId) {
-        // if (!this.validateAll()) {
-        //   this.$emit('description-validation-result', false);
-        // } else {
-        //   this.$emit('description-validation-result', true);
-        // }
         const payload = this.formPayload(false);
-        // console.log(payload);
 
         if (!payload) return;
 
         this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](
             { ...this.getProposalParsed, ...this.formProposalJSON() },
           );
-        // }
       },
       getProposalParsed: {
         immediate: true,

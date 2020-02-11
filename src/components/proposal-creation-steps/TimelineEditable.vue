@@ -78,7 +78,6 @@
                           offset-y
                         >
                           <template v-slot:activator="{ on }">
-                            <!--                            v-model="editedItem.startsAt"-->
                             <v-text-field
                               :value="formattedStartsAt"
                               label="Start"
@@ -133,7 +132,6 @@
                           offset-y
                         >
                           <template v-slot:activator="{ on }">
-                            <!--                            v-model="editedItem.endsAt"-->
                             <v-text-field
                               :value="formattedEndsAt"
                               label="End"
@@ -463,8 +461,6 @@
         }
       },
       isDraftProposalByProposalNameLoading: {
-        // immediate: true,
-        // deep: true,
         handler(val) {
           if (val) return;
           this.milestones = this.getProposalParsed.proposal_json.milestones
@@ -481,11 +477,9 @@
             this.$emit('timeline-validation-result', true);
           }
 
-          // if (!this.proposalId) {
           this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](
-              { ...this.getProposalParsed, ...this.formProposalJSON() },
-            );
-          // }
+            { ...this.getProposalParsed, ...this.formProposalJSON() },
+          );
         },
       },
     },
@@ -537,13 +531,24 @@
         this.closeDialogEdit();
       },
       formProposalJSON() {
+        if (!this.getProposalParsed.proposal_json) return;
+
         const proposalAdditionalInfo = this.$helpers.copyDeep(this.getProposalParsed.proposal_json);
         proposalAdditionalInfo.milestones = JSON.stringify(this.$helpers.copyDeep(this.milestones));
+
+        if (this.milestones && this.milestones.length !== 0) {
+          proposalAdditionalInfo.milestones = JSON.stringify(
+            this.$helpers.copyDeep(this.milestones),
+          );
+        } else {
+          delete proposalAdditionalInfo.milestones;
+        }
 
         const proposalAdditionalInfoRestructured = this.$helpers.restructureProposalAdditionalInfo(
           proposalAdditionalInfo,
         );
 
+        // eslint-disable-next-line consistent-return
         return {
           proposal_json: proposalAdditionalInfoRestructured,
         };
