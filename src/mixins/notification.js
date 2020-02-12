@@ -12,13 +12,14 @@ export default {
       this.showSuccess({
         title: this.$t('notifications.success'),
         message,
+        timeout: 8000,
       });
     },
     showErrorMsg(message) {
       this.showError({
         title: this.$t('notifications.error'),
         message,
-        timeout: 30000,
+        timeout: 8000,
       });
     },
   },

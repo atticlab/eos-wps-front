@@ -53,6 +53,12 @@ export default {
   [ActionType.SET_VOTES_BY_PROPOSAL_NAME]: (state, data) => {
     state.votesByProposalName = data;
   },
+  [ActionType.SET_PROPOSAL_INITIAL_DURATION]: (state, data) => {
+    state.proposalInitialDuration = data;
+  },
+  [ActionType.SET_PROPOSAL_INITIAL_MONTHLY_BUDGET]: (state, data) => {
+    state.proposalInitialMonthlyBudget = data;
+  },
 
   // flags
   [ActionType.SET_IS_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME_LOADING]: (state, data) => {

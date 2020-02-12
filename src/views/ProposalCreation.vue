@@ -13,7 +13,6 @@
         <div class="page-header__bottom" />
       </div>
 
-      <!--      :alt-labels="true"-->
       <v-stepper
         v-model="currentStep"
         flat
@@ -24,28 +23,29 @@
         >
           <v-stepper-step
             color="primary"
-            :complete="currentStep > 1"
+            :complete="isSetupComplete"
             :step="1"
-            :editable="currentStep >= 1"
+            :editable="isSetupEditable"
+            @click="showSetupError"
           >
             {{ $t('proposalCreationPage.setup') }}
           </v-stepper-step>
-          <!--          <v-divider />-->
           <v-stepper-step
             color="primary"
             class="mx-sm-12"
-            :complete="isOverviewAvailable"
+            :complete="isDescriptionComplete"
             :step="2"
-            :editable="isOverviewAvailable"
+            :editable="isDescriptionEditable"
+            @click="showDescriptionError"
           >
             {{ $t('proposalCreationPage.description') }}
           </v-stepper-step>
-          <!--          <v-divider />-->
           <v-stepper-step
             color="primary"
-            :complete="isMilestonesAvailable"
+            :complete="isTimelineComplete"
             :step="3"
-            :editable="isMilestonesAvailable"
+            :editable="isTimelineEditable"
+            @click="showTimelineError"
           >
             {{ $t('common.timeline') }}
           </v-stepper-step>
@@ -72,8 +72,9 @@
             class="pb-12"
           >
             <Setup
-              :proposal-initial="$_proposalParsed"
+              @setup-validation-result="setSetupValidationResult"
               @step="setCurrentStep"
+              @is-draft-modified="setIsDraftModified"
             />
           </v-stepper-content>
 
@@ -82,7 +83,7 @@
             class="pb-12"
           >
             <Description
-              :proposal-initial="$_proposalParsed"
+              @description-validation-result="setDescriptionValidationResult"
               @step="setCurrentStep"
               @is-draft-modified="setIsDraftModified"
             />
@@ -93,7 +94,7 @@
             class="pb-12"
           >
             <TimelineEditable
-              :proposal-initial="$_proposalParsed"
+              @timeline-validation-result="setTimelineValidationResult"
               @is-draft-modified="setIsDraftModified"
             />
           </v-stepper-content>
@@ -104,13 +105,15 @@
 </template>
 
 <script>
-  import { mapState, mapActions, mapMutations } from 'vuex';
+  import {
+mapState, mapGetters, mapActions, mapMutations,
+} from 'vuex';
   import ActionType from '@/store/constants';
   import Setup from '@/components/proposal-creation-steps/Setup.vue';
   import Description from '@/components/proposal-creation-steps/Description.vue';
   import TimelineEditable from '@/components/proposal-creation-steps/TimelineEditable.vue';
-  import proposalParsed from '@/mixins/proposalParsed';
   import isProposalExist from '@/mixins/isProposalExist';
+  import notification from '@/mixins/notification';
 
   export default {
     name: 'ProposalCreation',
@@ -119,11 +122,14 @@
       Description,
       TimelineEditable,
     },
-    mixins: [proposalParsed, isProposalExist],
+    mixins: [isProposalExist, notification],
     data() {
       return {
         currentStep: 1,
         isDraftModified: false,
+        setupValidationResult: true,
+        descriptionValidationResult: true,
+        timelineValidationResult: true,
       };
     },
     computed: {
@@ -132,17 +138,50 @@
           .userService.isDraftProposalByProposalNameLoading,
         proposal: state => state.userService.proposal,
       }),
+      ...mapGetters('userService', {
+        getProposalParsed: 'getProposalParsed',
+      }),
       proposalId() {
         return this.$route.params.slug ? this.$route.params.slug : '';
       },
       isOverviewAvailable() {
-        if (!this.$_proposalParsed || Object.keys(this.$_proposalParsed).length === 0) return false;
-        return !!(this.$_proposalParsed.proposal_json.overview);
+        if (!this.getProposalParsed || Object.keys(this.getProposalParsed).length === 0) {
+          return false;
+        }
+        return !!(this.getProposalParsed.proposal_json.overview);
       },
       isMilestonesAvailable() {
-        if (!this.$_proposalParsed || Object.keys(this.$_proposalParsed).length === 0) return false;
-        return !!(this.$_proposalParsed.proposal_json.milestones
-          && this.$_proposalParsed.proposal_json.milestones.length !== 0);
+        if (!this.getProposalParsed || Object.keys(this.getProposalParsed).length === 0) {
+          return false;
+        }
+        return !!(this.getProposalParsed.proposal_json.milestones
+          && JSON.parse(this.getProposalParsed.proposal_json.milestones).length !== 0);
+      },
+      isSetupComplete() {
+        return this.currentStep !== 1 && this.setupValidationResult;
+      },
+      isDescriptionComplete() {
+        return this.currentStep !== 2
+          && this.descriptionValidationResult
+          && this.isOverviewAvailable;
+      },
+      isTimelineComplete() {
+        return this.currentStep !== 3
+          && this.timelineValidationResult
+          && this.isMilestonesAvailable;
+      },
+      isSetupEditable() {
+        return this.setupValidationResult
+          && this.descriptionValidationResult;
+      },
+      isDescriptionEditable() {
+        return this.setupValidationResult
+          && this.descriptionValidationResult;
+      },
+      isTimelineEditable() {
+        return this.setupValidationResult
+          && this.descriptionValidationResult
+          && this.timelineValidationResult;
       },
     },
     watch: {
@@ -156,7 +195,6 @@
         immediate: true,
         async handler() {
           if (!this.proposalId) {
-            // proposal is in the getDraftByProposalName mixin
             this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({});
             return;
           }
@@ -167,15 +205,6 @@
 
           this[ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME](this.proposalId);
         },
-      },
-      async currentStep() {
-        if (!this.proposalId) return;
-        if (!await this.$_isProposalExist(this.proposalId)) {
-          this.$router.push({ name: 'Not found' });
-          return;
-        }
-
-        this[ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME](this.proposalId);
       },
       async isDraftModified() {
         if (!this.proposalId) return;
@@ -194,11 +223,35 @@
       ...mapMutations('userService', [
         ActionType.SET_DRAFT_BY_PROPOSAL_NAME,
       ]),
+      showSetupError() {
+        if (this.isSetupComplete && !this.isSetupEditable) {
+          this.showErrorMsg(this.$t('notifications.mustFinishTheStep'));
+        }
+      },
+      showDescriptionError() {
+        if (this.isDescriptionComplete && !this.isDescriptionEditable) {
+          this.showErrorMsg(this.$t('notifications.mustFinishTheStep'));
+        }
+      },
+      showTimelineError() {
+        if (this.isTimelineComplete && !this.isTimelineEditable) {
+          this.showErrorMsg(this.$t('notifications.mustFinishTheStep'));
+        }
+      },
       setCurrentStep(stepNumber) {
         this.currentStep = stepNumber;
       },
       setIsDraftModified(bool) {
         this.isDraftModified = bool;
+      },
+      setSetupValidationResult(bool) {
+        this.setupValidationResult = bool;
+      },
+      setDescriptionValidationResult(bool) {
+        this.descriptionValidationResult = bool;
+      },
+      setTimelineValidationResult(bool) {
+        this.timelineValidationResult = bool;
       },
     },
   };

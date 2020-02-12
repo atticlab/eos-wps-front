@@ -32,8 +32,10 @@ const helpers = {
   // The function for transforming the array of additional data
   // in a proposal object ot an object
   parseProposal(proposal) {
-    const proposalCopy = proposal;
+    const proposalCopy = this.copyDeep(proposal);
     let obj = {};
+
+    if (!(proposal && proposal.proposal_json)) return proposal;
 
     // proposal_json is an array of objects for additional data in a proposal object
     // Each object has fields "key" and "value"
@@ -51,6 +53,7 @@ const helpers = {
     // Only for simple values. no Date, Blob, images or files!!!
     // May be changed to a more universal custom function in the future
     return JSON.parse(JSON.stringify(iterable));
+    // return iterable ? JSON.parse(JSON.stringify(iterable)) : '';
   },
   // Build a payload for actions with the smart contract
   buildBaseTransactionPayload(payloadArr) {

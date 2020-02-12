@@ -204,9 +204,13 @@ export default {
       const result = response.rows;
       if (!result || !result.length) {
         commit(ActionType.SET_DRAFT_BY_PROPOSAL_NAME, {});
+        commit(ActionType.SET_PROPOSAL_INITIAL_DURATION, '');
+        commit(ActionType.SET_PROPOSAL_INITIAL_MONTHLY_BUDGET, '');
         return;
       }
       commit(ActionType.SET_DRAFT_BY_PROPOSAL_NAME, Vue.prototype.$helpers.copyDeep(result[0]));
+      commit(ActionType.SET_PROPOSAL_INITIAL_DURATION, result[0].duration);
+      commit(ActionType.SET_PROPOSAL_INITIAL_MONTHLY_BUDGET, result[0].monthly_budget);
     } catch (e) {
       console.error('REQUEST_DRAFT_BY_PROPOSAL_NAME', e);
       Vue.prototype.$errorsHandler.handleError(e);

@@ -32,11 +32,11 @@ export default {
             actionName: 'submitdraft',
             data: {
               proposer: this.getAccountName,
-              proposal_name: data.proposalName,
+              proposal_name: data.proposal_name,
               title: data.title,
-              monthly_budget: data.monthlyBudget,
+              monthly_budget: data.monthly_budget,
               duration: data.duration,
-              proposal_json: data.proposalJson,
+              proposal_json: data.proposal_json,
             },
           }]),
         );

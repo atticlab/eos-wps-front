@@ -262,7 +262,8 @@
     "proposalDeleted": "Proposal deleted",
     "sentVote": "Vote has been sent",
     "wrongVoteType": "Wrong vote type",
-    "mustLogin": "You should log in"
+    "mustLogin": "You should log in",
+    "mustFinishTheStep": "You must finish the current step"
   },
   "proposalStatuses": {
     "paid": "Paid",

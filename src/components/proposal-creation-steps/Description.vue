@@ -15,31 +15,71 @@
       v-model="text"
       :content="content"
       :options="editorOptions"
-      class="h"
+      class="editor"
     />
 
     <div class="d-flex justify-center">
-      <v-btn
-        color="primary"
-        large
-        height="50"
-        class="text-transform-none"
-        :disabled="isModifyProposalDraftLoading"
-        @click="modify"
-      >
-        {{ $t('proposalCreationPage.continue') }}
-      </v-btn>
+      <template v-if="!proposalId">
+        <v-btn
+          color="primary"
+          large
+          height="50"
+          class="text-transform-none mr-2"
+          :disabled="isCreateProposalDraftLoading"
+          @click="propose(true)"
+        >
+          {{ $t('proposalCreationPage.saveDraft') }}
+        </v-btn>
+
+        <v-btn
+          color="primary"
+          large
+          height="50"
+          class="text-transform-none"
+          :disabled="isCreateProposalDraftLoading"
+          @click="propose(false)"
+        >
+          {{ $t('proposalCreationPage.continue') }}
+        </v-btn>
+      </template>
+      <template v-else>
+        <v-btn
+          color="primary"
+          large
+          height="50"
+          class="text-transform-none mr-2"
+          :disabled="isModifyProposalDraftLoading"
+          @click="modify(true)"
+        >
+          {{ $t('proposalCreationPage.saveDraft') }}
+        </v-btn>
+
+        <v-btn
+          color="primary"
+          large
+          height="50"
+          class="text-transform-none"
+          :disabled="isModifyProposalDraftLoading"
+          @click="modify(false)"
+        >
+          {{ $t('proposalCreationPage.continue') }}
+        </v-btn>
+      </template>
     </div>
   </div>
 </template>
 
 <script>
   import Vue from 'vue';
+  import { mapState, mapGetters, mapMutations } from 'vuex';
   import VueQuillEditor from 'vue-quill-editor';
   import { validationMixin } from 'vuelidate';
   import { required, maxLength } from 'vuelidate/lib/validators';
   import modifyProposalDraft from '@/mixins/modifyProposalDraft';
+  import createProposalDraft from '@/mixins/createProposalDraft';
+  import isProposalExist from '@/mixins/isProposalExist';
   import notification from '@/mixins/notification';
+  import ActionType from '@/store/constants';
 
   // require styles
   // eslint-disable-next-line import/no-extraneous-dependencies
@@ -54,24 +94,23 @@
 
   export default {
     name: 'Description',
-    mixins: [validationMixin, modifyProposalDraft, notification],
+    mixins: [
+      validationMixin,
+      createProposalDraft,
+      modifyProposalDraft,
+      isProposalExist,
+      notification,
+    ],
     validations: {
       text: {
         required,
         maxLength: maxLength(12000),
       },
     },
-    props: {
-      proposalInitial: {
-        type: Object,
-        default: () => {},
-      },
-    },
     data() {
       return {
         content: '',
         text: '',
-        proposal: {},
         editorOptions: {
           theme: 'snow',
           modules: {
@@ -99,28 +138,28 @@
       };
     },
     computed: {
+      ...mapState({
+        proposalInitialDuration: state => state.userService.proposalInitialDuration,
+        proposalInitialMonthlyBudget: state => state.userService.proposalInitialMonthlyBudget,
+      }),
+      ...mapGetters('userService', {
+        getProposalParsed: 'getProposalParsed',
+      }),
       proposalId() {
         return this.$route.params.slug ? this.$route.params.slug : '';
       },
     },
     watch: {
-      proposalInitial: {
-        immediate: true,
-        handler(val) {
-          if (this.proposalId) {
-            this.proposal = this.$helpers.copyDeep(val);
-          }
-        },
+      text() {
+        const payload = this.formPayload(false);
+
+        if (!payload) return;
+
+        this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](
+            { ...this.getProposalParsed, ...this.formProposalJSON() },
+          );
       },
-      $route: {
-        immediate: true,
-        handler() {
-          if (this.proposalId) {
-            this.proposal = this.$helpers.copyDeep(this.proposalInitial);
-          }
-        },
-      },
-      proposal: {
+      getProposalParsed: {
         immediate: true,
         deep: true,
         handler(val) {
@@ -131,6 +170,9 @@
       },
     },
     methods: {
+      ...mapMutations('userService', [
+        ActionType.SET_DRAFT_BY_PROPOSAL_NAME,
+      ]),
       changeCurrentStep(val) {
         this.$emit('step', val);
       },
@@ -138,24 +180,79 @@
         this.$v.$touch();
         return !this.$v.text.$anyError;
       },
-      async modify() {
+      formProposalJSON() {
+        const proposalAdditionalInfo = this.$helpers.copyDeep(this.getProposalParsed.proposal_json);
+        proposalAdditionalInfo.overview = this.text;
+        if (this.getProposalParsed
+          && Object.keys(this.getProposalParsed).length !== 0
+          && this.getProposalParsed.proposal_json.milestones
+          && JSON.parse(this.getProposalParsed.proposal_json.milestones).length !== 0) {
+          proposalAdditionalInfo.milestones = this.getProposalParsed.proposal_json.milestones;
+        } else {
+          delete proposalAdditionalInfo.milestones;
+        }
+
+        const proposalAdditionalInfoRestructured = this.$helpers.restructureProposalAdditionalInfo(
+          proposalAdditionalInfo,
+        );
+
+        return {
+          proposal_json: proposalAdditionalInfoRestructured,
+        };
+      },
+      formPayload(showMsg = true) {
         if (!this.validateAll()) {
-          this.showErrorMsg(this.$t('notifications.overviewEmpty'));
+          this.$emit('description-validation-result', false);
+          if (showMsg) {
+            this.showErrorMsg(this.$t('notifications.overviewEmpty'));
+          }
+          return false;
+        }
+
+        this.$emit('description-validation-result', true);
+
+        return { ...this.getProposalParsed, ...this.formProposalJSON() };
+      },
+      async propose(pushTransaction = true) {
+        const payload = this.formPayload();
+
+        if (!payload) return;
+
+        if (await this.$_isProposalExist(payload.proposal_name)) {
+          this.showErrorMsg(this.$t('notifications.proposalNameExists'));
           return;
         }
 
-        const proposalAdditionalInfo = this.$helpers.copyDeep(this.proposal.proposal_json);
-        proposalAdditionalInfo.overview = this.text;
+        this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](payload);
 
-        const proposalAdditionalInfoRestructured = this.$helpers.restructureProposalAdditionalInfo(
-            proposalAdditionalInfo,
-        );
+        if (!pushTransaction) {
+          this.changeCurrentStep(3);
+          return;
+        }
 
-        const payload = {
-          proposalName: this.proposal.proposal_name,
-          title: this.proposal.title,
-          proposalJson: proposalAdditionalInfoRestructured,
-        };
+        if (await this.$_createProposalDraft(payload)) {
+          this.$eventBus.$emit('proposal-created', true);
+          this.$router.push(`proposal-editor/${this.getProposalParsed.proposal_name}`);
+          this.changeCurrentStep(3);
+        }
+      },
+      async modify(pushTransaction = true) {
+        const payload = this.formPayload();
+
+        if (!payload) return;
+
+        this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
+
+        if (payload.duration === this.proposalInitialDuration
+          && payload.monthly_budget === this.proposalInitialMonthlyBudget) {
+          delete payload.duration;
+          delete payload.monthly_budget;
+        }
+
+        if (!pushTransaction) {
+          this.changeCurrentStep(3);
+          return;
+        }
 
         if (await this.$_modifyProposalDraft(payload)) {
           this.$emit('is-draft-modified', true);
@@ -167,7 +264,7 @@
 </script>
 
 <style lang="scss" scoped>
-  .h {
+  .editor {
     min-height: 400px;
   }
 </style>

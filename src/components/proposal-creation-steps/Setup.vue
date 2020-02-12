@@ -169,30 +169,6 @@
         </div>
 
         <div>
-          <!--      <div class="mb-12">-->
-          <!--        <h2 class="font-weight-regular mb-6">-->
-          <!--          {{ $t('proposalCreationPage.chooseConversion') }}-->
-          <!--        </h2>-->
-
-          <!--        <v-btn-toggle-->
-          <!--          v-model="conversionRateOption"-->
-          <!--          mandatory-->
-          <!--        >-->
-          <!--          <v-btn>-->
-          <!--            <div class="d-flex flex-column">-->
-          <!--              <span>{{ $t('proposalCreationPage.spotPrice') }}</span>-->
-          <!--              <span>{{ `($${eosPrice})` }}</span>-->
-          <!--            </div>-->
-          <!--          </v-btn>-->
-          <!--          <v-btn>-->
-          <!--            <div class="d-flex flex-column">-->
-          <!--              <span>{{ $t('proposalCreationPage.thirtyDaysSMA') }}</span>-->
-          <!--              <span>{{ `($${eosRate30SMA})` }}</span>-->
-          <!--            </div>-->
-          <!--          </v-btn>-->
-          <!--        </v-btn-toggle>-->
-          <!--      </div>-->
-
           <div class="mt-12">
             <h2 class="body-1 font-weight-bold mb-6">
               {{ $t('common.paymentsDuration') }}
@@ -270,28 +246,52 @@
     </v-form>
 
     <div class="d-flex justify-center">
-      <v-btn
-        v-if="!proposalId"
-        color="primary"
-        :large="true"
-        class="text-transform-none mr-2"
-        height="50"
-        :disabled="isCreateProposalDraftLoading"
-        @click="propose"
-      >
-        {{ $t('proposalCreationPage.continue') }}
-      </v-btn>
-      <v-btn
-        v-else
-        color="primary"
-        :large="true"
-        class="text-transform-none mr-2"
-        height="50"
-        :disabled="isModifyProposalDraftLoading"
-        @click="modify"
-      >
-        {{ $t('proposalCreationPage.continue') }}
-      </v-btn>
+      <template v-if="!proposalId">
+        <v-btn
+          color="primary"
+          :large="true"
+          class="text-transform-none mr-2"
+          height="50"
+          :disabled="isCreateProposalDraftLoading"
+          @click="propose(true)"
+        >
+          {{ $t('proposalCreationPage.saveDraft') }}
+        </v-btn>
+
+        <v-btn
+          color="primary"
+          :large="true"
+          class="text-transform-none mr-2"
+          height="50"
+          :disabled="isCreateProposalDraftLoading"
+          @click="propose(false)"
+        >
+          {{ $t('proposalCreationPage.continue') }}
+        </v-btn>
+      </template>
+      <template v-else>
+        <v-btn
+          color="primary"
+          :large="true"
+          class="text-transform-none mr-2"
+          height="50"
+          :disabled="isModifyProposalDraftLoading"
+          @click="modify(true)"
+        >
+          {{ $t('proposalCreationPage.saveDraft') }}
+        </v-btn>
+
+        <v-btn
+          color="primary"
+          :large="true"
+          class="text-transform-none mr-2"
+          height="50"
+          :disabled="isModifyProposalDraftLoading"
+          @click="modify(false)"
+        >
+          {{ $t('proposalCreationPage.continue') }}
+        </v-btn>
+      </template>
     </div>
   </div>
 </template>
@@ -302,7 +302,9 @@
     required, minLength, maxLength, helpers, numeric, minValue,
     maxValue, url, decimal,
   } from 'vuelidate/lib/validators';
-  import { mapState, mapActions } from 'vuex';
+  import {
+ mapState, mapGetters, mapActions, mapMutations,
+} from 'vuex';
   import ActionType from '@/store/constants';
   import BudgetTable from '@/components/BudgetTable.vue';
   import createProposalDraft from '@/mixins/createProposalDraft';
@@ -368,13 +370,6 @@
         },
       },
     },
-    props: {
-      proposalInitial: {
-        type: Object,
-        default: () => {
-        },
-      },
-    },
     data() {
       return {
         componentKey: 0,
@@ -388,7 +383,6 @@
           duration: 1,
           monthlyBudgetAlt: 0,
         },
-        proposal: {},
         totalBudget: 0,
         budgetItemsNew: [],
       };
@@ -397,6 +391,13 @@
       ...mapState({
         proposalsSettings: state => state.userService.proposalsSettings,
         eosPrice: state => state.userService.eosPrice,
+        isDraftProposalByProposalNameLoading: state => state
+          .userService.isDraftProposalByProposalNameLoading,
+        proposalInitialDuration: state => state.userService.proposalInitialDuration,
+        proposalInitialMonthlyBudget: state => state.userService.proposalInitialMonthlyBudget,
+      }),
+      ...mapGetters('userService', {
+        getProposalParsed: 'getProposalParsed',
       }),
       nameErrors() {
         const errors = [];
@@ -511,23 +512,13 @@
 
         return errors;
       },
-      // eosRate30SMA() {
-      //   // the average of all of the prices for a coin for the last month
-      //   return (2 * 31) / 31;
-      // },
-      // selectedConversionRate() {
-      //   // button groups set numbers to the data
-      //   if (this.conversionRateOption === 0) return this.eosPrice;
-      //
-      //   return this.eosRate30SMA;
-      // },
       isExistingProposalWithoutBudgets() {
-        return Boolean(this.proposalId && this.proposal.proposal_json
-        && !this.proposal.proposal_json.budgets);
+        return Boolean(this.proposalId && this.getProposalParsed.proposal_json
+          && !this.getProposalParsed.proposal_json.budgets);
       },
       monthlyBudget() {
         if (!this.setupData.duration || !this.eosPrice) return 0;
-        if (this.isExistingProposalWithoutBudgets) return this.proposal.monthly_budget;
+        if (this.isExistingProposalWithoutBudgets) return this.getProposalParsed.monthly_budget;
 
         const totalBudgetInEos = this.totalBudget / this.eosPrice;
         return `${(totalBudgetInEos / this.setupData.duration)
@@ -541,61 +532,106 @@
                   .toFixed(this.$constants.EOS_MAX_DIGITS)} EOS`;
       },
       budgetData() {
-        if (!this.proposal || Object.keys(this.proposal).length === 0) return '';
-        return this.proposal.proposal_json.budgets;
+        if (!this.getProposalParsed || Object.keys(this.getProposalParsed).length === 0) return '';
+        return this.getProposalParsed.proposal_json.budgets;
       },
       proposalId() {
         return this.$route.params.slug ? this.$route.params.slug : '';
       },
     },
     watch: {
-      proposalInitial: {
-        immediate: true,
-        handler(val) {
-          if (this.proposalId) {
-            this.proposal = this.$helpers.copyDeep(val);
+      setupData: {
+        deep: true,
+        async handler() {
+          if (!this.proposalId) {
+            const payload = await this.prepareDataBeforePropose(false, false);
+
+            if (!payload) return;
+
+            this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
+          } else {
+            const payload = await this.prepareDataBeforeModify(false);
+
+            if (!payload) return;
+
+            this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
           }
         },
       },
+      async monthlyBudget() {
+        if (!this.proposalId) {
+          const payload = await this.prepareDataBeforePropose(false, false);
+
+          if (!payload) return;
+
+          this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
+        } else {
+          const payload = await this.prepareDataBeforeModify(false);
+
+          if (!payload) return;
+
+          this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
+        }
+      },
+      budgetItemsNew: {
+        deep: true,
+        async handler() {
+          if (!this.proposalId) {
+            const payload = await this.prepareDataBeforePropose(false, false);
+
+            if (!payload) return;
+
+            this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
+          } else {
+            const payload = await this.prepareDataBeforeModify(false);
+
+            if (!payload) return;
+
+            this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
+          }
+        },
+      },
+
       $route: {
         immediate: true,
         handler() {
           this[ActionType.REQUEST_EOS_PRICE]();
 
-          if (this.proposalId) {
-            this.proposal = this.$helpers.copyDeep(this.proposalInitial);
-          } else {
+          if (!this.proposalId) {
             Object.keys(this.setupData).forEach((key) => {
               if (key === 'duration') {
                 this.setupData[key] = 1;
+              } else if (key === 'monthlyBudgetAlt') {
+                this.setupData[key] = 0;
               } else {
-                this.setupData[key] = null;
+                this.setupData[key] = '';
               }
             });
-            this.proposal = {};
+            this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({});
           }
         },
       },
-      proposal: {
-        immediate: true,
-        deep: true,
-        handler(val) {
-          if (!val || Object.keys(val).length === 0) return {};
-          this.setupData.proposal_name = val.proposal_name;
-          this.setupData.title = val.title;
-          this.setupData.summary = val.proposal_json.summary || '';
-          this.setupData.category = val.proposal_json.category;
-          this.setupData.img = val.proposal_json.img || '';
-          this.setupData.video = val.proposal_json.video || '';
-          this.setupData.monthlyBudgetAlt = Number(val.monthly_budget.split(' ')[0]);
-          return null;
-        },
+      isDraftProposalByProposalNameLoading(val) {
+        if (val) return;
+        if (!this.getProposalParsed && Object.keys(this.getProposalParsed).length === 0) return;
+
+        this.setupData.proposal_name = this.getProposalParsed.proposal_name;
+        this.setupData.title = this.getProposalParsed.title;
+        this.setupData.duration = this.getProposalParsed.duration;
+        this.setupData.summary = this.getProposalParsed.proposal_json.summary || '';
+        this.setupData.category = this.getProposalParsed.proposal_json.category;
+        this.setupData.img = this.getProposalParsed.proposal_json.img || '';
+        this.setupData.video = this.getProposalParsed.proposal_json.video || '';
+        this.setupData.monthlyBudgetAlt = Number(this.getProposalParsed.monthly_budget.split(' ')[0]);
       },
     },
     created() {
       this[ActionType.REQUEST_SETTINGS]();
     },
     methods: {
+      ...mapMutations('userService', [
+        ActionType.SET_DRAFT_BY_PROPOSAL_NAME,
+      ]),
       ...mapActions('userService', [
         ActionType.REQUEST_SETTINGS,
         ActionType.REQUEST_EOS_PRICE,
@@ -612,62 +648,222 @@
       setBudgetItemsNew(val) {
         this.budgetItemsNew = val;
       },
-      validateAll() {
-        this.$v.$touch();
+      validateAll(touchFields = true) {
+        if (touchFields) {
+          this.$v.$touch();
+        }
         return !this.$v.setupData.$anyError;
       },
-      async propose() {
-        if (!this.validateAll()) {
-          this.showErrorMsg(this.$t('notifications.fillFields'));
-          return;
+      async validateBeforePropose(showMsg = true, touchFields = true) {
+        if (!this.validateAll(touchFields)) {
+          if (showMsg) {
+            this.showErrorMsg(this.$t('notifications.fillFields'));
+          }
+          return false;
         }
 
         if (!this.setupData.duration) {
-          this.showErrorMsg(this.$t('notifications.durationErr'));
-          return;
+          if (showMsg) {
+            this.showErrorMsg(this.$t('notifications.durationErr'));
+          }
+          return false;
         }
 
         if (!this.monthlyBudget || this.monthlyBudget.split(' ')[0] < 100) {
-          this.showErrorMsg(this.$t('notifications.budgetErr'));
-          return;
+          if (showMsg) {
+            this.showErrorMsg(this.$t('notifications.budgetErr'));
+          }
+          return false;
         }
 
         if (Number(this.monthlyBudget.split(' ')[0])
           > Number(this.proposalsSettings.max_monthly_budget.split(' ')[0])) {
-          this.showErrorMsg(this.$t(
-            'notifications.budgetErrMax',
-            { maxMonthlyBudget: this.proposalsSettings.max_monthly_budget },
+          if (showMsg) {
+            this.showErrorMsg(this.$t(
+              'notifications.budgetErrMax',
+              { maxMonthlyBudget: this.proposalsSettings.max_monthly_budget },
             ));
-          return;
+          }
+          return false;
         }
 
         if (this.budgetItemsNew.length > this.$constants.MAX_TABLE_ITEMS) {
-          this.showErrorMsg(this.$t('notifications.tooManyItems'));
-          return;
+          if (showMsg) {
+            this.showErrorMsg(this.$t('notifications.tooManyItems'));
+          }
+          return false;
         }
 
+        if (!this.getProposalParsed
+            && !this.getProposalParsed.proposal_json
+            && !this.getProposalParsed.proposal_json.overview
+            && this.this.getProposalParsed.proposal_json.overview.length === 0
+            && this.this.getProposalParsed.proposal_json.overview.length > 12000) {
+          if (showMsg) {
+            this.showErrorMsg(this.$t('overview err'));
+          }
+          return false;
+        }
+
+        if (await this.$_isProposalExist(this.setupData.proposal_name)) {
+          if (showMsg) {
+            this.showErrorMsg(this.$t('notifications.proposalNameExists'));
+          }
+          return false;
+        }
+
+        return true;
+      },
+      validateBeforeModify(showMsg = true) {
+        if (!this.validateAll()) {
+          if (showMsg) {
+            this.showErrorMsg(this.$t('notifications.fillFields'));
+          }
+          return false;
+        }
+
+        if (!this.setupData.duration) {
+          if (showMsg) {
+            this.showErrorMsg(this.$t('notifications.durationErr'));
+          }
+          return false;
+        }
+
+        if (this.isExistingProposalWithoutBudgets) {
+          if (!this.monthlyBudgetAltEos || this.monthlyBudgetAltEos.split(' ')[0] < 100) {
+            if (showMsg) {
+              this.showErrorMsg(this.$t('notifications.budgetErr'));
+            }
+            return false;
+          }
+
+          if (Number(this.monthlyBudgetAltEos.split(' ')[0])
+            > Number(this.proposalsSettings.max_monthly_budget.split(' ')[0])) {
+            if (showMsg) {
+              this.showErrorMsg(this.$t(
+                'notifications.budgetErrMax',
+                { maxMonthlyBudget: this.proposalsSettings.max_monthly_budget },
+              ));
+            }
+            return false;
+          }
+        } else if (!this.monthlyBudget || this.monthlyBudget.split(' ')[0] < 100) {
+          if (showMsg) {
+            this.showErrorMsg(this.$t('notifications.budgetErr'));
+          }
+          return false;
+        } else if (Number(this.monthlyBudget.split(' ')[0])
+          > Number(this.proposalsSettings.max_monthly_budget.split(' ')[0])) {
+          if (showMsg) {
+            this.showErrorMsg(this.$t(
+              'notifications.budgetErrMax',
+              { maxMonthlyBudget: this.proposalsSettings.max_monthly_budget },
+            ));
+          }
+          return false;
+        }
+
+        return true;
+      },
+      formPayloadBeforePropose() {
         const proposalAdditionalInfo = {
           summary: this.setupData.summary,
           category: this.setupData.category,
           budgets: JSON.stringify(this.budgetItemsNew),
         };
+
         if (this.setupData.img) proposalAdditionalInfo.img = this.setupData.img;
         if (this.setupData.video) proposalAdditionalInfo.video = this.setupData.video;
+        if (this.getProposalParsed
+            && Object.keys(this.getProposalParsed).length !== 0
+            && this.getProposalParsed.proposal_json.overview) {
+          proposalAdditionalInfo.overview = this.getProposalParsed.proposal_json.overview;
+        }
+        if (this.getProposalParsed
+          && Object.keys(this.getProposalParsed).length !== 0
+          && this.getProposalParsed.proposal_json.milestones
+          && JSON.parse(this.getProposalParsed.proposal_json.milestones).length !== 0) {
+          proposalAdditionalInfo.milestones = this.getProposalParsed.proposal_json.milestones;
+        }
 
-        const proposalAdditionalInfoRestructured = this.$helpers
-          .restructureProposalAdditionalInfo(proposalAdditionalInfo);
+        return {
+          proposal_name: this.setupData.proposal_name,
+          title: this.setupData.title,
+          monthly_budget: this.monthlyBudget,
+          duration: this.setupData.duration,
+          proposal_json: this.$helpers
+                            .restructureProposalAdditionalInfo(proposalAdditionalInfo),
+        };
+      },
+      formPayloadBeforeModify() {
+        const proposalAdditionalInfo = this.$helpers.copyDeep(this.getProposalParsed.proposal_json);
+        proposalAdditionalInfo.summary = this.setupData.summary;
+        proposalAdditionalInfo.category = this.setupData.category;
+
+        if (this.budgetData) {
+          proposalAdditionalInfo.budgets = JSON.stringify(this.budgetItemsNew);
+        }
+
+        if (this.setupData.img) {
+          proposalAdditionalInfo.img = this.setupData.img;
+        } else {
+          delete proposalAdditionalInfo.img;
+        }
+
+        if (this.setupData.video) {
+          proposalAdditionalInfo.video = this.setupData.video;
+        } else {
+          delete proposalAdditionalInfo.video;
+        }
 
         const payload = {
-          proposalName: this.setupData.proposal_name,
+          proposal_name: this.setupData.proposal_name,
           title: this.setupData.title,
-          monthlyBudget: this.monthlyBudget,
           duration: this.setupData.duration,
-          proposalJson: proposalAdditionalInfoRestructured,
+          monthly_budget: this.isExistingProposalWithoutBudgets
+                                 ? this.monthlyBudgetAltEos
+                                 : this.monthlyBudget,
+          proposal_json: this.$helpers
+                             .restructureProposalAdditionalInfo(proposalAdditionalInfo),
         };
 
-        if (await this.$_isProposalExist(payload.proposalName)) {
-          this.showErrorMsg(this.$t('notifications.proposalNameExists'));
+        return payload;
+      },
+      async prepareDataBeforePropose(showMsg = true, touchFields = true) {
+        if (!await this.validateBeforePropose(showMsg, touchFields)) {
+          this.$emit('setup-validation-result', false);
+          return;
+        }
 
+        const payload = this.formPayloadBeforePropose();
+
+        this.$emit('setup-validation-result', true);
+
+        // eslint-disable-next-line consistent-return
+        return payload;
+      },
+      prepareDataBeforeModify(showMsg = true) {
+        if (!this.validateBeforeModify(showMsg)) {
+          this.$emit('setup-validation-result', false);
+          return;
+        }
+
+        const payload = this.formPayloadBeforeModify();
+
+        this.$emit('setup-validation-result', true);
+
+        // eslint-disable-next-line consistent-return
+        return payload;
+      },
+      async propose(pushTransaction = true) {
+        const payload = await this.prepareDataBeforePropose(true);
+
+        if (!payload) return;
+
+        this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](payload);
+
+        if (!pushTransaction) {
+          this.changeCurrentStep(2);
           return;
         }
 
@@ -677,75 +873,32 @@
           this.changeCurrentStep(2);
         }
       },
-      async modify() {
-        if (!this.validateAll()) {
-          this.showErrorMsg(this.$t('notifications.fillFields'));
-          return;
-        }
+      async modify(pushTransaction = true) {
+        const payload = this.prepareDataBeforeModify(true);
 
-        if (!this.setupData.duration) {
-          this.showErrorMsg(this.$t('notifications.durationErr'));
-          return;
-        }
+        if (!payload) return;
 
-        if (this.isExistingProposalWithoutBudgets) {
-          if (!this.monthlyBudgetAltEos || this.monthlyBudgetAltEos.split(' ')[0] < 100) {
-            this.showErrorMsg(this.$t('notifications.budgetErr'));
-            return;
-          }
+        this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME]({ ...this.getProposalParsed, ...payload });
 
-          if (Number(this.monthlyBudgetAltEos.split(' ')[0])
-            > Number(this.proposalsSettings.max_monthly_budget.split(' ')[0])) {
-            this.showErrorMsg(this.$t(
-              'notifications.budgetErrMax',
-              { maxMonthlyBudget: this.proposalsSettings.max_monthly_budget },
-            ));
-            return;
-          }
-        } else if (!this.monthlyBudget || this.monthlyBudget.split(' ')[0] < 100) {
-          this.showErrorMsg(this.$t('notifications.budgetErr'));
-          return;
-        } else if (Number(this.monthlyBudget.split(' ')[0])
-          > Number(this.proposalsSettings.max_monthly_budget.split(' ')[0])) {
-          this.showErrorMsg(this.$t(
-            'notifications.budgetErrMax',
-            { maxMonthlyBudget: this.proposalsSettings.max_monthly_budget },
-          ));
-          return;
-        }
-
-        const proposalAdditionalInfo = this.$helpers.copyDeep(this.proposal.proposal_json);
-        proposalAdditionalInfo.summary = this.setupData.summary;
-        proposalAdditionalInfo.category = this.setupData.category;
-
-        // || !!this.setupData.img !== !!proposalAdditionalInfo.img
-        if (this.setupData.img) {
-          proposalAdditionalInfo.img = this.setupData.img;
+        if (payload.duration !== this.proposalInitialDuration
+          || payload.monthly_budget !== this.proposalInitialMonthlyBudget) {
+          payload.duration = this.setupData.duration;
+          payload.monthly_budget = this.isExistingProposalWithoutBudgets
+                                   ? this.monthlyBudgetAltEos
+                                   : this.monthlyBudget;
         } else {
-          delete proposalAdditionalInfo.img;
-        }
-        // || !!this.setupData.video !== !!proposalAdditionalInfo.video
-        if (this.setupData.video) {
-          proposalAdditionalInfo.video = this.setupData.video;
-        } else {
-          delete proposalAdditionalInfo.video;
+          delete payload.duration;
+          delete payload.monthly_budget;
         }
 
-        const proposalAdditionalInfoRestructured = this.$helpers
-          .restructureProposalAdditionalInfo(proposalAdditionalInfo);
 
-        const payload = {
-          proposalName: this.setupData.proposal_name,
-          title: this.setupData.title,
-          monthlyBudget: this.isExistingProposalWithoutBudgets
-                         ? this.monthlyBudgetAltEos
-                         : this.monthlyBudget,
-          duration: this.setupData.duration,
-          proposalJson: proposalAdditionalInfoRestructured,
-        };
-
+        if (!pushTransaction) {
+          this.changeCurrentStep(2);
+          return;
+        }
 
         if (await this.$_modifyProposalDraft(payload)) {
+          this.$emit('is-draft-modified', true);
           this.changeCurrentStep(2);
         }
       },
