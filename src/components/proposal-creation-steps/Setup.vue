@@ -617,6 +617,7 @@
 
         this.setupData.proposal_name = this.getProposalParsed.proposal_name;
         this.setupData.title = this.getProposalParsed.title;
+        this.setupData.duration = this.getProposalParsed.duration;
         this.setupData.summary = this.getProposalParsed.proposal_json.summary || '';
         this.setupData.category = this.getProposalParsed.proposal_json.category;
         this.setupData.img = this.getProposalParsed.proposal_json.img || '';
