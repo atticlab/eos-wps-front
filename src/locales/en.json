@@ -73,6 +73,8 @@
     "activateFor": "Activate for {votingPeriod}",
     "next": "next",
     "current": "current",
+    "beforeActivationWarning1": "Before activating your proposal make sure the information you have put is accurate and up-to-date.",
+    "beforeActivationWarning2": " In case you are not activating right after creating a draft, you might want to review your budget\n                              since the EOS price could have changed during this time.",
     "sureToActivate": "Are you sure you want to activate your proposal for the current voting period?",
     "currentVotingPeriodEndsIn": "The current voting period ends in {daysTillEnd} days",
     "proposalInfo": "Proposal info",
@@ -265,7 +267,8 @@
     "sentVote": "Vote has been sent",
     "wrongVoteType": "Wrong vote type",
     "mustLogin": "You should log in",
-    "mustFinishTheStep": "You must finish the current step"
+    "mustFinishTheStep": "You must finish the current step",
+    "yourVoteHasNotChanged": "Your vote has not changed"
   },
   "proposalStatuses": {
     "paid": "Paid",

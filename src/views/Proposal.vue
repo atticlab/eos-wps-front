@@ -17,7 +17,7 @@
         <v-row>
           <v-col
             cols="12"
-            lg="7"
+            :lg="getAccountNameWithAuthority ? 7 : 12"
             class="d-flex"
           >
             <v-card
@@ -157,6 +157,7 @@
           </v-col>
 
           <v-col
+            v-if="getAccountNameWithAuthority"
             cols="12"
             class="d-flex"
             lg="5"
@@ -236,6 +237,15 @@
                             </span>
                           </v-card-title>
                           <v-card-text>
+                            <p>
+                              {{ $t('proposalPage.beforeActivationWarning1') }}
+                            </p>
+                            <p>
+                              {{ $t('proposalPage.beforeActivationWarning2') }}
+                            </p>
+
+                            <v-divider class="v-divider--custom my-6" />
+
                             <p class="font-weight-medium">
                               {{ $t('proposalPage.sureToActivate') }}
                             </p>
@@ -252,7 +262,7 @@
                           <v-card-actions class="flex-wrap">
                             <v-spacer />
 
-                            <div>
+                            <div class="mr-4">
                               <v-btn
                                 :elevation="0"
                                 class="text-transform-none mr-2 mb-2"
@@ -510,7 +520,7 @@
 </template>
 
 <script>
-  import { mapState, mapActions } from 'vuex';
+  import { mapState, mapGetters, mapActions } from 'vuex';
   import ActionType from '@/store/constants';
   import Overview from '@/components/proposal-tabs/Overview.vue';
   import BudgetOverview from '@/components/proposal-tabs/BudgetOverview.vue';
@@ -558,6 +568,9 @@
         proposalState: state => state.userService.proposalState,
         votesByProposalName: state => state.userService.votesByProposalName,
         proposalDeposit: state => state.userService.proposalDeposit,
+      }),
+      ...mapGetters('userService', {
+        getAccountNameWithAuthority: 'getAccountNameWithAuthority',
       }),
       isDraft() {
         return this.$route.path.includes('draft');
@@ -646,7 +659,11 @@
             vote: voteType,
           });
           this.showSuccessMsg(this.$t('notifications.sentVote'));
-        } catch {} // eslint-disable-line no-empty
+          await this[ActionType.REQUEST_VOTES_BY_PROPOSAL_NAME](this.proposalId);
+        } catch (e) {
+          // console.log(e);
+          // this.$errorsHandler.handleError(e);
+        } // eslint-disable-line no-empty
       },
       async getData() {
         try {
