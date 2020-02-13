@@ -145,9 +145,8 @@
           @total-budget="setTotalBudget"
           @budget-data-new="setBudgetItemsNew"
         />
-
-        <!--        v-else-->
         <div
+          v-else
           class="mb-4"
         >
           <label
@@ -297,7 +296,6 @@
 
 <script>
   import { validationMixin } from 'vuelidate';
-  // decimal
   import {
     required, minLength, maxLength, helpers, numeric, minValue,
     maxValue, url,
