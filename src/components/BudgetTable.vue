@@ -390,9 +390,6 @@
           return localAcc;
         }, 0);
       },
-      // totalBudgetEos() {
-      //   return this.totalBudget / this.eosPrice;
-      // },
       totalBudgetUsd() {
         return this.$helpers.roundWithPrecision(
           this.totalBudget * this.eosPrice,
