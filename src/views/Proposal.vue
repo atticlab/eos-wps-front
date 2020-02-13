@@ -660,10 +660,7 @@
           });
           this.showSuccessMsg(this.$t('notifications.sentVote'));
           await this[ActionType.REQUEST_VOTES_BY_PROPOSAL_NAME](this.proposalId);
-        } catch (e) {
-          // console.log(e);
-          // this.$errorsHandler.handleError(e);
-        } // eslint-disable-line no-empty
+        } catch (e) {} // eslint-disable-line no-empty
       },
       async getData() {
         try {
