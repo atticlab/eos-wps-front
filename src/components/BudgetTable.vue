@@ -63,7 +63,7 @@
                       required
                       type="number"
                       :counter="5"
-                      prefix="$"
+                      suffix="EOS"
                       :error-messages="costErrors"
                       @input="validateSingleField('cost')"
                       @blur="validateSingleField('cost')"
@@ -110,7 +110,7 @@
                     <div>
                       <div>{{ $t('common.subtotal') }}</div>
                       <div class="black--text body-1 font-weight-medium">
-                        {{ `$${subtotal}` }}
+                        {{ `${subtotal} EOS` }}
                       </div>
                     </div>
                   </v-col>
@@ -189,7 +189,7 @@
     </template>
     <template v-slot:item.cost="{ item }">
       <span class="body-1 font-weight-semi-bold">
-        {{ `$${item.cost}` }}
+        {{ `${item.cost.toFixed($constants.EOS_MAX_DIGITS)} EOS` }}
       </span>
     </template>
     <template v-slot:item.amount="{ item }">
@@ -205,10 +205,12 @@
     <template v-slot:item.subtotal="{ item }">
       <div class="body-1 font-weight-semi-bold">
         <div class="mb-1">
-          {{ `$${item.subtotal}` }}
+          {{ `${item.subtotal.toFixed($constants.EOS_MAX_DIGITS)} EOS` }}
         </div>
         <div class="primary--text">
-          {{ `${(item.subtotal / eosPrice).toFixed($constants.EOS_MAX_DIGITS)} EOS` }}
+          {{
+            `$${$helpers.roundWithPrecision((item.subtotal * eosPrice), $constants.USD_PRECISION)}`
+          }}
         </div>
       </div>
     </template>
@@ -252,10 +254,10 @@
 
         <div class="body-1 font-weight-semi-bold">
           <div class="mb-1">
-            {{ `$${totalBudget}` }}
+            {{ `${totalBudget.toFixed($constants.EOS_MAX_DIGITS)} EOS` }}
           </div>
           <div class="body-2 font-weight-medium accent--text">
-            {{ `${(totalBudgetEos).toFixed($constants.EOS_MAX_DIGITS)} EOS` }}
+            {{ `$${totalBudgetUsd}` }}
           </div>
         </div>
       </div>
@@ -277,10 +279,10 @@
         <td />
         <td class="body-1 font-weight-semi-bold">
           <div class="mb-1">
-            {{ `$${totalBudget}` }}
+            {{ `${totalBudget.toFixed($constants.EOS_MAX_DIGITS)} EOS` }}
           </div>
           <div class="body-2 font-weight-medium accent--text">
-            {{ `${(totalBudgetEos).toFixed($constants.EOS_MAX_DIGITS)} EOS` }}
+            {{ `$${totalBudgetUsd}` }}
           </div>
         </td>
         <td :class="{'border-none': !isEditable}" />
@@ -388,8 +390,14 @@
           return localAcc;
         }, 0);
       },
-      totalBudgetEos() {
-        return this.totalBudget / this.eosPrice;
+      // totalBudgetEos() {
+      //   return this.totalBudget / this.eosPrice;
+      // },
+      totalBudgetUsd() {
+        return this.$helpers.roundWithPrecision(
+          this.totalBudget * this.eosPrice,
+          this.$constants.USD_PRECISION,
+        );
       },
       budgetHeaders() {
         if (this.isEditable) return this.headers;

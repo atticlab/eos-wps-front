@@ -17,7 +17,7 @@
         <v-row>
           <v-col
             cols="12"
-            :md="!isBp && !isDraft ? '12' : '7'"
+            lg="7"
             class="d-flex"
           >
             <v-card
@@ -40,8 +40,6 @@
                   <v-col
                     cols="12"
                     sm="4"
-                    :md="!isBp && !isDraft ? '4' : '6'"
-                    :lg="!isBp && !isDraft ? '2' : '4'"
                   >
                     <div>
                       <div class="text-uppercase accent--text font-weight-semi-bold body-2 mb-1">
@@ -55,8 +53,6 @@
                   <v-col
                     cols="12"
                     sm="4"
-                    :md="!isBp && !isDraft ? '4' : '6'"
-                    :lg="!isBp && !isDraft ? '2' : '4'"
                   >
                     <div>
                       <div class="text-uppercase accent--text font-weight-semi-bold body-2 mb-1">
@@ -75,8 +71,6 @@
                     v-if="!isDraft"
                     cols="12"
                     sm="4"
-                    :md="!isBp && !isDraft ? '4' : '6'"
-                    :lg="!isBp && !isDraft ? '2' : '4'"
                   >
                     <div>
                       <div class="text-uppercase accent--text font-weight-semi-bold body-2 mb-1">
@@ -90,8 +84,6 @@
                   <v-col
                     cols="12"
                     sm="4"
-                    :md="!isBp && !isDraft ? '4' : '6'"
-                    :lg="!isBp && !isDraft ? '2' : '4'"
                   >
                     <div>
                       <div class="text-uppercase accent--text font-weight-semi-bold body-2 mb-1">
@@ -106,8 +98,6 @@
                     v-if="!isDraft"
                     cols="12"
                     sm="4"
-                    :md="!isBp && !isDraft ? '4' : '6'"
-                    :lg="!isBp && !isDraft ? '2' : '4'"
                   >
                     <div>
                       <div class="text-uppercase accent--text font-weight-semi-bold body-2 mb-1">
@@ -126,8 +116,6 @@
                     v-if="!isDraft"
                     cols="12"
                     sm="4"
-                    :md="!isBp && !isDraft ? '4' : '6'"
-                    :lg="!isBp && !isDraft ? '2' : '4'"
                   >
                     <div>
                       <div class="text-uppercase accent--text font-weight-semi-bold body-2 mb-1">
@@ -167,11 +155,11 @@
               </v-container>
             </v-card>
           </v-col>
+
           <v-col
-            v-if="isDraft || isBp"
             cols="12"
             class="d-flex"
-            md="5"
+            lg="5"
           >
             <v-card
               class="flex-fill"
@@ -185,69 +173,7 @@
                   {{ $t('common.actions') }}
                 </div>
 
-                <template v-if="isBp && !isDraft">
-                  <div class="d-flex justify-space-between align-center flex-wrap mb-4">
-                    <div class="actions-left">
-                      <div class="font-weight-semi-bold text-uppercase">
-                        {{ $t('proposalPage.voteFor') }}
-                      </div>
-                    </div>
-
-                    <div class="actions-btn-container">
-                      <v-btn
-                        block
-                        :elevation="0"
-                        class="btn--alt"
-                        :disabled="isVoteProposalLoading"
-                        @click="handleVote($constants.VOTE_YES)"
-                      >
-                        {{ $t('proposalPage.upvote') }}
-                      </v-btn>
-                    </div>
-                  </div>
-
-                  <div class="d-flex justify-space-between align-center flex-wrap mb-4">
-                    <div class="actions-left">
-                      <div class="font-weight-semi-bold text-uppercase">
-                        {{ $t('proposalPage.abstainIn') }}
-                      </div>
-                    </div>
-
-                    <div class="actions-btn-container">
-                      <v-btn
-                        block
-                        :elevation="0"
-                        class="btn--alt"
-                        :disabled="isVoteProposalLoading"
-                        @click="handleVote($constants.VOTE_ABSTAIN)"
-                      >
-                        {{ $t('proposalPage.abstain') }}
-                      </v-btn>
-                    </div>
-                  </div>
-
-                  <div class="d-flex justify-space-between align-center flex-wrap mb-4">
-                    <div class="actions-left">
-                      <div class="font-weight-semi-bold text-uppercase">
-                        {{ $t('proposalPage.voteAgainst') }}
-                      </div>
-                    </div>
-
-                    <div class="actions-btn-container">
-                      <v-btn
-                        block
-                        :elevation="0"
-                        class="btn--alt"
-                        :disabled="isVoteProposalLoading"
-                        @click="handleVote($constants.VOTE_NO)"
-                      >
-                        {{ $t('proposalPage.downvote') }}
-                      </v-btn>
-                    </div>
-                  </div>
-                </template>
-
-                <template v-else>
+                <template v-if="isDraft">
                   <div
                     v-if="!isMinDepositPaid"
                     class="d-flex justify-space-between align-center flex-wrap mb-4"
@@ -433,6 +359,68 @@
                         @click="deleteProposal"
                       >
                         {{ $t('proposalCreationPage.delete') }}
+                      </v-btn>
+                    </div>
+                  </div>
+                </template>
+
+                <template v-else>
+                  <div class="d-flex justify-space-between align-center flex-wrap mb-4">
+                    <div class="actions-left">
+                      <div class="font-weight-semi-bold text-uppercase">
+                        {{ $t('proposalPage.voteFor') }}
+                      </div>
+                    </div>
+
+                    <div class="actions-btn-container">
+                      <v-btn
+                        block
+                        :elevation="0"
+                        class="btn--alt"
+                        :disabled="isVoteProposalLoading"
+                        @click="handleVote($constants.VOTE_YES)"
+                      >
+                        {{ $t('proposalPage.upvote') }}
+                      </v-btn>
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-space-between align-center flex-wrap mb-4">
+                    <div class="actions-left">
+                      <div class="font-weight-semi-bold text-uppercase">
+                        {{ $t('proposalPage.abstainIn') }}
+                      </div>
+                    </div>
+
+                    <div class="actions-btn-container">
+                      <v-btn
+                        block
+                        :elevation="0"
+                        class="btn--alt"
+                        :disabled="isVoteProposalLoading"
+                        @click="handleVote($constants.VOTE_ABSTAIN)"
+                      >
+                        {{ $t('proposalPage.abstain') }}
+                      </v-btn>
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-space-between align-center flex-wrap mb-4">
+                    <div class="actions-left">
+                      <div class="font-weight-semi-bold text-uppercase">
+                        {{ $t('proposalPage.voteAgainst') }}
+                      </div>
+                    </div>
+
+                    <div class="actions-btn-container">
+                      <v-btn
+                        block
+                        :elevation="0"
+                        class="btn--alt"
+                        :disabled="isVoteProposalLoading"
+                        @click="handleVote($constants.VOTE_NO)"
+                      >
+                        {{ $t('proposalPage.downvote') }}
                       </v-btn>
                     </div>
                   </div>

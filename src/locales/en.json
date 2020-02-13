@@ -132,7 +132,9 @@
     "editProposal": "Edit proposal",
     "removeProposal": "Remove proposal",
     "chooseDuration": "Choose a duration of payments",
-    "budgetEos": "Budget is allocated and paid in EOS!"
+    "budgetEos": "Budget is allocated and paid in EOS!",
+    "totalEosBudget": "Total EOS budget",
+    "addTotalBudget": "Add your total budget in EOS"
   },
   "about": {
     "wpsFull": "EOS Worker Proposal System",
