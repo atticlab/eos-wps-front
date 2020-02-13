@@ -289,5 +289,10 @@
     "noVideo": "No video",
     "noVoters": "No voters",
     "noDate": "No date"
+  },
+  "footer": {
+    "visitRepos": "You can visit two of the given GitHub repos to leave your feedback:",
+    "smartContractRepo": "Smart contract repo",
+    "uiRepo": "UI repo"
   }
 }
