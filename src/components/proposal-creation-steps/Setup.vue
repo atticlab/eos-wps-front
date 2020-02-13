@@ -146,8 +146,8 @@
           @budget-data-new="setBudgetItemsNew"
         />
 
+        <!--        v-else-->
         <div
-          v-else
           class="mb-4"
         >
           <label
@@ -161,10 +161,10 @@
             v-model.number="setupData.totalBudgetFromContract"
             :error-messages="totalBudgetFromContractErrors"
             :label="$t('proposalCreationPage.addTotalBudget')"
-            prefix="EOS"
+            suffix="EOS"
             @input="validateSingleField('totalBudgetFromContract')"
             @blur="validateSingleField('totalBudgetFromContract')"
-            @keypress="$helpers.isNumberDecimalOnly($event)"
+            @keypress="$helpers.isNumberOnly($event)"
           />
         </div>
 
@@ -297,9 +297,10 @@
 
 <script>
   import { validationMixin } from 'vuelidate';
+  // decimal
   import {
     required, minLength, maxLength, helpers, numeric, minValue,
-    maxValue, url, decimal,
+    maxValue, url,
   } from 'vuelidate/lib/validators';
   import {
  mapState, mapGetters, mapActions, mapMutations,
@@ -365,7 +366,10 @@
           maxValue: maxValue(6),
         },
         totalBudgetFromContract: {
-          decimal,
+          required,
+          minValue: minValue(100),
+          maxValue: maxValue(50000),
+          numeric,
         },
       },
     },
@@ -506,8 +510,27 @@
         if (!this.$v.setupData.totalBudgetFromContract.$dirty) return errors;
 
         // eslint-disable-next-line no-unused-expressions
-        !this.$v.setupData.totalBudgetFromContract.decimal
-        && errors.push(this.$t('validationMessages.onlyNumbersDecimals'));
+        !this.$v.setupData.totalBudgetFromContract.required
+        && errors.push(this.$t('validationMessages.required'));
+        // eslint-disable-next-line no-unused-expressions
+        !this.$v.setupData.totalBudgetFromContract.numeric
+        && errors.push(this.$t('validationMessages.onlyNumbers'));
+        // eslint-disable-next-line no-unused-expressions
+        !this.$v.setupData.totalBudgetFromContract.minValue
+        && errors.push(
+          this.$t(
+            'validationMessages.minValue',
+            { value: this.proposalsSettings.deposit_required },
+            ),
+        );
+        // eslint-disable-next-line no-unused-expressions
+        !this.$v.setupData.totalBudgetFromContract.maxValue
+        && errors.push(
+          this.$t(
+            'validationMessages.maxValue',
+            { value: this.proposalsSettings.max_monthly_budget },
+          ),
+        );
 
         return errors;
       },
