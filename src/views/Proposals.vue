@@ -13,6 +13,45 @@
 
       <v-divider class="v-divider--custom my-12" />
 
+      <div class="layout-toggler mb-10 text-right">
+        <v-btn
+          elevation="0"
+          fab
+          :class="{
+            'accent--text': !isList,
+            'primary--text': isList,
+            'white--text': true
+          }"
+          class="mr-4"
+          @click="isList = true"
+        >
+          <v-icon
+            class="fs-17"
+            dark
+          >
+            fas fa-list
+          </v-icon>
+        </v-btn>
+
+        <v-btn
+          elevation="0"
+          fab
+          :class="{
+            'accent--text': isList,
+            'primary--text': !isList,
+            'white--text': true
+          }"
+          @click="isList = false"
+        >
+          <v-icon
+            class="fs-17"
+            dark
+          >
+            fas fa-th-large
+          </v-icon>
+        </v-btn>
+      </div>
+
       <div
         v-if="isAllDataLoading || isDraftProposalByAccountNameLoading"
         class="d-flex justify-center"
@@ -27,24 +66,6 @@
 
       <template v-else>
         <template v-if="!isDrafts">
-          <!--        <v-row v-if="!isDrafts">-->
-          <!--          <v-col-->
-          <!--            sm="4"-->
-          <!--            md="3"-->
-          <!--          >-->
-          <!--            <div class="sort-by">-->
-          <!--              <v-select-->
-          <!--                v-model="selectedSortOption"-->
-          <!--                :items="sortByOptions"-->
-          <!--                label="Sort by"-->
-          <!--                outlined-->
-          <!--                dense-->
-          <!--                :menu-props="{ offsetY:true }"-->
-          <!--              />-->
-          <!--            </div>-->
-          <!--          </v-col>-->
-          <!--        </v-row>-->
-
           <div class="mb-12">
             <h2 class="fs-30 mb-12">
               {{ $t('common.paidProposals') }}
@@ -58,9 +79,11 @@
                 <v-col
                   v-for="(proposal, index) in proposalsFullInfo.paidProposals"
                   :key="index"
-                  md="6"
+                  cols="12"
+                  :md="isList ? 12 : 6"
                 >
                   <ProposalItem
+                    :is-list="isList"
                     :proposal-name="proposal.proposal_name"
                     :title="proposal.title"
                     :proposer="proposal.proposer"
@@ -109,9 +132,11 @@
                   <v-col
                     v-for="(proposal, index) in proposalsFullInfo.insufficientBudgetProposals"
                     :key="index"
-                    md="6"
+                    cols="12"
+                    :md="isList ? 12 : 6"
                   >
                     <ProposalItem
+                      :is-list="isList"
                       :proposal-name="proposal.proposal_name"
                       :title="proposal.title"
                       :proposer="proposal.proposer"
@@ -143,9 +168,11 @@
                   <v-col
                     v-for="(proposal, index) in proposalsFullInfo.insufficientVotesProposals"
                     :key="index"
-                    md="6"
+                    cols="12"
+                    :md="isList ? 12 : 6"
                   >
                     <ProposalItem
+                      :is-list="isList"
                       :proposal-name="proposal.proposal_name"
                       :title="proposal.title"
                       :proposer="proposal.proposer"
@@ -180,9 +207,11 @@
               <v-col
                 v-for="(proposal, index) in proposalsParsed"
                 :key="index"
-                md="6"
+                cols="12"
+                :md="isList ? 12 : 6"
               >
                 <ProposalItem
+                  :is-list="isList"
                   :proposal-name="proposal.proposal_name"
                   :title="proposal.title"
                   :proposer="proposal.proposer"
@@ -258,6 +287,7 @@
         selectedSortOption: null,
         // Active or drafts
         proposalsType: '',
+        isList: true,
       };
     },
     computed: {
