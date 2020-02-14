@@ -8,8 +8,9 @@
     <v-card flat>
       <div>
         <v-img
-          height="218px"
+          v-if="!isList"
           :src="img"
+          height="218px"
         />
         <div class="pa-4">
           <div
@@ -170,6 +171,10 @@
       isDraft: {
         type: Boolean,
         default: false,
+      },
+      isList: {
+        type: Boolean,
+        default: true,
       },
     },
   };
