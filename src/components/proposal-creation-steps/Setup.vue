@@ -145,25 +145,24 @@
           @total-budget="setTotalBudget"
           @budget-data-new="setBudgetItemsNew"
         />
-
         <div
           v-else
           class="mb-4"
         >
           <label
-            for="monthlyBudget"
+            for="totalBudgetFromContract"
             class="body-1 font-weight-bold d-block"
           >
-            {{ $t('proposalCreationPage.monthlyEosBudget') }}
+            {{ $t('proposalCreationPage.totalEosBudget') }}
           </label>
           <v-text-field
-            id="monthlyBudget"
-            v-model.number="setupData.monthlyBudgetAlt"
-            :error-messages="monthlyBudgetErrors"
-            :label="$t('proposalCreationPage.addMonthlyBudget')"
-            prefix="EOS"
-            @input="validateSingleField('monthlyBudgetAlt')"
-            @blur="validateSingleField('monthlyBudgetAlt')"
+            id="totalBudgetFromContract"
+            v-model.number="setupData.totalBudgetFromContract"
+            :error-messages="totalBudgetFromContractErrors"
+            :label="$t('proposalCreationPage.addTotalBudget')"
+            suffix="EOS"
+            @input="validateSingleField('totalBudgetFromContract')"
+            @blur="validateSingleField('totalBudgetFromContract')"
             @keypress="$helpers.isNumberDecimalOnly($event)"
           />
         </div>
@@ -218,7 +217,6 @@
             </div>
           </div>
         </div>
-
         <div
           v-else
           class="d-flex justify-end my-12"
@@ -230,15 +228,15 @@
             <div
               :class="{
                 'font-weight-bold body-2': true,
-                'primary--text': monthlyBudgetAltEos
-                  ? monthlyBudgetAltEos.split(' ')[0] >= 100
+                'primary--text': monthlyBudgetAlt
+                  ? monthlyBudgetAlt.split(' ')[0] >= 100
                   : false,
-                'red--text text-underline': monthlyBudgetAltEos
-                  ? monthlyBudgetAltEos.split(' ')[0] < 100
+                'red--text text-underline': monthlyBudgetAlt
+                  ? monthlyBudgetAlt.split(' ')[0] < 100
                   : true,
               }"
             >
-              {{ monthlyBudgetAltEos }}
+              {{ monthlyBudgetAlt }}
             </div>
           </div>
         </div>
@@ -365,7 +363,10 @@
           minValue: minValue(1),
           maxValue: maxValue(6),
         },
-        monthlyBudgetAlt: {
+        totalBudgetFromContract: {
+          // required,
+          minValue: minValue(100),
+          // maxValue: maxValue(50000),
           decimal,
         },
       },
@@ -381,7 +382,7 @@
           img: '',
           video: '',
           duration: 1,
-          monthlyBudgetAlt: 0,
+          totalBudgetFromContract: 0,
         },
         totalBudget: 0,
         budgetItemsNew: [],
@@ -502,13 +503,32 @@
 
         return errors;
       },
-      monthlyBudgetErrors() {
+      totalBudgetFromContractErrors() {
         const errors = [];
-        if (!this.$v.setupData.monthlyBudgetAlt.$dirty) return errors;
+        if (!this.$v.setupData.totalBudgetFromContract.$dirty) return errors;
 
         // eslint-disable-next-line no-unused-expressions
-        !this.$v.setupData.monthlyBudgetAlt.decimal
+        // !this.$v.setupData.totalBudgetFromContract.required
+        // && errors.push(this.$t('validationMessages.required'));
+        // eslint-disable-next-line no-unused-expressions
+        !this.$v.setupData.totalBudgetFromContract.decimal
         && errors.push(this.$t('validationMessages.onlyNumbersDecimals'));
+        // eslint-disable-next-line no-unused-expressions
+        !this.$v.setupData.totalBudgetFromContract.minValue
+        && errors.push(
+          this.$t(
+            'validationMessages.minValue',
+            { value: this.proposalsSettings.deposit_required },
+            ),
+        );
+        // eslint-disable-next-line no-unused-expressions
+        // !this.$v.setupData.totalBudgetFromContract.maxValue
+        // && errors.push(
+        //   this.$t(
+        //     'validationMessages.maxValue',
+        //     { value: this.proposalsSettings.max_monthly_budget },
+        //   ),
+        // );
 
         return errors;
       },
@@ -517,19 +537,18 @@
           && !this.getProposalParsed.proposal_json.budgets);
       },
       monthlyBudget() {
-        if (!this.setupData.duration || !this.eosPrice) return 0;
+        if (!this.setupData.duration) return 0;
         if (this.isExistingProposalWithoutBudgets) return this.getProposalParsed.monthly_budget;
 
-        const totalBudgetInEos = this.totalBudget / this.eosPrice;
-        return `${(totalBudgetInEos / this.setupData.duration)
+        return `${(this.totalBudget / this.setupData.duration)
           .toFixed(this.$constants.EOS_MAX_DIGITS)} EOS`;
       },
-      monthlyBudgetAltEos() {
-        if (!this.setupData.duration || !this.eosPrice) return 0;
+      monthlyBudgetAlt() {
+        if (!this.setupData.duration) return 0;
         if (!this.isExistingProposalWithoutBudgets) return 0;
 
-        return `${(this.setupData.monthlyBudgetAlt * this.setupData.duration)
-                  .toFixed(this.$constants.EOS_MAX_DIGITS)} EOS`;
+        return `${(this.setupData.totalBudgetFromContract / this.setupData.duration)
+          .toFixed(this.$constants.EOS_MAX_DIGITS)} EOS`;
       },
       budgetData() {
         if (!this.getProposalParsed || Object.keys(this.getProposalParsed).length === 0) return '';
@@ -601,7 +620,7 @@
             Object.keys(this.setupData).forEach((key) => {
               if (key === 'duration') {
                 this.setupData[key] = 1;
-              } else if (key === 'monthlyBudgetAlt') {
+              } else if (key === 'totalBudgetFromContract') {
                 this.setupData[key] = 0;
               } else {
                 this.setupData[key] = '';
@@ -622,7 +641,9 @@
         this.setupData.category = this.getProposalParsed.proposal_json.category;
         this.setupData.img = this.getProposalParsed.proposal_json.img || '';
         this.setupData.video = this.getProposalParsed.proposal_json.video || '';
-        this.setupData.monthlyBudgetAlt = Number(this.getProposalParsed.monthly_budget.split(' ')[0]);
+        this.setupData.totalBudgetFromContract = Number(
+          this.getProposalParsed.total_budget.split(' ')[0],
+        );
       },
     },
     created() {
@@ -714,8 +735,8 @@
 
         return true;
       },
-      validateBeforeModify(showMsg = true) {
-        if (!this.validateAll()) {
+      validateBeforeModify(showMsg = true, touchFields = true) {
+        if (!this.validateAll(touchFields)) {
           if (showMsg) {
             this.showErrorMsg(this.$t('notifications.fillFields'));
           }
@@ -730,14 +751,14 @@
         }
 
         if (this.isExistingProposalWithoutBudgets) {
-          if (!this.monthlyBudgetAltEos || this.monthlyBudgetAltEos.split(' ')[0] < 100) {
+          if (!this.monthlyBudgetAlt || this.monthlyBudgetAlt.split(' ')[0] < 100) {
             if (showMsg) {
               this.showErrorMsg(this.$t('notifications.budgetErr'));
             }
             return false;
           }
 
-          if (Number(this.monthlyBudgetAltEos.split(' ')[0])
+          if (Number(this.monthlyBudgetAlt.split(' ')[0])
             > Number(this.proposalsSettings.max_monthly_budget.split(' ')[0])) {
             if (showMsg) {
               this.showErrorMsg(this.$t(
@@ -821,7 +842,7 @@
           title: this.setupData.title,
           duration: this.setupData.duration,
           monthly_budget: this.isExistingProposalWithoutBudgets
-                                 ? this.monthlyBudgetAltEos
+                                 ? this.monthlyBudgetAlt
                                  : this.monthlyBudget,
           proposal_json: this.$helpers
                              .restructureProposalAdditionalInfo(proposalAdditionalInfo),
@@ -884,7 +905,7 @@
           || payload.monthly_budget !== this.proposalInitialMonthlyBudget) {
           payload.duration = this.setupData.duration;
           payload.monthly_budget = this.isExistingProposalWithoutBudgets
-                                   ? this.monthlyBudgetAltEos
+                                   ? this.monthlyBudgetAlt
                                    : this.monthlyBudget;
         } else {
           delete payload.duration;

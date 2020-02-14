@@ -2,12 +2,13 @@ import Vue from 'vue';
 import Stub from '../assets/img/proposal-img-stub.png';
 
 const constants = {
-  PROPOSAL_CATEGORIES: ['development', 'marketing', 'finance', 'community', 'other'],
+  PROPOSAL_CATEGORIES: ['development', 'marketing', 'business development', 'community', 'other'],
   DATE_FORMAT: 'YYYY.MM.DD',
   UNITS: ['unit', 'hour', 'day', 'month', 'year'],
   DURATIONS_OF_PAYMENTS: [1, 2, 3, 4, 5, 6],
   EOS_PRECISION: 10000,
   EOS_MAX_DIGITS: 4,
+  USD_PRECISION: 100,
   PROPOSAL_IMAGE_STUB_URL: Stub,
   // FIXME: Vue.prototype.$t() always fails
   BUDGET_HEADERS: [

@@ -285,33 +285,71 @@
       />
     </v-app-bar>
 
-    <v-overlay v-if="isScatterLoginLoading">
-      <v-alert
-        transition="scale-transition"
-        border-top
-        color="primary"
-        :class="{ 'alert-scatter': true }"
-      >
-        {{ $t('notifications.scatterInit') }}
-      </v-alert>
+    <v-content>
+      <v-overlay v-if="isScatterLoginLoading">
+        <v-alert
+          transition="scale-transition"
+          border-top
+          color="primary"
+          :class="{ 'alert-scatter': true }"
+        >
+          {{ $t('notifications.scatterInit') }}
+        </v-alert>
 
-      <v-progress-circular
-        :size="70"
-        :width="7"
-        color="primary"
-        indeterminate
-      />
-    </v-overlay>
+        <v-progress-circular
+          :size="70"
+          :width="7"
+          color="primary"
+          indeterminate
+        />
+      </v-overlay>
 
-    <v-content v-else>
-      <router-view />
+      <router-view v-else />
     </v-content>
 
     <v-footer
       color="white secondary--text body-2"
-      height="80"
+      height="160"
+      padless
     >
-      <span class="font-weight-bold">© {{ thisYear }} EOS WPS. All Rights Reserved</span>
+      <v-card
+        width="100%"
+        tile
+        flat
+        class="text-center"
+      >
+        <v-card-text>
+          <div class="font-weight-bold mb-2">
+            {{ $t('footer.visitRepos') }}
+          </div>
+          <div class="d-flex justify-center">
+            <div class="mr-4">
+              <a
+                href="https://github.com/EOS-Nation/eosio-wps"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {{ $t('footer.smartContractRepo') }}
+              </a>
+            </div>
+            <div>
+              <a
+                href="https://github.com/atticlab/eos-wps-front"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {{ $t('footer.uiRepo') }}
+              </a>
+            </div>
+          </div>
+        </v-card-text>
+
+        <v-divider class="v-divider--custom" />
+
+        <v-card-text>
+          <span class="font-weight-bold">© {{ thisYear }} EOS WPS. All Rights Reserved</span>
+        </v-card-text>
+      </v-card>
     </v-footer>
 
     <v-snackbar
