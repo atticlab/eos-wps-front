@@ -163,7 +163,7 @@
             suffix="EOS"
             @input="validateSingleField('totalBudgetFromContract')"
             @blur="validateSingleField('totalBudgetFromContract')"
-            @keypress="$helpers.isNumberOnly($event)"
+            @keypress="$helpers.isNumberDecimalOnly($event)"
           />
         </div>
 
@@ -298,7 +298,7 @@
   import { validationMixin } from 'vuelidate';
   import {
     required, minLength, maxLength, helpers, numeric, minValue,
-    maxValue, url,
+    maxValue, url, decimal,
   } from 'vuelidate/lib/validators';
   import {
  mapState, mapGetters, mapActions, mapMutations,
@@ -364,10 +364,10 @@
           maxValue: maxValue(6),
         },
         totalBudgetFromContract: {
-          required,
+          // required,
           minValue: minValue(100),
-          maxValue: maxValue(50000),
-          numeric,
+          // maxValue: maxValue(50000),
+          decimal,
         },
       },
     },
@@ -508,11 +508,11 @@
         if (!this.$v.setupData.totalBudgetFromContract.$dirty) return errors;
 
         // eslint-disable-next-line no-unused-expressions
-        !this.$v.setupData.totalBudgetFromContract.required
-        && errors.push(this.$t('validationMessages.required'));
+        // !this.$v.setupData.totalBudgetFromContract.required
+        // && errors.push(this.$t('validationMessages.required'));
         // eslint-disable-next-line no-unused-expressions
-        !this.$v.setupData.totalBudgetFromContract.numeric
-        && errors.push(this.$t('validationMessages.onlyNumbers'));
+        !this.$v.setupData.totalBudgetFromContract.decimal
+        && errors.push(this.$t('validationMessages.onlyNumbersDecimals'));
         // eslint-disable-next-line no-unused-expressions
         !this.$v.setupData.totalBudgetFromContract.minValue
         && errors.push(
@@ -522,13 +522,13 @@
             ),
         );
         // eslint-disable-next-line no-unused-expressions
-        !this.$v.setupData.totalBudgetFromContract.maxValue
-        && errors.push(
-          this.$t(
-            'validationMessages.maxValue',
-            { value: this.proposalsSettings.max_monthly_budget },
-          ),
-        );
+        // !this.$v.setupData.totalBudgetFromContract.maxValue
+        // && errors.push(
+        //   this.$t(
+        //     'validationMessages.maxValue',
+        //     { value: this.proposalsSettings.max_monthly_budget },
+        //   ),
+        // );
 
         return errors;
       },
@@ -735,8 +735,8 @@
 
         return true;
       },
-      validateBeforeModify(showMsg = true) {
-        if (!this.validateAll()) {
+      validateBeforeModify(showMsg = true, touchFields = true) {
+        if (!this.validateAll(touchFields)) {
           if (showMsg) {
             this.showErrorMsg(this.$t('notifications.fillFields'));
           }
