@@ -1,0 +1,22 @@
+.btn--alt {
+   @extend .text-transform-none;
+   @extend .font-weight-semi-bold;
+   background-color: $white !important;
+   border: 2px solid $grey--2 !important;
+   color: $black !important;
+   transition: all 0.2s !important;
+
+   &:hover, &:focus, &:active {
+      background-color: $primary !important;
+      color: $white !important;
+      border-color: $primary !important;
+   }
+
+   &:before {
+      box-sizing: border-box;
+      height: calc(100% + 4px);
+      width: calc(100% + 4px);
+      top: -2px !important;
+      left: -2px !important;
+   }
+}

@@ -30,7 +30,6 @@ export default {
         );
         return response.transaction_id;
       } catch (e) {
-        // TODO: notify about err
         console.error('$_sendDeposit', e);
         this.$errorsHandler.handleError(e);
         throw e;

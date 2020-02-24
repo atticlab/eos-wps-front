@@ -1,108 +1,109 @@
 <template>
   <router-link
-    class="proposal-link mb-6 d-block"
+    class="proposal-link d-block"
     :to="{ path: isDraft
       ? `/proposal/draft/${proposalName}`
       : `/proposal/active/${proposalName}` }"
   >
-    <v-card>
-      <div class="proposal-item d-flex">
-        <div
-          class="proposal-item__left"
-          :style="{'background-image': `url(${img})`}"
-        >
-          <!--  bg-image        -->
-        </div>
-        <div class="proposal-item__right px-6 py-4">
-          <h2 class="title text-center text-sm-left mb-3">
-            {{ title }}
-          </h2>
-          <div class="proposal-item__content body-2">
-            <div class="proposal-item__content-left mb-6 mb-md-0 mr-md-2">
-              <div class="mb-3">
-                <span class="teal--darken-4--bold text-capitalize">{{ category }}</span>
-                <v-divider
-                  vertical
-                  class="mx-2"
-                />
-                <span class="cyan--darken-2--bold">{{ proposer }}</span>
-              </div>
-              <p class="proposal-item__desc mb-0">
-                {{ summary }}
-              </p>
-            </div>
-            <div
-              class="proposal-item__content-right text-center"
+    <v-card flat>
+      <div>
+        <v-img
+          v-if="!isList"
+          :src="img"
+          height="218px"
+        />
+        <div class="pa-4">
+          <div
+            class="d-flex justify-space-between flex-column align-start
+                   flex-sm-row align-sm-center mb-1 mb-sm-0"
+          >
+            <h2 class="fs-20 mb-1">
+              {{ title }}
+            </h2>
+
+            <span class="primary--text font-weight-bold text-capitalize body-2">
+              {{ category }}
+            </span>
+          </div>
+
+          <div class="mb-3 font-weight-medium body-2">
+            by
+            <span class="font-weight-bold primary--text">{{ proposer }}</span>
+          </div>
+
+          <v-row>
+            <v-col
+              cols="12"
+              sm="6"
+              class="pb-0 pb-sm-3"
             >
               <div
                 v-if="!isDraft"
-                class="mb-3 mr-sm-2"
+                class="font-weight-bold mb-2 body-2"
               >
-                <div class="font-weight-bold mb-3">
-                  {{ $t('proposalItem.availableBudget') }}:
-                </div>
-                <div>{{ availableBudget }}</div>
+                {{ $t('proposalItem.availableBudget') }}:
+                <span class="font-weight-medium">{{ availableBudget }}</span>
               </div>
+
               <div
                 v-if="!isDraft"
-                class="mb-3 mr-sm-2"
+                class="font-weight-bold mb-2 body-2"
               >
-                <div class="mb-3 font-weight-bold">
-                  {{ $t('proposalItem.status') }}:
-                </div>
-                <div
-                  :class="{'font-weight-bold text-capitalize': true,
-                           'red--text': statusByVotes === $t('proposalStatuses.notPassing'),
-                           'green--text': statusByVotes === $t('proposalStatuses.passing')
+                {{ $t('proposalItem.status') }}:
+                <span
+                  :class="{'text-capitalize': true,
+                           'red--text': statusByVotes === $t('proposalStatuses.unpaid'),
+                           'primary--text': statusByVotes === $t('proposalStatuses.paid')
                   }"
                 >
                   {{ statusByVotes }}
-                </div>
+                </span>
               </div>
-              <div
-                class="mb-3 mr-sm-2"
-              >
-                <div class="mb-3 font-weight-bold">
-                  {{ $t('common.requested') }}:
-                </div>
-                <div>
-                  {{ budget }}
-                </div>
+
+              <div class="font-weight-bold mb-2 body-2">
+                {{ $t('common.requested') }}:
+                <span class="font-weight-medium">{{ budget }}</span>
               </div>
-              <div
-                v-if="isDraft"
-                class="mb-3 mr-sm-2"
-              >
-                <div class="mb-3 font-weight-bold">
-                  {{ $t('common.paymentsDuration') }}:
-                </div>
-                <div>
-                  {{ duration }}
-                  {{ $t('common.months') }}
-                </div>
-              </div>
+            </v-col>
+            <v-col
+              cols="12"
+              sm="6"
+              class="pt-0 pt-sm-3"
+            >
               <div
                 v-if="!isDraft"
-                class="mb-3 mr-sm-2"
+                class="font-weight-bold mb-2 body-2"
               >
-                <div class="mb-3 font-weight-bold">
-                  {{ $t('common.payments') }}:
-                </div>
-                <div>
-                  {{ payments }}
-                </div>
+                {{ $t('common.payments') }}:
+                <span class="font-weight-medium">{{ payments }}</span>
               </div>
-              <div v-if="!isDraft">
-                <div class="mb-3 font-weight-bold">
-                  {{ $t('common.votes') }}:
-                </div>
-                <div
-                  class="font-weight-bold indigo--text"
+
+              <div class="font-weight-bold mb-2 body-2">
+                {{ $t('common.paymentsDuration') }}:
+                <span class="font-weight-medium">
+                  {{ duration }}
+                  {{ $t('common.months') }}
+                </span>
+              </div>
+
+              <div
+                v-if="!isDraft"
+                class="font-weight-bold mb-2 body-2"
+              >
+                {{ $t('common.votes') }}:
+                <span
+                  :class="{ 'primary--text': votes > 0,
+                            'red--text': votes < 0,
+                  }"
                 >
                   {{ votes }}
-                </div>
+                </span>
               </div>
-            </div>
+            </v-col>
+          </v-row>
+
+          <div class=" font-weight-medium my-2 body-2">
+            {{ summary }}
           </div>
         </div>
       </div>
@@ -111,8 +112,6 @@
 </template>
 
 <script>
-  import Vue from 'vue';
-
   export default {
     name: 'ProposalItem',
     props: {
@@ -127,7 +126,9 @@
       },
       img: {
         type: String,
-        default: Vue.prototype.$constants.PROPOSAL_IMAGE_STUB_URL,
+        default() {
+          return this.$constants.PROPOSAL_IMAGE_STUB_URL;
+        },
       },
       availableBudget: {
         type: String,
@@ -143,7 +144,9 @@
       },
       summary: {
         type: String,
-        default: '',
+        default() {
+          return this.$t('noDataTexts.noSummary');
+        },
       },
       budget: {
         type: String,
@@ -169,6 +172,10 @@
         type: Boolean,
         default: false,
       },
+      isList: {
+        type: Boolean,
+        default: true,
+      },
     },
   };
 </script>
@@ -183,88 +190,22 @@
 
     &:before {
       content: '';
-      background-color: $dark-blue;
-      top: 0;
+      background-color: $primary;
+      bottom: 0;
       left: 0;
-      width: 4px;
+      width: 0;
       z-index: 1;
       transition: all 0.15s;
       position: absolute;
-      height: 0;
+      height: 4px;
     }
 
     &:hover:before {
-      height: 100%;
-    }
-
-    &:hover {
-      transform: translateX(-1%);
-    }
-  }
-
-  .proposal-item {
-    min-height: 150px;
-
-    &__left {
-      min-width: 240px;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-
-    &__right {
       width: 100%;
     }
 
-    &__content {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    &__content-left {
-      flex: 1 0 35%;
-    }
-
-    &__content-right {
-      display: flex;
-      justify-content: space-between;
-      flex: 1 0 auto;
-    }
-
-    &__desc {
-      max-height: 40px;
-      overflow: hidden;
-      line-height: 1.45;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-    }
-  }
-
-  @media (max-width: 1263px) {
-    .proposal-item {
-      flex-direction: column;
-
-      &__left {
-        min-height: 150px;
-      }
-    }
-  }
-
-  @media (max-width: 959px) {
-    .proposal-item__content {
-      flex-direction: column;
-    }
-  }
-
-  @media (max-width: 599px) {
-    .proposal-item__content-left {
-      text-align: center;
-    }
-
-    .proposal-item__content-right{
-      flex-direction: column;
+    &:hover {
+      transform: translateY(-1%);
     }
   }
 </style>

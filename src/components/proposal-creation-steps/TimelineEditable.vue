@@ -1,11 +1,14 @@
 <template>
   <div>
-    <v-card class="mb-12">
+    <v-card
+      flat
+      class="border-bottom mb-12"
+    >
       <div class="mb-12">
-        <h2 class="font-weight-regular mb-6">
+        <h2 class="body-1 font-weight-bold mb-3">
           {{ $t('proposalCreationPage.setupTimeline') }}
         </h2>
-        <p>
+        <p class="font-weight-medium accent--text timeline-subtitle body-2">
           {{ $t('proposalCreationPage.setupTimelineP') }}
         </p>
       </div>
@@ -15,6 +18,8 @@
         :items="milestones"
         :hide-default-footer="true"
         :items-per-page="$constants.MAX_TABLE_ITEMS"
+        :hide-default-header="$vuetify.breakpoint.xs"
+        disable-sort
       >
         <template v-slot:top>
           <v-toolbar
@@ -28,9 +33,9 @@
               <template v-slot:activator="{ on }">
                 <v-btn
                   v-if="milestones.length < $constants.MAX_TABLE_ITEMS"
-                  color="primary"
-                  dark
-                  class="ml-auto mb-2"
+                  class="btn--alt ml-auto mb-2"
+                  :elevation="0"
+                  :ripple="false"
                   v-on="on"
                 >
                   {{ $t('proposalCreationPage.addNewItem') }}
@@ -38,7 +43,7 @@
               </template>
               <v-card>
                 <v-card-title>
-                  <span class="headline">{{ formTitle }}</span>
+                  <span class="font-weight-bold">{{ formTitle }}</span>
                 </v-card-title>
 
                 <v-card-text>
@@ -74,7 +79,7 @@
                         >
                           <template v-slot:activator="{ on }">
                             <v-text-field
-                              v-model="editedItem.startsAt"
+                              :value="formattedStartsAt"
                               label="Start"
                               readonly
                               class="mr-3"
@@ -95,18 +100,20 @@
                           >
                             <v-spacer />
                             <v-btn
-                              text
+                              :elevation="0"
                               color="primary"
-                              @click="startsAtMenu = false"
-                            >
-                              {{ $t('proposalCreationPage.cancel') }}
-                            </v-btn>
-                            <v-btn
-                              text
-                              color="primary"
+                              class="text-transform-none mb-2"
                               @click="$refs.startsAtMenu.save(editedItem.startsAt)"
                             >
                               {{ $t('common.ok') }}
+                            </v-btn>
+                            <v-btn
+                              :elevation="0"
+                              color="error"
+                              class="text-transform-none mb-2"
+                              @click="startsAtMenu = false"
+                            >
+                              {{ $t('proposalCreationPage.cancel') }}
                             </v-btn>
                           </v-date-picker>
                         </v-menu>
@@ -126,7 +133,7 @@
                         >
                           <template v-slot:activator="{ on }">
                             <v-text-field
-                              v-model="editedItem.endsAt"
+                              :value="formattedEndsAt"
                               label="End"
                               readonly
                               required
@@ -146,18 +153,20 @@
                           >
                             <v-spacer />
                             <v-btn
-                              text
+                              :elevation="0"
                               color="primary"
-                              @click="endsAtMenu = false"
-                            >
-                              {{ $t('proposalCreationPage.cancel') }}
-                            </v-btn>
-                            <v-btn
-                              text
-                              color="primary"
+                              class="text-transform-none mb-2"
                               @click="$refs.endsAtMenu.save(editedItem.endsAt)"
                             >
                               {{ $t('common.ok') }}
+                            </v-btn>
+                            <v-btn
+                              :elevation="0"
+                              color="error"
+                              class="text-transform-none mb-2"
+                              @click="endsAtMenu = false"
+                            >
+                              {{ $t('proposalCreationPage.cancel') }}
                             </v-btn>
                           </v-date-picker>
                         </v-menu>
@@ -169,18 +178,20 @@
                 <v-card-actions>
                   <v-spacer />
                   <v-btn
-                    color="error"
-                    text
-                    @click="closeDialogEdit"
-                  >
-                    {{ $t('proposalCreationPage.cancel') }}
-                  </v-btn>
-                  <v-btn
-                    color="success"
-                    text
+                    color="primary"
+                    class="text-transform-none mb-2"
+                    :elevation="0"
                     @click="save"
                   >
                     {{ $t('proposalCreationPage.save') }}
+                  </v-btn>
+                  <v-btn
+                    color="error"
+                    class="text-transform-none mb-2"
+                    :elevation="0"
+                    @click="closeDialogEdit"
+                  >
+                    {{ $t('proposalCreationPage.cancel') }}
                   </v-btn>
                 </v-card-actions>
               </v-card>
@@ -192,13 +203,13 @@
             >
               <v-card>
                 <v-card-title>
-                  <span class="headline">
+                  <span class="font-weight-bold">
                     {{ $t('proposalCreationPage.deleteItem') }}
                   </span>
                 </v-card-title>
 
                 <v-card-text>
-                  <p>
+                  <p class="font-weight-medium">
                     {{ $t('proposalCreationPage.deleteConfirm') }}
                   </p>
                 </v-card-text>
@@ -207,17 +218,19 @@
                   <v-spacer />
                   <v-btn
                     color="error"
-                    text
-                    @click="closeDialogDelete"
-                  >
-                    {{ $t('proposalCreationPage.cancel') }}
-                  </v-btn>
-                  <v-btn
-                    color="error"
-                    text
+                    class="text-transform-none mb-2"
+                    :elevation="0"
                     @click="deleteItem"
                   >
                     {{ $t('proposalCreationPage.delete') }}
+                  </v-btn>
+                  <v-btn
+                    color="error"
+                    class="text-transform-none mb-2"
+                    :elevation="0"
+                    @click="closeDialogDelete"
+                  >
+                    {{ $t('proposalCreationPage.cancel') }}
                   </v-btn>
                 </v-card-actions>
               </v-card>
@@ -225,43 +238,41 @@
           </v-toolbar>
         </template>
         <template v-slot:item.title="{ item }">
-          <span class="d-block body-1">
+          <span class="d-block body-1 font-weight-medium">
             {{ item.title }}
           </span>
         </template>
         <template v-slot:item.startsAt="{ item }">
-          <span class="body-1">
+          <span class="body-1 font-weight-medium">
             {{ $moment(item.startsAt).format($constants.DATE_FORMAT) }}
           </span>
         </template>
         <template v-slot:item.endsAt="{ item }">
-          <span class="body-1">
+          <span class="body-1 font-weight-medium">
             {{ $moment(item.endsAt).format($constants.DATE_FORMAT) }}
           </span>
         </template>
         <template v-slot:item.action="{ item }">
           <v-btn
-            text
             icon
             color="primary"
           >
             <v-icon
-              small
+              :size="18"
               @click="editItem(item)"
             >
-              mdi-pencil
+              fas fa-edit
             </v-icon>
           </v-btn>
           <v-btn
-            text
             icon
             color="error"
           >
             <v-icon
-              small
+              :size="18"
               @click="openDeleteDialog(item)"
             >
-              mdi-delete
+              far fa-trash-alt
             </v-icon>
           </v-btn>
         </template>
@@ -273,28 +284,54 @@
       </v-data-table>
     </v-card>
 
-    <v-btn
-      class="mb-2 mb-sm-0 mr-2"
-      color="success"
-      :disabled="isModifyProposalDraftLoading"
-      @click="modify"
-    >
-      {{ $t('proposalCreationPage.saveDraft') }}
-    </v-btn>
+    <div class="d-flex justify-center">
+      <v-btn
+        v-if="!proposalId"
+        class="text-transform-none"
+        color="primary"
+        large
+        height="50"
+        :disabled="isCreateProposalDraftLoading"
+        @click="propose"
+      >
+        {{ $t('proposalCreationPage.saveDraft') }}
+      </v-btn>
+      <v-btn
+        v-else
+        class="text-transform-none"
+        color="primary"
+        large
+        height="50"
+        :disabled="isModifyProposalDraftLoading"
+        @click="modify"
+      >
+        {{ $t('proposalCreationPage.saveDraft') }}
+      </v-btn>
+    </div>
   </div>
 </template>
 
 <script>
+  import { mapState, mapGetters, mapMutations } from 'vuex';
   import { validationMixin } from 'vuelidate';
   import {
  required, minLength, maxLength, helpers,
 } from 'vuelidate/lib/validators';
+  import createProposalDraft from '@/mixins/createProposalDraft';
   import modifyProposalDraft from '@/mixins/modifyProposalDraft';
+  import isProposalExist from '@/mixins/isProposalExist';
   import notification from '@/mixins/notification';
+  import ActionType from '@/store/constants';
 
   export default {
     name: 'TimelineEditable',
-    mixins: [validationMixin, modifyProposalDraft, notification],
+    mixins: [
+      validationMixin,
+      createProposalDraft,
+      modifyProposalDraft,
+      isProposalExist,
+      notification,
+    ],
     validations: {
       editedItem: {
         title: {
@@ -314,12 +351,6 @@
         },
       },
     },
-    props: {
-      proposalInitial: {
-        type: Object,
-        default: () => {},
-      },
-    },
     data() {
       return {
         startsAtMenu: false,
@@ -329,7 +360,6 @@
         headers: this.$constants.MILESTONES_HEADERS,
         milestones: [],
         editedIndex: -1,
-        proposal: {},
         editedItem: {
           title: '',
           startsAt: '',
@@ -343,6 +373,15 @@
       };
     },
     computed: {
+      ...mapState({
+        isDraftProposalByProposalNameLoading: state => state
+          .userService.isDraftProposalByProposalNameLoading,
+        proposalInitialDuration: state => state.userService.proposalInitialDuration,
+        proposalInitialMonthlyBudget: state => state.userService.proposalInitialMonthlyBudget,
+      }),
+      ...mapGetters('userService', {
+        getProposalParsed: 'getProposalParsed',
+      }),
       proposalId() {
         return this.$route.params.slug ? this.$route.params.slug : '';
       },
@@ -393,6 +432,17 @@
 
         return errors;
       },
+
+      formattedStartsAt() {
+        return this.editedItem.startsAt
+               ? this.$moment(this.editedItem.startsAt).format(this.$constants.DATE_FORMAT)
+               : '';
+      },
+      formattedEndsAt() {
+        return this.editedItem.endsAt
+               ? this.$moment(this.editedItem.endsAt).format(this.$constants.DATE_FORMAT)
+               : '';
+      },
     },
     watch: {
       // needed to clear editedIndex on an outside click
@@ -405,34 +455,38 @@
         // eslint-disable-next-line no-unused-expressions
         val || this.closeDialogDelete();
       },
-      proposalInitial: {
-        immediate: true,
-        handler(val) {
-          if (this.proposalId) {
-            this.proposal = this.$helpers.copyDeep(val);
-          }
-        },
+      $route() {
+        if (!this.proposalId) {
+          this.milestones = [];
+        }
       },
-      $route: {
-        immediate: true,
-        handler() {
-          if (this.proposalId) {
-            this.proposal = this.$helpers.copyDeep(this.proposalInitial);
-          }
-        },
-      },
-      proposal: {
-        immediate: true,
-        deep: true,
+      isDraftProposalByProposalNameLoading: {
         handler(val) {
-          if (!val || Object.keys(val).length === 0) return;
-          this.milestones = val.proposal_json.milestones
-                            ? JSON.parse(val.proposal_json.milestones)
+          if (val) return;
+          this.milestones = this.getProposalParsed.proposal_json.milestones
+                            ? JSON.parse(this.getProposalParsed.proposal_json.milestones)
                             : [];
+        },
+      },
+      milestones: {
+        deep: true,
+        handler() {
+          if (!this.validateMilestones(false)) {
+            this.$emit('timeline-validation-result', false);
+          } else {
+            this.$emit('timeline-validation-result', true);
+          }
+
+          this[ActionType.SET_DRAFT_BY_PROPOSAL_NAME](
+            { ...this.getProposalParsed, ...this.formProposalJSON() },
+          );
         },
       },
     },
     methods: {
+      ...mapMutations('userService', [
+        ActionType.SET_DRAFT_BY_PROPOSAL_NAME,
+      ]),
       validateSingleField(val) {
         this.$v.editedItem[val].$touch();
       },
@@ -442,8 +496,8 @@
       },
       editItem(item) {
         const itemCopy = item;
-        itemCopy.startsAt = this.$moment(item.startsAt).format(this.$constants.DATE_FORMAT);
-        itemCopy.endsAt = this.$moment(item.endsAt).format(this.$constants.DATE_FORMAT);
+        itemCopy.startsAt = this.$moment(item.startsAt).format('YYYY-MM-DD');
+        itemCopy.endsAt = this.$moment(item.endsAt).format('YYYY-MM-DD');
         this.editedIndex = this.milestones.indexOf(itemCopy);
         this.editedItem = Object.assign({}, itemCopy);
         this.dialogEdit = true;
@@ -476,29 +530,79 @@
         }
         this.closeDialogEdit();
       },
-      async modify() {
-        if (this.milestones.length === 0) {
-          this.showErrorMsg(this.$t('notifications.milestonesEmpty'));
-          return;
-        }
+      formProposalJSON() {
+        if (!this.getProposalParsed.proposal_json) return;
 
-        if (this.milestones.length > this.$constants.MAX_TABLE_ITEMS) {
-          this.showErrorMsg(this.$t('notifications.tooManyItems'));
-          return;
-        }
-
-        const proposalAdditionalInfo = this.$helpers.copyDeep(this.proposal.proposal_json);
-
+        const proposalAdditionalInfo = this.$helpers.copyDeep(this.getProposalParsed.proposal_json);
         proposalAdditionalInfo.milestones = JSON.stringify(this.$helpers.copyDeep(this.milestones));
+
+        if (this.milestones && this.milestones.length !== 0) {
+          proposalAdditionalInfo.milestones = JSON.stringify(
+            this.$helpers.copyDeep(this.milestones),
+          );
+        } else {
+          delete proposalAdditionalInfo.milestones;
+        }
+
         const proposalAdditionalInfoRestructured = this.$helpers.restructureProposalAdditionalInfo(
           proposalAdditionalInfo,
         );
 
-        const payload = {
-          proposalName: this.proposal.proposal_name,
-          title: this.proposal.title,
-          proposalJson: proposalAdditionalInfoRestructured,
+        // eslint-disable-next-line consistent-return
+        return {
+          proposal_json: proposalAdditionalInfoRestructured,
         };
+      },
+      validateMilestones(showMsg = true) {
+        if (this.milestones.length === 0) {
+          if (showMsg) {
+            this.showErrorMsg(this.$t('notifications.milestonesEmpty'));
+          }
+          return false;
+        }
+
+        if (this.milestones.length > this.$constants.MAX_TABLE_ITEMS) {
+          if (showMsg) {
+            this.showErrorMsg(this.$t('notifications.tooManyItems'));
+          }
+          return false;
+        }
+        return true;
+      },
+      async propose() {
+        if (!this.validateMilestones(true)) {
+          this.$emit('timeline-validation-result', false);
+          return;
+        }
+        this.$emit('timeline-validation-result', true);
+
+
+        const payload = { ...this.getProposalParsed, ...this.formProposalJSON() };
+
+        if (await this.$_isProposalExist(payload.proposal_name)) {
+          this.showErrorMsg(this.$t('notifications.proposalNameExists'));
+          return;
+        }
+
+        if (await this.$_createProposalDraft(payload)) {
+          this.$eventBus.$emit('proposal-created', true);
+          this.$router.push('/proposals/drafts');
+        }
+      },
+      async modify() {
+        if (!this.validateMilestones(true)) {
+          this.$emit('timeline-validation-result', false);
+          return;
+        }
+        this.$emit('timeline-validation-result', true);
+
+        const payload = { ...this.getProposalParsed, ...this.formProposalJSON() };
+
+        if (payload.duration === this.proposalInitialDuration
+          && payload.monthly_budget === this.proposalInitialMonthlyBudget) {
+          delete payload.duration;
+          delete payload.monthly_budget;
+        }
 
         if (await this.$_modifyProposalDraft(payload)) {
           this.$emit('is-draft-modified', true);
@@ -510,4 +614,7 @@
 </script>
 
 <style lang="scss" scoped>
+  .timeline-subtitle {
+    max-width: 728px;
+  }
 </style>

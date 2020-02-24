@@ -3,6 +3,10 @@ import VueNotifications from 'vue-notifications';
 import i18n from '../i18n';
 
 const getUserFriendlyErrorMsg = (msg) => {
+  if (msg.includes('[vote] has not been modified')) {
+    return i18n.t('notifications.yourVoteHasNotChanged');
+  }
+
   // Scatter errors
   if (msg === 'signature_rejected') {
     return i18n.t('notifications.cancelledAction');

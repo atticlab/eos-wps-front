@@ -1,8 +1,15 @@
+import { mapGetters } from 'vuex';
+
 export default {
   data() {
     return {
       isProposalExistLoading: false,
     };
+  },
+  computed: {
+    ...mapGetters('userService', {
+      getAccountName: 'getAccountName',
+    }),
   },
   methods: {
     async $_isProposalExist(candidateName) {

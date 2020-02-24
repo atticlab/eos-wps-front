@@ -1,11 +1,56 @@
 <template>
   <div class="py-12">
     <v-container class="container--custom">
-      <h1 class="display-1 font-weight-regular">
-        {{ proposalsTitle }}
-      </h1>
+      <div class="d-flex justify-space-between flex-wrap">
+        <h1 class="fs-50 font-weight-bold">
+          {{ proposalsTitle }}
+        </h1>
 
-      <v-divider class="my-12" />
+        <div class="fs-50 font-weight-bold">
+          {{ proposalsNumber }}.
+        </div>
+      </div>
+
+      <v-divider class="v-divider--custom my-12" />
+
+      <div class="layout-toggler mb-10 text-right">
+        <v-btn
+          elevation="0"
+          fab
+          :class="{
+            'accent--text': !isList,
+            'primary--text': isList,
+            'white--text': true
+          }"
+          class="mr-4"
+          @click="isList = true"
+        >
+          <v-icon
+            class="fs-17"
+            dark
+          >
+            fas fa-list
+          </v-icon>
+        </v-btn>
+
+        <v-btn
+          elevation="0"
+          fab
+          :class="{
+            'accent--text': isList,
+            'primary--text': !isList,
+            'white--text': true
+          }"
+          @click="isList = false"
+        >
+          <v-icon
+            class="fs-17"
+            dark
+          >
+            fas fa-th-large
+          </v-icon>
+        </v-btn>
+      </div>
 
       <div
         v-if="isAllDataLoading || isDraftProposalByAccountNameLoading"
@@ -19,106 +64,204 @@
         />
       </div>
 
-      <template v-else-if="!isDrafts">
-        <!--        <v-row v-if="!isDrafts">-->
-        <!--          <v-col-->
-        <!--            sm="4"-->
-        <!--            md="3"-->
-        <!--          >-->
-        <!--            <div class="sort-by">-->
-        <!--              <v-select-->
-        <!--                v-model="selectedSortOption"-->
-        <!--                :items="sortByOptions"-->
-        <!--                label="Sort by"-->
-        <!--                outlined-->
-        <!--                dense-->
-        <!--                :menu-props="{ offsetY:true }"-->
-        <!--              />-->
-        <!--            </div>-->
-        <!--          </v-col>-->
-        <!--        </v-row>-->
-
-        <div>
-          <h2 class="font-weight-regular green--text mb-6">
-            {{ $t('common.passingProposals') }}
-          </h2>
-          <template v-if="passingProposals && passingProposals.length !== 0">
-            <ProposalItem
-              v-for="(proposal, index) in passingProposals"
-              :key="index"
-              :proposal-name="proposal.proposal_name"
-              :title="proposal.title"
-              :proposer="proposal.proposer"
-              :available-budget="proposal.available_budget"
-              :img="proposal.proposal_json.img"
-              :category="proposal.proposal_json.category"
-              :summary="proposal.proposal_json.summary"
-              :budget="proposal.total_budget"
-              :duration="proposal.duration"
-              :payments="proposal.payments"
-              :status-by-votes="proposal.statusByVotes"
-              :votes="proposal.total_net_votes"
-              :is-draft="proposal.isDraft"
-            />
-          </template>
-          <div v-else>
-            {{ $t('noDataTexts.nothingToDisplay') }}
-          </div>
-        </div>
-
-        <v-divider class="my-12" />
-
-        <div>
-          <h2 class="font-weight-regular red--text mb-6">
-            {{ $t('common.notPassingProposals') }}
-          </h2>
-          <template v-if="notPassingProposals && notPassingProposals.length !== 0">
-            <ProposalItem
-              v-for="(proposal, index) in notPassingProposals"
-              :key="index"
-              :proposal-name="proposal.proposal_name"
-              :title="proposal.title"
-              :proposer="proposal.proposer"
-              :available-budget="proposal.available_budget"
-              :img="proposal.proposal_json.img"
-              :category="proposal.proposal_json.category"
-              :summary="proposal.proposal_json.summary"
-              :budget="proposal.total_budget"
-              :duration="proposal.duration"
-              :payments="proposal.payments"
-              :status-by-votes="proposal.statusByVotes"
-              :votes="proposal.total_net_votes"
-              :is-draft="proposal.isDraft"
-            />
-          </template>
-          <div v-else>
-            {{ $t('noDataTexts.nothingToDisplay') }}
-          </div>
-        </div>
-      </template>
-
       <template v-else>
-        <template v-if="proposalsParsed && proposalsParsed.length !== 0">
-          <ProposalItem
-            v-for="(proposal, index) in proposalsParsed"
-            :key="index"
-            :proposal-name="proposal.proposal_name"
-            :title="proposal.title"
-            :proposer="proposal.proposer"
-            :available-budget="proposal.available_budget"
-            :img="proposal.proposal_json.img"
-            :category="proposal.proposal_json.category"
-            :summary="proposal.proposal_json.summary"
-            :budget="proposal.total_budget"
-            :duration="proposal.duration"
-            :payments="proposal.payments"
-            :status-by-votes="proposal.statusByVotes"
-            :votes="proposal.total_net_votes"
-            :is-draft="isDrafts"
-          />
+        <template v-if="!isDrafts">
+          <div class="mb-12">
+            <h2 class="fs-30 mb-12">
+              {{ $t('common.paidProposals') }}
+            </h2>
+
+            <v-row>
+              <template
+                v-if="proposalsFullInfo.paidProposals
+                  && proposalsFullInfo.paidProposals.length !== 0"
+              >
+                <v-col
+                  v-for="(proposal, index) in proposalsFullInfo.paidProposals"
+                  :key="index"
+                  cols="12"
+                  :md="isList ? 12 : 6"
+                >
+                  <ProposalItem
+                    :is-list="isList"
+                    :proposal-name="proposal.proposal_name"
+                    :title="proposal.title"
+                    :proposer="proposal.proposer"
+                    :available-budget="proposal.available_budget"
+                    :img="proposal.proposal_json.img || undefined"
+                    :category="proposal.proposal_json.category"
+                    :summary="proposal.proposal_json.summary"
+                    :budget="proposal.total_budget"
+                    :duration="proposal.duration"
+                    :payments="proposal.payouts"
+                    :status-by-votes="proposal.statusByVotes"
+                    :votes="proposal.total_net_votes"
+                    :is-draft="proposal.isDraft"
+                  />
+                </v-col>
+              </template>
+              <v-col v-else>
+                <span class="font-weight-bold body-2">
+                  {{ $t('noDataTexts.nothingToDisplay') }}
+                </span>
+              </v-col>
+            </v-row>
+          </div>
+
+          <div class="mb-12">
+            <h2 class="fs-30 mb-12">
+              {{ $t('common.unpaidProposals') }}
+            </h2>
+
+            <template
+              v-if="proposalsFullInfo.insufficientBudgetProposals
+                && proposalsFullInfo.insufficientBudgetProposals.length !== 0
+                || proposalsFullInfo.insufficientVotesProposals
+                && proposalsFullInfo.insufficientVotesProposals.length !== 0"
+            >
+              <div
+                v-if="proposalsFullInfo.insufficientBudgetProposals
+                  && proposalsFullInfo.insufficientBudgetProposals.length !== 0"
+                class="mb-6"
+              >
+                <h3 class="red--text fs-20 mb-6">
+                  {{ $t('proposalItem.insufficientBudget') }}
+                </h3>
+
+                <v-row>
+                  <v-col
+                    v-for="(proposal, index) in proposalsFullInfo.insufficientBudgetProposals"
+                    :key="index"
+                    cols="12"
+                    :md="isList ? 12 : 6"
+                  >
+                    <ProposalItem
+                      :is-list="isList"
+                      :proposal-name="proposal.proposal_name"
+                      :title="proposal.title"
+                      :proposer="proposal.proposer"
+                      :available-budget="proposal.available_budget"
+                      :img="proposal.proposal_json.img || undefined"
+                      :category="proposal.proposal_json.category"
+                      :summary="proposal.proposal_json.summary"
+                      :budget="proposal.total_budget"
+                      :duration="proposal.duration"
+                      :payments="proposal.payouts"
+                      :status-by-votes="proposal.statusByVotes"
+                      :votes="proposal.total_net_votes"
+                      :is-draft="proposal.isDraft"
+                    />
+                  </v-col>
+                </v-row>
+              </div>
+
+              <div
+                v-if="proposalsFullInfo.insufficientVotesProposals
+                  && proposalsFullInfo.insufficientVotesProposals.length !== 0"
+                class="mb-6"
+              >
+                <h3 class="red--text fs-20 mb-6">
+                  {{ $t('proposalItem.insufficientVotes') }}
+                </h3>
+
+                <v-row>
+                  <v-col
+                    v-for="(proposal, index) in proposalsFullInfo.insufficientVotesProposals"
+                    :key="index"
+                    cols="12"
+                    :md="isList ? 12 : 6"
+                  >
+                    <ProposalItem
+                      :is-list="isList"
+                      :proposal-name="proposal.proposal_name"
+                      :title="proposal.title"
+                      :proposer="proposal.proposer"
+                      :available-budget="proposal.available_budget"
+                      :img="proposal.proposal_json.img || undefined"
+                      :category="proposal.proposal_json.category"
+                      :summary="proposal.proposal_json.summary"
+                      :budget="proposal.total_budget"
+                      :duration="proposal.duration"
+                      :payments="proposal.payouts"
+                      :status-by-votes="proposal.statusByVotes"
+                      :votes="proposal.total_net_votes"
+                      :is-draft="proposal.isDraft"
+                    />
+                  </v-col>
+                </v-row>
+              </div>
+            </template>
+
+            <span
+              v-else
+              class="font-weight-bold body-2"
+            >
+              {{ $t('noDataTexts.nothingToDisplay') }}
+            </span>
+          </div>
         </template>
-        <div v-else>
-          {{ $t('noDataTexts.nothingToDisplay') }}
+
+        <template v-else>
+          <v-row class="mb-12">
+            <template v-if="proposalsParsed && proposalsParsed.length !== 0">
+              <v-col
+                v-for="(proposal, index) in proposalsParsed"
+                :key="index"
+                cols="12"
+                :md="isList ? 12 : 6"
+              >
+                <ProposalItem
+                  :is-list="isList"
+                  :proposal-name="proposal.proposal_name"
+                  :title="proposal.title"
+                  :proposer="proposal.proposer"
+                  :available-budget="proposal.available_budget"
+                  :img="proposal.proposal_json.img || undefined"
+                  :category="proposal.proposal_json.category"
+                  :summary="proposal.proposal_json.summary"
+                  :budget="proposal.total_budget"
+                  :duration="proposal.duration"
+                  :payments="proposal.payouts"
+                  :status-by-votes="proposal.statusByVotes"
+                  :votes="proposal.total_net_votes"
+                  :is-draft="isDrafts"
+                />
+              </v-col>
+            </template>
+            <v-col v-else>
+              <span class="font-weight-bold body-2">
+                {{ $t('noDataTexts.nothingToDisplay') }}
+              </span>
+            </v-col>
+          </v-row>
+        </template>
+
+        <div
+          v-if="getAccountNameWithAuthority"
+          class="create-proposal"
+        >
+          <div class="d-flex align-center justify-center flex-column">
+            <v-btn
+              fab
+              color="primary"
+              class="mb-4"
+              :elevation="0"
+              :large="true"
+              height="68"
+              width="68"
+              :to="{ name: 'Proposal editor' }"
+            >
+              <v-icon
+                class="fs-17"
+                dark
+              >
+                mdi-plus
+              </v-icon>
+            </v-btn>
+            <div class="font-weight-bold body-2">
+              {{ $t('common.createProposal') }}
+            </div>
+          </div>
         </div>
       </template>
     </v-container>
@@ -126,23 +269,15 @@
 </template>
 
 <script>
+  import { mapState, mapGetters, mapActions } from 'vuex';
   import ProposalItem from '@/components/ProposalItem.vue';
-  import getActiveProposals from '@/mixins/getActiveProposals';
-  import getDraftsByAccountName from '@/mixins/getDraftsByAccountName';
-  import getVotes from '@/mixins/getVotes';
-  import getSettings from '@/mixins/getSettings';
+  import ActionType from '@/store/constants';
 
   export default {
     name: 'Proposals',
     components: {
       ProposalItem,
     },
-    mixins: [
-      getActiveProposals,
-      getDraftsByAccountName,
-      getVotes,
-      getSettings,
-    ],
     data() {
       return {
         sortByOptions: [
@@ -152,9 +287,22 @@
         selectedSortOption: null,
         // Active or drafts
         proposalsType: '',
+        isList: true,
       };
     },
     computed: {
+      ...mapState({
+        proposals: state => state.userService.proposals,
+        draftProposals: state => state.userService.draftProposals,
+        isActiveProposalsLoading: state => state.userService.isActiveProposalsLoading,
+        isSettingsLoading: state => state.userService.isSettingsLoading,
+        proposalsSettings: state => state.userService.proposalsSettings,
+        isDraftProposalByAccountNameLoading: state => state
+          .userService.isDraftProposalByAccountNameLoading,
+      }),
+      ...mapGetters('userService', {
+        getAccountNameWithAuthority: 'getAccountNameWithAuthority',
+      }),
       isDrafts() {
         return this.$route.path.includes('drafts');
       },
@@ -164,69 +312,56 @@
                : this.$t('common.drafts');
       },
       proposalsParsed() {
-        if (!this.proposals || this.proposals.length === 0) return [];
+        if ((!this.proposals || this.proposals.length === 0)
+        && (!this.draftProposals || this.draftProposals.length === 0)) return [];
 
-        const proposalsClone = this.$helpers.copyDeep(this.proposals);
+        let proposalsClone;
+        if (this.isDrafts) {
+          proposalsClone = this.$helpers.copyDeep(this.draftProposals);
+        } else {
+          proposalsClone = this.$helpers.copyDeep(this.proposals);
+        }
+
         return proposalsClone
           .map(
             proposal => this.$helpers.parseProposal(proposal),
           );
       },
+      proposalsNumber() {
+        if (!this.proposalsParsed || this.proposalsParsed.length === 0) return 0;
+
+        const numOfProposals = this.proposalsParsed.length;
+
+        return numOfProposals < 10 && numOfProposals > 0
+               ? `0${numOfProposals}`
+               : `${numOfProposals}`;
+      },
       proposalsFullInfo() {
         if (!this.proposalsParsed || this.proposalsParsed.length === 0
-          // || !this.proposalsVotes || this.proposalsVotes.length === 0
           || !this.proposalsSettings || Object.keys(this.proposalsSettings).length === 0
           || this.isDrafts) return [];
 
-        const proposalsParsedCopy = this.$helpers.copyDeep(this.proposalsParsed);
+        // Add statuses by votes to proposals
+        const proposalsWithStatusesByVotes = this.proposalsParsed.map(proposal => ({
+          ...proposal,
+          ...{
+            statusByVotes: this.defineStatus(
+                proposal.total_net_votes,
+                this.proposalsSettings.vote_margin,
+                Boolean(proposal.eligible),
+              ),
+          },
+        }));
 
-        // Add total_net_votes to proposals
-        // let proposalWithVotes = [];
-        // this.proposalsVotes.forEach((vote) => {
-        //   proposalWithVotes = proposalsParsedCopy
-        //     .map(proposal => this.$helpers.mergeVoteWithProposal(
-        //     vote,
-        //     proposal,
-        //   ));
-        // });
-
-        // Add statuses to proposals
-        const proposalsWithStatuses = proposalsParsedCopy.map((proposal) => {
-          // eslint-disable-next-line no-param-reassign
-          proposal.statusByVotes = this.defineStatus(
-            proposal.total_net_votes,
-            this.proposalsSettings.vote_margin,
-          );
-          return proposal;
-        });
-
-        // Sort proposals
-        // proposalsWithStatuses.sort((proposal1, proposal2) => {
-        //   return new Date(proposal1.created) - new Date(proposal2.created);
-        // });
-        proposalsWithStatuses
-          .sort((proposal1, proposal2) => proposal2.total_net_votes - proposal1.total_net_votes);
+        const proposalsOrdered = this.restructureProposalsToObject(proposalsWithStatusesByVotes);
 
         return this.defineAvailableBudget(
-          proposalsWithStatuses,
-          this.proposalsSettings.max_monthly_budget,
-        );
-      },
-      passingProposals() {
-        if (!this.proposalsFullInfo && this.proposalsFullInfo.length === 0) return [];
-
-        return this.proposalsFullInfo.filter(proposal => proposal.statusByVotes
-          === this.$t('proposalStatuses.passing'));
-      },
-      notPassingProposals() {
-        if (!this.proposalsFullInfo && this.proposalsFullInfo.length === 0) return [];
-
-        return this.proposalsFullInfo.filter(proposal => proposal.statusByVotes
-          === this.$t('proposalStatuses.notPassing'));
+            proposalsOrdered,
+            this.proposalsSettings.max_monthly_budget,
+          );
       },
       isAllDataLoading() {
         return this.isActiveProposalsLoading
-          // && this.isVotesLoading
           && this.isSettingsLoading;
       },
     },
@@ -237,46 +372,116 @@
           // Request either active proposals or drafts
           this.proposalsType = this.getLastPartOfRoute(val.path);
           if (this.proposalsType === 'active') {
-            // this.$_getVotes();
-            this.$_getSettings();
-            this.$_getActiveProposals();
+            this[ActionType.REQUEST_SETTINGS]();
+            this[ActionType.REQUEST_PROPOSALS]();
           } else {
-            this.$_getDraftProposalByAccountName();
+            this[ActionType.REQUEST_DRAFTS_BY_ACCOUNT_NAME]();
           }
         },
       },
     },
     methods: {
+      ...mapActions('userService', [
+        ActionType.REQUEST_PROPOSALS,
+        ActionType.REQUEST_SETTINGS,
+        ActionType.REQUEST_DRAFTS_BY_ACCOUNT_NAME,
+      ]),
       getLastPartOfRoute(path) {
         const pathItems = path.split('/');
         return pathItems[pathItems.length - 1];
       },
-      defineStatus(totalNetVotes, voteMargin) {
-        return totalNetVotes >= voteMargin
-               ? this.$t('proposalStatuses.passing')
-               : this.$t('proposalStatuses.notPassing');
+      defineStatus(totalNetVotes, voteMargin, isEligible) {
+        return totalNetVotes >= voteMargin && isEligible
+               ? this.$t('proposalStatuses.paid')
+               : this.$t('proposalStatuses.unpaid');
+      },
+      sortProposalsByVotes(proposals) {
+        return proposals
+          .sort((proposal1, proposal2) => proposal2.total_net_votes - proposal1.total_net_votes);
+      },
+      restructureProposalsToObject(proposals) {
+        const paidProposals = this.sortProposalsByVotes(
+          proposals
+            .filter(proposal => proposal.statusByVotes
+              === this.$t('proposalStatuses.paid')),
+        );
+
+        const unpaidProposals = proposals
+          .filter(proposal => proposal.statusByVotes
+            === this.$t('proposalStatuses.unpaid'));
+
+        const insufficientBudgetProposals = this.sortProposalsByVotes(
+          unpaidProposals
+            .filter(proposal => Boolean(proposal.eligible) === false && proposal.total_net_votes
+              >= this.proposalsSettings.vote_margin),
+        );
+
+        const insufficientVotesProposals = this.sortProposalsByVotes(
+          unpaidProposals
+            .filter(proposal => proposal.total_net_votes < this.proposalsSettings.vote_margin),
+        );
+
+        return {
+          ...(paidProposals && paidProposals.length !== 0)
+          && { paidProposals },
+
+          ...(insufficientBudgetProposals && insufficientBudgetProposals.length !== 0)
+          && { insufficientBudgetProposals },
+
+          ...(insufficientVotesProposals && insufficientVotesProposals.length !== 0)
+          && { insufficientVotesProposals },
+        };
       },
       defineAvailableBudget(proposals, maxMonthlyBudget) {
-        let acc;
         const proposalsCopy = this.$helpers.copyDeep(proposals);
-        return proposalsCopy.map((proposal, index) => {
-          if (index === 0) {
-            acc = +maxMonthlyBudget.split(' ')[0];
-            // eslint-disable-next-line no-param-reassign
-            proposal.available_budget = `${acc} EOS`;
-          } else {
-            acc -= proposalsCopy[index - 1].total_budget.split(' ')[0];
-            // eslint-disable-next-line no-param-reassign
-            proposal.available_budget = `${acc} EOS`;
-          }
+        let budget;
+        let prevProposalTotalBudget;
 
-          return proposal;
-        });
+        return Object.keys(proposalsCopy).reduce((acc, proposalsType, typeIndex) => {
+          proposalsCopy[proposalsType].forEach((proposal, index) => {
+            if (typeIndex === 0 && index === 0) {
+              budget = +maxMonthlyBudget.split(' ')[0];
+              // eslint-disable-next-line prefer-destructuring
+              prevProposalTotalBudget = proposal.total_budget.split(' ')[0];
+            } else {
+              budget -= +prevProposalTotalBudget;
+              // eslint-disable-next-line prefer-destructuring
+              prevProposalTotalBudget = proposal.total_budget.split(' ')[0];
+            }
+
+            // eslint-disable-next-line no-param-reassign
+            proposal.available_budget = `${budget.toFixed(this.$constants.EOS_MAX_DIGITS)} EOS`;
+            if (proposalsType in acc) {
+              acc[proposalsType].push(proposal);
+            } else {
+              // eslint-disable-next-line no-param-reassign
+              acc = { ...acc, ...{ [proposalsType]: [proposal] } };
+            }
+            return acc;
+          });
+          return acc;
+        }, {});
       },
     },
   };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+  @import "~@/assets/scss/variables";
 
+  .create-proposal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 235px;
+
+    background-image:
+      radial-gradient(circle at 2px, #4a4a4a 1px, rgba(255,255,255,0) 1px),
+      radial-gradient(circle at 4.5px, #4a4a4a 1px, rgba(255,255,255,0) 1px),
+      radial-gradient(circle at 2px, #4a4a4a 1px, rgba(255,255,255,0) 1px),
+      radial-gradient(circle at 4.5px, #4a4a4a 1px, rgba(255,255,255,0) 1px);
+    background-position: top, right, bottom, left;
+    background-size: 15px 5px, 5px 15px;
+    background-repeat: repeat-x, repeat-y;
+  }
 </style>

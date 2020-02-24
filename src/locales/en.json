@@ -4,6 +4,7 @@
     "signInWithScatter": "Sign in with Scatter",
     "signOut": "Sign out",
     "createProposal": "Create proposal",
+    "createProposalOnMainnet": "Create proposal on EOS mainnet",
     "activeProposals": "Active proposals",
     "drafts": "Drafts",
     "requested": "Requested",
@@ -24,15 +25,20 @@
     "start": "Start",
     "end": "End",
     "months": "month(s)",
-    "passingProposals": "Passing proposals",
-    "notPassingProposals": "Not passing proposals",
-    "paymentsDuration": "Duration of payments"
+    "paidProposals": "Paid proposals",
+    "unpaidProposals": "Unpaid proposals",
+    "paymentsDuration": "Duration of payments",
+    "yes": "Yes",
+    "no": "No",
+    "about": "About",
+    "overview": "Overview"
   },
   "proposalItem": {
     "availableBudget": "Available budget",
     "status": "Status",
     "passing": "Passing",
-    "insufficientVotes": "Insufficient votes"
+    "insufficientVotes": "Insufficient votes",
+    "insufficientBudget": "Insufficient budget"
   },
   "proposalPage": {
     "proposedBy": "Proposed by",
@@ -41,7 +47,6 @@
     "category": "Category",
     "created": "Created",
     "hash": "Hash",
-    "overview": "Overview",
     "totalRequested": "Total requested",
     "monthlyRequested": "Monthly requested",
     "total": "Total",
@@ -52,10 +57,37 @@
     "downvote": "Downvote",
     "abstain": "Abstain",
     "eosConversionRate": "EOS conversion rate",
-    "activate": "Activate proposal",
+    "activateProposal": "Activate proposal",
+    "activate": "Activate",
+    "edit": "Edit",
     "refund": "Refund",
     "deleteProposal": "Delete proposal",
-    "payFee": "Pay deposit fee (100 EOS)"
+    "payFee": "Pay deposit fee (100 EOS)",
+    "payDepositFee": "Pay deposit fee",
+    "payFeeShort": "Pay fee",
+    "videoLink": "Video link",
+    "video": "Video",
+    "voters": "Voters",
+    "voter": "Voter",
+    "vote": "Vote",
+    "activateFor": "Activate for {votingPeriod}",
+    "next": "next",
+    "current": "current",
+    "beforeActivationWarning1": "Before activating your proposal make sure the information you have put is accurate and up-to-date.",
+    "beforeActivationWarning2": " In case you are not activating right after creating a draft, you might want to review your budget\n                              since the EOS price could have changed during this time.",
+    "sureToActivate": "Are you sure you want to activate your proposal for the current voting period?",
+    "currentVotingPeriodEndsIn": "The current voting period ends in {daysTillEnd} days",
+    "proposalInfo": "Proposal info",
+    "proposalActivation": "Proposal activation",
+    "payFeeDesc": "In order to activate your proposal and make it eligible for voting you have to pay a deposit fee (100 EOS).",
+    "activateDesc": "Note, clicking this button pushes the proposal onchain. This action is irreversible.",
+    "refundDesc": "You can get your deposit fee back if you don't want to make your proposal public. Note, this action is only possible if you haven't activated the proposal.",
+    "editDesc": "You can edit a proposal that hasn't been activated yet.",
+    "deleteDesc": "This action removes a proposal from drafts and you won't be able to access it again.",
+    "voteFor": "Vote for proposal",
+    "abstainIn": "Abstain in voting",
+    "voteAgainst": "Vote against proposal",
+    "published": "Published"
   },
   "proposalCreationPage": {
     "proposalCreation": "Proposal creation",
@@ -102,7 +134,95 @@
     "editProposal": "Edit proposal",
     "removeProposal": "Remove proposal",
     "chooseDuration": "Choose a duration of payments",
-    "budgetEos": "Budget is allocated and paid in EOS!"
+    "budgetEos": "Budget is allocated and paid in EOS!",
+    "totalEosBudget": "Total EOS budget",
+    "addTotalBudget": "Add your total budget in EOS"
+  },
+  "about": {
+    "wpsFull": "EOS Worker Proposal System",
+    "overviewP1": "The EOS Worker Proposal System (WPS) is a funding mechanism for the EOS Public Network, enabling developers and other value creators to seek funding from the EOS blockchain for their projects outside of EOS block rewards. It’s modeled closely after the {dashNexus} which has been successfully funding projects benefiting the DASH ecosystem for over 5 years.",
+    "dashProposalSystem": "DASH Budget Proposal System",
+    "overviewP2": "This decentralized voting & distribution mechanism is governed by the rules coded within the WPS smart contracts, which allows any EOS account to propose a budget for their specific project and Block Producers elected by token holders vote on them. Each proposal that passes is paid directly from the {eosio} account to the EOS account that proposed the work.",
+    "votingPeriodsAndFunding": "Voting periods and funding",
+    "votingPeriodsAndFundingP1": "A maximum budget of {maxMonthlyBudget} will be made available for each {votingPeriod}. The period budget and duration are settings within the WPS smart contract that can be adjusted by MSIG approval from 15 of the top 21 Block Producers.",
+    "votingPeriod": "{days}-day voting period",
+    "votingPeriodsAndFundingP2": "{eosio} is funded from the fees accumulated in the eosio.names and eosio.ramfee accounts prior to the deployment of REX. Prior to REX, these accounts accumulated roughly 3.5 million EOS from EOS premium name auctions and RAM purchase fees. An MSIG approval from 15 of the top 21 Block Producers is required to move those funds to eosio.wps. For now, MSIG proposals will be issued every 90 days to fund eosio.wps with enough EOS to cover 3 periods (150,000 EOS).",
+    "votingPeriodsAndFundingP3": "Any on-going fees being collected by `eosio.names` & `eosio.ramfee` will continue to flow to REX holders and shall not be transferred to `eosio.wps`",
+    "passingProposals": "Passing proposals",
+    "passingProposalsP": "To pass a proposal, it must meet the following {proposalThreshold} at the close of the voting period",
+    "proposalThresholdSmall": "proposal threshold",
+    "proposalThreshold": "Proposal threshold",
+    "proposalThresholdP1": "A minimum of {voteMargin} net positive votes are required from eligible voters.",
+    "proposalThresholdP2": "The cumulative budget of all passing proposals cannot exceed the allocated period budget of {maxMonthlyBudget}.",
+    "proposalThresholdP3": "a) If the cumulative budget of proposals that meet the voting threshold exceeds the allocated period budget, proposals will be awarded their requested budgets in order of voting rank only until the maximum budget is met.",
+    "eligibleVoter": "Eligible voter",
+    "eligibleVoterP1": "Any Block Producer who meets the 100-EOS-per-day vote pay reward threshold on the EOS Public Network within the last 24 hours is considered an {eligibleVoter}. All eligible voters have an equal vote weight and can cast a plus 1 (+1),  minus 1 (-1), or abstain (0) vote for each proposal.",
+    "eligibleVoterSmall": "eligible voter",
+    "eligibleVoterP2": "The proposal threshold, eligible voter requirements, and vote weights are all settings within the WPS smart contract that can be adjusted with an MSIG approval from 15 of the top 21 Block producers.",
+    "requirements":"Proposer requirements",
+    "requirementsP":"Any account on the EOS Public Network can submit a draft proposal. To limit spam, a non-refundable fee of {depositFee} must be paid to eosio.wps to publish a proposal.",
+    "guide": "Quick reference guide",
+    "periodBudget": "Period budget",
+    "periodDuration": "Period duration",
+    "proposalFee": "Proposal fee",
+    "passingThreshold": "Passing threshold",
+    "votesAtClose": "{votes} votes at close of period",
+    "eligibleVoterThreshold": "BPs who have met 100 EOS/day reward threshold for a minimum of 24 hours at the close of each period",
+    "voteWeight": "Vote weight",
+    "voteWeightP": "All eligible BPs have an equal vote weight and can cast a plus 1 (+1),  minus 1 (-1), or abstain (0) vote for each proposal",
+    "fundSource": "Fund source",
+    "fundSourceP": "Legacy (pre-REX) eosio.names and eosio.ramfee accumulated administrative fees",
+    "faq": "Frequently Asked Questions",
+    "faqs": {
+      "1": {
+        "question": "Who can request funds through the EOS Worker Proposal System?",
+        "answer": "Anyone with an EOS account who pays the {depositFee} proposal fee."
+      },
+      "2": {
+        "question": "Who can participate in voting on EOS WPS proposals?",
+        "answer": "Block Producers on the EOS Public Network who have met the 100 EOS/day reward threshold for at least 24 hours."
+      },
+      "3": {
+        "question": "Why is there a {depositFee} fee to submit a proposal?",
+        "answer": "To limit spam so that Block Producers can focus on reviewing only serious proposals."
+      },
+      "4": {
+        "question": "Where does the {depositFee} fee go?",
+        "answer": "The fee goes into the eosio.wps account to be redistributed to passing proposals."
+      },
+      "5": {
+        "question": "Is the {depositFee} fee ever refunded?",
+        "answer": "No, the fee is non-refundable."
+      },
+      "6": {
+        "question": "Can my proposal be eligible for the next period if it does not meet the threshold in during the voting period it was published?",
+        "answer": "No, if your proposal doesn’t pass in the period it was published, it is closed and not eligible for voting in the next period. If you’re publishing a proposal near the end of a period, consider waiting to publish it until the start of the next period."
+      },
+      "7": {
+        "question": "When will funds for passed proposals be transferred to the proposer?",
+        "answer": "On closing of the voting period, EOS will be automatically transferred to proposers whose proposals have passed."
+      },
+      "8": {
+        "question": "Can I request to be paid in Fiat or something other than EOS?",
+        "answer": "No, budgets will only be paid in EOS."
+      },
+      "9": {
+        "question": "Can I request payment in milestones, or does it need to be a lump sum?",
+        "answer": "Yes, you can request to split your payment across a maximum of 6 30-day periods, coinciding with the voting periods. But payment is subject to continued voting for each period. Votes for multi-period proposals roll over to subsequent voting periods. Payment will only be transferred during periods where the proposal meets the proposal threshold. If threshold is not met during a period, the proposal will remain active for the next voting periods."
+      },
+      "10": {
+        "question": "Do I need to pay a fee for each voting period for my multi-period proposal?",
+        "answer": "No, the {depositFee} fee paid to publish the proposal covers you for up to 6 periods."
+      },
+      "11": {
+        "question": "Can I adjust my proposal after it has been published?",
+        "answer": "No, a proposal can’t be changed after it’s been published."
+      },
+      "12": {
+        "question": "What if the EOS price changes drastically? Can I edit my budget in that case?",
+        "answer": "No, a proposal can’t be changed after it’s been published."
+      }
+    }
   },
   "notFoundPage": {
     "notFound": "Not found",
@@ -130,6 +250,7 @@
     "fillFields": "Fill all the fields correctly",
     "durationErr": "Duration must be at least 1 month and at most 6 months",
     "budgetErr": "Monthly budget must be at least 100 EOS",
+    "budgetErrMax": "Monthly budget cannot be greater than {maxMonthlyBudget}",
     "overviewEmpty": "Overview can't be empty",
     "milestonesEmpty": "Add at least one timeline item",
     "proposalNameExists": "A proposal with the same name already exists! Try another one",
@@ -146,36 +267,17 @@
     "sentVote": "Vote has been sent",
     "wrongVoteType": "Wrong vote type",
     "mustLogin": "You should log in",
-
-    "txNetUsage": "Transaction exceeded the current network usage limit imposed on the transaction",
-    "blockNetUsage": "Transaction network usage is too much for the remaining allowable usage of the current block",
-    "txCpuExceeded": "Transaction exceeded the current CPU usage limit imposed on the transaction",
-    "blockCpuExceeded": "Transaction CPU usage is too much for the remaining allowable usage of the current block",
-    "expiredTx": "Transaction is expired",
-    "deadlineException": "Transaction took too long",
-    "overdrawnBalance": "Balance is overdrawn",
-    "ramUsage": "Account using more than allotted RAM usage",
-    "txDuplicate": "Duplicate signature included",
-    "greyListNetUsage": "Transaction exceeded the current greylisted account network usage limit",
-    "greyListCpuUsage": "Transaction exceeded the current greylisted account CPU usage limit",
-    "unsatisfiedAuthorization": "Provided keys, permissions, and delays do not satisfy declared authorizations",
-    "missingAuth": "Missing required authority",
-    "irrelevantAuth": "Irrelevant authority included",
-    "insufficientDelay": "Insufficient delay",
-    "invalidPermission": "Invalid permission",
-
-
-    "cpuExceeded": "Exceeded the current CPU",
-    "ramExceeded": "RAM usage is exceeded"
+    "mustFinishTheStep": "You must finish the current step",
+    "yourVoteHasNotChanged": "Your vote has not changed"
   },
   "proposalStatuses": {
-    "passing": "Passing",
-    "notPassing": "Not passing"
+    "paid": "Paid",
+    "unpaid": "Unpaid"
   },
   "noDataTexts": {
     "noData": "No data",
     "noOverview": "No overview is provided",
-    "noDesc": "No description is provided",
+    "noSummary": "No summary is provided",
     "noBudgetItems": "No budget details are provided",
     "noTimeline": "No timeline milestones are provided",
     "noProposer": "Proposer is unknown",
@@ -183,6 +285,14 @@
     "noCategory": "No category is provided",
     "noMonthlyBudget": "No monthly budget",
     "noTotalBudget": "No total budget",
-    "nothingToDisplay": "Nothing to display yet"
+    "nothingToDisplay": "Nothing to display yet",
+    "noVideo": "No video",
+    "noVoters": "No voters",
+    "noDate": "No date"
+  },
+  "footer": {
+    "visitRepos": "You can visit two of the given GitHub repos to leave your feedback:",
+    "smartContractRepo": "Smart contract repo",
+    "uiRepo": "UI repo"
   }
 }

@@ -3,13 +3,12 @@
     <template
       v-if="milestonesRaw !== $t('noDataTexts.noTimeline')"
     >
-      <v-row>
+      <v-row class="mt-6">
         <v-col
           cols="12"
-          lg="4"
-          class="border-right-divider"
+          sm="4"
         >
-          <h4 class="mb-6">
+          <h4 class="accent--text text-uppercase mb-8 font-weight-semi-bold body-2">
             {{ $t('proposalPage.scheduled') }}
           </h4>
           <TimelineItem
@@ -22,10 +21,9 @@
         </v-col>
         <v-col
           cols="12"
-          lg="4"
-          class="border-right-divider"
+          sm="4"
         >
-          <h4 class="mb-6">
+          <h4 class="accent--text text-uppercase mb-8 font-weight-semi-bold">
             {{ $t('proposalPage.inProgress') }}
           </h4>
           <TimelineItem
@@ -38,9 +36,9 @@
         </v-col>
         <v-col
           cols="12"
-          lg="4"
+          sm="4"
         >
-          <h4 class="mb-6">
+          <h4 class="accent--text text-uppercase mb-8 font-weight-semi-bold">
             {{ $t('proposalPage.completed') }}
           </h4>
           <TimelineItem
@@ -53,12 +51,11 @@
         </v-col>
       </v-row>
     </template>
-    <div
-      v-else
-      class="text-center"
-    >
-      {{ milestonesRaw }}
-    </div>
+    <v-row v-else>
+      <v-col>
+        {{ milestonesRaw }}
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

@@ -1,207 +1,538 @@
 <template>
   <div class="py-12 proposal">
     <v-container class="container--custom">
-      <div class="mb-12">
-        <h1 class="display-1 font-weight-regular mb-3">
-          {{ proposalFullInfo.title }}
-        </h1>
-        <p class="font-weight-bold body-2 mb-0">
-          <span class="text-uppercase">
-            {{ $t('proposalPage.proposedBy') }}:
-          </span>
-          <span class="cyan--darken-2--bold">
-            {{ proposalFullInfo.proposer }}
-          </span>
-        </p>
+      <div
+        v-if="isDataLoading"
+        class="d-flex justify-center"
+      >
+        <v-progress-circular
+          :size="70"
+          :width="7"
+          color="primary"
+          indeterminate
+        />
       </div>
 
-      <v-row class="mb-12">
-        <v-col
-          cols="12"
-          md="7"
-          lg="8"
+      <template v-else>
+        <v-row>
+          <v-col
+            cols="12"
+            :lg="getAccountNameWithAuthority ? 7 : 12"
+            class="d-flex"
+          >
+            <v-card
+              class="flex-fill"
+              flat
+            >
+              <v-container
+                fluid
+                class="secondary--text font-weight-medium"
+              >
+                <div class="text-uppercase font-weight-semi-bold accent--text body-2 mt-2">
+                  {{ $t('proposalPage.proposalInfo') }}
+                </div>
+
+                <h1 class="fs-40 secondary--text mb-2">
+                  {{ $_proposalParsed.title }}
+                </h1>
+
+                <v-row>
+                  <v-col
+                    cols="12"
+                    sm="4"
+                  >
+                    <div>
+                      <div class="text-uppercase accent--text font-weight-semi-bold body-2 mb-1">
+                        {{ $t('proposalPage.proposedBy') }}
+                      </div>
+                      <div class="font-weight-semi-bold fs-20">
+                        {{ $_proposalParsed.proposer }}
+                      </div>
+                    </div>
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    sm="4"
+                  >
+                    <div>
+                      <div class="text-uppercase accent--text font-weight-semi-bold body-2 mb-1">
+                        {{ $t('proposalPage.category') }}
+                      </div>
+                      <div
+                        v-if="$_proposalParsed.proposal_json
+                          && $_proposalParsed.proposal_json.category"
+                        class="primary--text font-weight-semi-bold text-capitalize fs-20"
+                      >
+                        {{ $_proposalParsed.proposal_json.category }}
+                      </div>
+                    </div>
+                  </v-col>
+                  <v-col
+                    v-if="!isDraft"
+                    cols="12"
+                    sm="4"
+                  >
+                    <div>
+                      <div class="text-uppercase accent--text font-weight-semi-bold body-2 mb-1">
+                        {{ $t('common.payments') }}
+                      </div>
+                      <div class="primary--text font-weight-semi-bold fs-20 text-capitalize">
+                        {{ $_proposalParsed.payouts }}
+                      </div>
+                    </div>
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    sm="4"
+                  >
+                    <div>
+                      <div class="text-uppercase accent--text font-weight-semi-bold body-2 mb-1">
+                        {{ $t('common.requested') }}
+                      </div>
+                      <div class="font-weight-semi-bold fs-20">
+                        {{ $_proposalParsed.total_budget }}
+                      </div>
+                    </div>
+                  </v-col>
+                  <v-col
+                    v-if="!isDraft"
+                    cols="12"
+                    sm="4"
+                  >
+                    <div>
+                      <div class="text-uppercase accent--text font-weight-semi-bold body-2 mb-1">
+                        {{ $t('common.votes') }}
+                      </div>
+                      <div
+                        :class="{'font-weight-semi-bold fs-20': true,
+                                 'primary--text': $_proposalParsed.total_net_votes > 0,
+                                 'error--text': $_proposalParsed.total_net_votes < 0}"
+                      >
+                        {{ $_proposalParsed.total_net_votes }}
+                      </div>
+                    </div>
+                  </v-col>
+                  <v-col
+                    v-if="!isDraft"
+                    cols="12"
+                    sm="4"
+                  >
+                    <div>
+                      <div class="text-uppercase accent--text font-weight-semi-bold body-2 mb-1">
+                        {{ $t('proposalPage.published') }}
+                      </div>
+                      <div class="font-weight-semi-bold fs-20">
+                        {{ $moment($_proposalParsed.created).format($constants.DATE_FORMAT) }}
+                      </div>
+                    </div>
+                  </v-col>
+                </v-row>
+
+                <p
+                  v-if="$_proposalParsed.proposal_json
+                    && $_proposalParsed.proposal_json.summary"
+                  class="my-4 body-2 font-weight-medium"
+                >
+                  {{ $_proposalParsed.proposal_json.summary }}
+                </p>
+
+                <p
+                  v-if="$_proposalParsed.proposal_json
+                    && $_proposalParsed.proposal_json.video"
+                  class="mt-8 mb-4 body-2 font-weight-medium"
+                >
+                  <span>
+                    {{ $t('proposalPage.video') }}:
+                  </span>
+                  <a
+                    :href="$_proposalParsed.proposal_json.video"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {{ $_proposalParsed.proposal_json.video }}
+                  </a>
+                </p>
+              </v-container>
+            </v-card>
+          </v-col>
+
+          <v-col
+            v-if="getAccountNameWithAuthority"
+            cols="12"
+            class="d-flex"
+            lg="5"
+          >
+            <v-card
+              class="flex-fill"
+              flat
+            >
+              <v-container
+                fluid
+                class="secondary--text font-weight-semi-bold"
+              >
+                <div class="text-uppercase font-weight-medium accent--text fs-14 mb-4 mt-2">
+                  {{ $t('common.actions') }}
+                </div>
+
+                <template v-if="isDraft">
+                  <div
+                    v-if="!isMinDepositPaid"
+                    class="d-flex justify-space-between align-center flex-wrap mb-4"
+                  >
+                    <div class="actions-left">
+                      <div class="font-weight-semi-bold text-uppercase mb-1">
+                        {{ $t('proposalPage.payDepositFee') }}
+                      </div>
+                      <div class="accent--text fs-12">
+                        {{ $t('proposalPage.payFeeDesc') }}
+                      </div>
+                    </div>
+
+                    <div class="actions-btn-container">
+                      <v-btn
+                        block
+                        :elevation="0"
+                        class="btn--alt"
+                        :disabled="isSendDepositLoading"
+                        :ripple="false"
+                        @click="transfer"
+                      >
+                        {{ $t('proposalPage.payFeeShort') }}
+                      </v-btn>
+                    </div>
+                  </div>
+                  <div
+                    v-if="isMinDepositPaid"
+                    class="d-flex justify-space-between align-center flex-wrap mb-4"
+                  >
+                    <div class="actions-left">
+                      <div class="font-weight-semi-bold text-uppercase mb-1">
+                        {{ $t('proposalPage.activateProposal') }}
+                      </div>
+                      <div class="accent--text fs-12">
+                        {{ $t('proposalPage.activateDesc') }}
+                      </div>
+                    </div>
+
+                    <div class="actions-btn-container">
+                      <v-dialog
+                        v-model="activationDialog"
+                        width="600px"
+                      >
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                            block
+                            :elevation="0"
+                            class="btn--alt"
+                            :ripple="false"
+                            v-on="on"
+                          >
+                            {{ $t('proposalPage.activate') }}
+                          </v-btn>
+                        </template>
+                        <v-card>
+                          <v-card-title>
+                            <span class="font-weight-bold">
+                              {{ $t('proposalPage.proposalActivation') }}
+                            </span>
+                          </v-card-title>
+                          <v-card-text>
+                            <p>
+                              {{ $t('proposalPage.beforeActivationWarning1') }}
+                            </p>
+                            <p>
+                              {{ $t('proposalPage.beforeActivationWarning2') }}
+                            </p>
+
+                            <v-divider class="v-divider--custom my-6" />
+
+                            <p class="font-weight-medium">
+                              {{ $t('proposalPage.sureToActivate') }}
+                            </p>
+                            <i18n
+                              path="proposalPage.currentVotingPeriodEndsIn"
+                              tag="p"
+                              class="red--text font-weight-medium mb-0"
+                            >
+                              <template #daysTillEnd>
+                                {{ daysBeforeCurrentVotingPeriodExpires }}
+                              </template>
+                            </i18n>
+                          </v-card-text>
+                          <v-card-actions class="flex-wrap">
+                            <v-spacer />
+
+                            <div class="mr-4">
+                              <v-btn
+                                :elevation="0"
+                                class="text-transform-none mr-2 mb-2"
+                                color="primary"
+                                :disabled="isActivateProposalLoading"
+                                @click="activateProposal(false)"
+                              >
+                                <i18n path="proposalPage.activateFor">
+                                  <template #votingPeriod>
+                                    <span class="yellow--text">
+                                      {{ $t('proposalPage.current') }}
+                                    </span>
+                                  </template>
+                                </i18n>
+                              </v-btn>
+                              <v-btn
+                                :elevation="0"
+                                class="text-transform-none ml-0 mb-2"
+                                color="primary"
+                                :disabled="isActivateProposalLoading"
+                                @click="activateProposal(true)"
+                              >
+                                <i18n path="proposalPage.activateFor">
+                                  <template #votingPeriod>
+                                    <span class="yellow--text">
+                                      {{ $t('proposalPage.next') }}
+                                    </span>
+                                  </template>
+                                </i18n>
+                              </v-btn>
+                            </div>
+                          </v-card-actions>
+                        </v-card>
+                      </v-dialog>
+                    </div>
+                  </div>
+                  <div
+                    v-if="isMinDepositPaid"
+                    class="d-flex justify-space-between align-center flex-wrap mb-4"
+                  >
+                    <div class="actions-left">
+                      <div class="font-weight-semi-bold text-uppercase mb-1">
+                        {{ $t('proposalPage.refund') }}
+                      </div>
+                      <div class="accent--text fs-12">
+                        {{ $t('proposalPage.refundDesc') }}
+                      </div>
+                    </div>
+
+                    <div class="actions-btn-container">
+                      <v-btn
+                        block
+                        :elevation="0"
+                        class="btn--alt"
+                        :disabled="isRefundLoading"
+                        :ripple="false"
+                        @click="refund"
+                      >
+                        {{ $t('proposalPage.refund') }}
+                      </v-btn>
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-space-between align-center flex-wrap mb-4">
+                    <div class="actions-left">
+                      <div class="font-weight-semi-bold text-uppercase mb-1">
+                        {{ $t('proposalCreationPage.editProposal') }}
+                      </div>
+                      <div class="accent--text fs-12">
+                        {{ $t('proposalPage.editDesc') }}
+                      </div>
+                    </div>
+
+                    <div class="actions-btn-container">
+                      <v-btn
+                        block
+                        :elevation="0"
+                        class="btn--alt"
+                        :ripple="false"
+                        :to="`/proposal-editor/${proposalId}`"
+                      >
+                        {{ $t('proposalPage.edit') }}
+                      </v-btn>
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-space-between align-center flex-wrap mb-4">
+                    <div class="actions-left">
+                      <div class="font-weight-semi-bold text-uppercase mb-1">
+                        {{ $t('proposalPage.deleteProposal') }}
+                      </div>
+                      <div class="accent--text fs-12">
+                        {{ $t('proposalPage.deleteDesc') }}
+                      </div>
+                    </div>
+
+                    <div class="actions-btn-container">
+                      <v-btn
+                        block
+                        :elevation="0"
+                        class="btn--alt"
+                        :ripple="false"
+                        :disabled="isCancelProposalDraftLoading"
+                        @click="deleteProposal"
+                      >
+                        {{ $t('proposalCreationPage.delete') }}
+                      </v-btn>
+                    </div>
+                  </div>
+                </template>
+
+                <template v-else>
+                  <div class="d-flex justify-space-between align-center flex-wrap mb-4">
+                    <div class="actions-left">
+                      <div class="font-weight-semi-bold text-uppercase">
+                        {{ $t('proposalPage.voteFor') }}
+                      </div>
+                    </div>
+
+                    <div class="actions-btn-container">
+                      <v-btn
+                        block
+                        :elevation="0"
+                        class="btn--alt"
+                        :disabled="isVoteProposalLoading"
+                        @click="handleVote($constants.VOTE_YES)"
+                      >
+                        {{ $t('proposalPage.upvote') }}
+                      </v-btn>
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-space-between align-center flex-wrap mb-4">
+                    <div class="actions-left">
+                      <div class="font-weight-semi-bold text-uppercase">
+                        {{ $t('proposalPage.abstainIn') }}
+                      </div>
+                    </div>
+
+                    <div class="actions-btn-container">
+                      <v-btn
+                        block
+                        :elevation="0"
+                        class="btn--alt"
+                        :disabled="isVoteProposalLoading"
+                        @click="handleVote($constants.VOTE_ABSTAIN)"
+                      >
+                        {{ $t('proposalPage.abstain') }}
+                      </v-btn>
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-space-between align-center flex-wrap mb-4">
+                    <div class="actions-left">
+                      <div class="font-weight-semi-bold text-uppercase">
+                        {{ $t('proposalPage.voteAgainst') }}
+                      </div>
+                    </div>
+
+                    <div class="actions-btn-container">
+                      <v-btn
+                        block
+                        :elevation="0"
+                        class="btn--alt"
+                        :disabled="isVoteProposalLoading"
+                        @click="handleVote($constants.VOTE_NO)"
+                      >
+                        {{ $t('proposalPage.downvote') }}
+                      </v-btn>
+                    </div>
+                  </div>
+                </template>
+              </v-container>
+            </v-card>
+          </v-col>
+        </v-row>
+
+        <v-row class="mb-3">
+          <v-col
+            cols="12"
+          >
+            <div
+              :style="{ 'background-image': $_proposalParsed.proposal_json &&
+                $_proposalParsed.proposal_json.img
+                ? `url(${$_proposalParsed.proposal_json.img})`
+                : `url(${$constants.PROPOSAL_IMAGE_STUB_URL})`}"
+              class="proposal__img"
+            />
+          </v-col>
+        </v-row>
+
+        <v-tabs
+          hide-slider
+          show-arrows
+          class="font-weight-medium body-2"
         >
-          <div
-            :style="{ 'background-image': proposalFullInfo.proposal_json &&
-              proposalFullInfo.proposal_json.img
-              ? `url(${proposalFullInfo.proposal_json.img})`
-              : `url(${$constants.PROPOSAL_IMAGE_STUB_URL})`}"
-            class="proposal__img"
-          />
-        </v-col>
-        <v-col>
-          <div class="cards-wrapper">
-            <div v-if="isDraft">
-              <v-btn
-                block
-                class="mb-4"
-                color="blue darken-3 white--text"
-                @click="transfer"
-              >
-                {{ $t('proposalPage.payFee') }}
-              </v-btn>
-              <v-btn
-                block
-                class="mb-4"
-                color="blue darken-3 white--text"
-                @click="activateProposal"
-              >
-                {{ $t('proposalPage.activate') }}
-              </v-btn>
-              <v-btn
-                block
-                class="mb-4"
-                color="blue darken-3 white--text"
-                :to="`/proposal-editor/${proposalId}`"
-              >
-                {{ $t('proposalCreationPage.editProposal') }}
-              </v-btn>
-              <v-btn
-                block
-                class="mb-4"
-                color="blue darken-3 white--text"
-                @click="refund"
-              >
-                {{ $t('proposalPage.refund') }}
-              </v-btn>
-              <v-btn
-                block
-                class="mb-4"
-                color="error"
-                @click="deleteProposal"
-              >
-                {{ $t('proposalPage.deleteProposal') }}
-              </v-btn>
-            </div>
+          <v-tab
+            class="text-transform-none font-weight-semi-bold body-1 px-12"
+            active-class="v-tab--active"
+            :ripple="false"
+          >
+            {{ $t('common.overview') }}
+          </v-tab>
+          <v-tab
+            class="text-transform-none font-weight-semi-bold body-1 px-12"
+            active-class="v-tab--active"
+            :ripple="false"
+          >
+            {{ $t('common.budget') }}
+          </v-tab>
+          <v-tab
+            class="text-transform-none font-weight-semi-bold body-1 px-12"
+            active-class="v-tab--active"
+            :ripple="false"
+          >
+            {{ $t('common.timeline') }}
+          </v-tab>
+          <v-tab
+            class="text-transform-none font-weight-semi-bold body-1 px-12"
+            active-class="v-tab--active"
+            :ripple="false"
+          >
+            {{ $t('proposalPage.voters') }}
+          </v-tab>
 
-            <v-card
-              class="text-center"
-              color="pink darken-4 white--text mb-5"
-            >
-              <v-card-title class="justify-center pa-2">
-                {{ $t('proposalPage.paymentInfo') }}:
-              </v-card-title>
-              <v-card-text class="white pt-4 word-break">
-                <div class="d-flex justify-space-around">
-                  <div class="mr-3">
-                    <div>{{ $t('common.requested') }}:</div>
-                    <div class="font-weight-bold body-1">
-                      {{ proposalFullInfo.total_budget }}
-                    </div>
-                  </div>
-                  <div v-if="!isDraft">
-                    <div>{{ $t('common.payments') }}:</div>
-                    <div class="font-weight-bold body-1">
-                      {{ proposalFullInfo.payments }}
-                    </div>
-                  </div>
-                </div>
-              </v-card-text>
-            </v-card>
-
-            <v-card
-              v-if="!isDraft"
-              class="text-center mb-12"
-              color="pink darken-4 white--text"
-            >
-              <v-card-title class="justify-center pa-2">
-                {{ $t('common.votes') }}:
-              </v-card-title>
-              <v-card-text class="white pt-4 word-break">
-                <div class="d-flex justify-space-around">
-                  <div class="font-weight-bold body-1">
-                    {{ proposalFullInfo.total_net_votes }}
-                  </div>
-                </div>
-              </v-card-text>
-            </v-card>
-
-            <template
-              v-if="isBp && !isDraft"
-            >
-              <v-btn
-                class="mb-4"
-                block
-                color="success"
-                @click="handleVote($constants.VOTE_YES)"
-              >
-                {{ $t('proposalPage.upvote') }}
-              </v-btn>
-              <v-btn
-                class="mb-4"
-                block
-                color="blue darken-3 white--text"
-                @click="handleVote($constants.VOTE_ABSTAIN)"
-              >
-                {{ $t('proposalPage.abstain') }}
-              </v-btn>
-              <v-btn
-                class="mb-4"
-                block
-                color="error"
-                @click="handleVote($constants.VOTE_NO)"
-              >
-                {{ $t('proposalPage.downvote') }}
-              </v-btn>
-            </template>
-          </div>
-        </v-col>
-      </v-row>
-
-      <v-tabs
-        class="elevation-2"
-        dark
-        background-color="primary"
-      >
-        <v-tab>{{ $t('proposalPage.overview') }}</v-tab>
-        <v-tab>{{ $t('common.budget') }}</v-tab>
-        <v-tab>{{ $t('common.timeline') }}</v-tab>
-
-        <v-tab-item background-color="tile">
-          <Overview
-            :overview="proposalFullInfo.proposal_json && proposalFullInfo.proposal_json.overview"
-            :proposer="proposalFullInfo.proposer"
-            :hash="proposalFullInfo.proposal_json && proposalFullInfo.proposal_json.hash"
-            :category="proposalFullInfo.proposal_json && proposalFullInfo.proposal_json.category"
-            :created="proposalFullInfo.proposal_json && proposalFullInfo.proposal_json.created"
-          />
-        </v-tab-item>
-        <v-tab-item>
-          <BudgetOverview
-            :monthly-budget="proposalFullInfo.monthly_budget"
-            :total-budget="proposalFullInfo.total_budget"
-            :duration="proposalFullInfo.duration"
-            :budget-data="proposalFullInfo.proposal_json &&
-              proposalFullInfo.proposal_json.budgets"
-          />
-        </v-tab-item>
-        <v-tab-item>
-          <TimelineOverview
-            :milestones-raw="proposalFullInfo.proposal_json &&
-              proposalFullInfo.proposal_json.milestones"
-          />
-        </v-tab-item>
-      </v-tabs>
+          <v-tab-item>
+            <Overview
+              :overview="$_proposalParsed.proposal_json && $_proposalParsed.proposal_json.overview"
+              :created="$_proposalParsed.created && $_proposalParsed.created"
+              :video="$_proposalParsed.proposal_json && $_proposalParsed.proposal_json.video"
+            />
+          </v-tab-item>
+          <v-tab-item>
+            <BudgetOverview
+              :monthly-budget="$_proposalParsed.monthly_budget"
+              :total-budget="$_proposalParsed.total_budget"
+              :duration="$_proposalParsed.duration"
+              :budget-data="$_proposalParsed.proposal_json &&
+                $_proposalParsed.proposal_json.budgets"
+            />
+          </v-tab-item>
+          <v-tab-item>
+            <TimelineOverview
+              :milestones-raw="$_proposalParsed.proposal_json &&
+                $_proposalParsed.proposal_json.milestones"
+            />
+          </v-tab-item>
+          <v-tab-item>
+            <Voters :votes-initial="votesByProposalName" />
+          </v-tab-item>
+        </v-tabs>
+      </template>
     </v-container>
   </div>
 </template>
 
 <script>
-  import { mapState } from 'vuex';
+  import { mapState, mapGetters, mapActions } from 'vuex';
+  import ActionType from '@/store/constants';
   import Overview from '@/components/proposal-tabs/Overview.vue';
   import BudgetOverview from '@/components/proposal-tabs/BudgetOverview.vue';
   import TimelineOverview from '@/components/proposal-tabs/TimelineOverview.vue';
+  import Voters from '@/components/proposal-tabs/Voters.vue';
   import proposalParsed from '@/mixins/proposalParsed';
   import voteProposal from '@/mixins/voteProposal';
   import sendDeposit from '@/mixins/sendDeposit';
   import refund from '@/mixins/refund';
   import activateProposal from '@/mixins/activateProposal';
   import cancelProposalDraft from '@/mixins/cancelProposalDraft';
-  import getDraftByProposalName from '@/mixins/getDraftByProposalName';
   import isProposalExist from '@/mixins/isProposalExist';
-  import getActiveProposalByProposalName from '@/mixins/getActiveProposalByProposalName';
-  import getState from '@/mixins/getState';
-  import getVotesByProposalName from '@/mixins/getVotesByProposalName';
   import notification from '@/mixins/notification';
 
   export default {
@@ -210,6 +541,7 @@
       Overview,
       BudgetOverview,
       TimelineOverview,
+      Voters,
     },
     mixins: [
       proposalParsed,
@@ -218,34 +550,43 @@
       refund,
       activateProposal,
       cancelProposalDraft,
-      getDraftByProposalName,
       isProposalExist,
-      getActiveProposalByProposalName,
-      getState,
-      getVotesByProposalName,
       notification,
     ],
     data() {
       return {
         proposalId: this.$route.params.slug,
-        proposal: {},
-        vote: {},
+        activationDialog: false,
+        isDataLoading: true,
       };
     },
     computed: {
       ...mapState({
         isBp: state => state.userService.isBp,
+        proposal: state => state.userService.proposal,
+        draftProposal: state => state.userService.draftProposal,
+        proposalState: state => state.userService.proposalState,
+        votesByProposalName: state => state.userService.votesByProposalName,
+        proposalDeposit: state => state.userService.proposalDeposit,
+      }),
+      ...mapGetters('userService', {
+        getAccountNameWithAuthority: 'getAccountNameWithAuthority',
       }),
       isDraft() {
         return this.$route.path.includes('draft');
       },
-      proposalFullInfo() {
-        if (!this.$_proposalParsed
-          || Object.keys(this.$_proposalParsed).length === 0
-          || !this.vote
-          || Object.keys(this.vote).length === 0) return [];
+      daysBeforeCurrentVotingPeriodExpires() {
+        if (!this.proposalState) return null;
+        const nextPeriodDate = this.$moment.utc(this.proposalState.next_voting_period).startOf('day');
+        const todayDate = this.$moment.utc().startOf('day');
 
-        return this.$helpers.mergeVoteWithProposal(this.vote, this.$_proposalParsed);
+        return nextPeriodDate.diff(todayDate, 'days');
+      },
+      isMinDepositPaid() {
+        if (!this.proposalDeposit || Object.keys(this.proposalDeposit).length === 0) return 0;
+
+        return Number(this.proposalDeposit.balance.split(' ')[0])
+          >= this.$constants.MIN_DEPOSIT;
       },
     },
     // Get a proposal if a user is already on the proposal page
@@ -253,29 +594,22 @@
       $route: {
         immediate: true,
         async handler() {
-          // Request either active proposal or draft
-          if (!await this.$_isProposalExist(this.proposalId)) {
-            this.$router.push({ name: 'Not found' });
-            return;
-          }
-
-          if (this.isDraft) {
-            this.$_getDraftProposalByProposalName(this.proposalId);
-          } else {
-            this.$_getActiveProposalByProposalName(this.proposalId);
-          }
-
-          // get votes
-          // await this.$_getVotesByProposalName(this.proposalId);
-          // eslint-disable-next-line prefer-destructuring
-          this.vote = this.$constants.VOTES[0];
+          this.getData();
         },
       },
     },
     methods: {
+      ...mapActions('userService', [
+        ActionType.REQUEST_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME,
+        ActionType.REQUEST_DEPOSIT,
+        ActionType.REQUEST_STATE,
+        ActionType.REQUEST_VOTES_BY_PROPOSAL_NAME,
+        ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME,
+      ]),
       async transfer() {
         try {
           await this.$_sendDeposit();
+          this.getData();
           this.showSuccessMsg(this.$t('notifications.sentDeposit'));
         } catch {} // eslint-disable-line no-empty
       },
@@ -285,17 +619,22 @@
           this.showSuccessMsg(this.$t('notifications.sentRefund'));
         } catch {} // eslint-disable-line no-empty
       },
-      async activateProposal() {
+      async activateProposal(isNext = false) {
         try {
-          const state = await this.$_getState();
+          // const state = await this.$_getState();
           await this.$_activateProposal({
             proposalName: this.proposalId,
-            // TODO: add ui element
-            // can be current_voting_period or next_voting_period
-            startVotingPeriod: state.current_voting_period,
+            startVotingPeriod: isNext
+                               ? this.proposalState.next_voting_period
+                               : this.proposalState.current_voting_period,
           });
           this.showSuccessMsg(this.$t('notifications.proposalActivated'));
-        } catch {} // eslint-disable-line no-empty
+          this.$router.push({ name: 'ProposalsActive' });
+        } catch {
+          // TODO: handle errors
+        } finally {
+          this.activationDialog = false;
+        }
       },
       async deleteProposal() {
         try {
@@ -320,7 +659,33 @@
             vote: voteType,
           });
           this.showSuccessMsg(this.$t('notifications.sentVote'));
-        } catch {} // eslint-disable-line no-empty
+          await this[ActionType.REQUEST_VOTES_BY_PROPOSAL_NAME](this.proposalId);
+        } catch (e) {} // eslint-disable-line no-empty
+      },
+      async getData() {
+        try {
+          this.isDataLoading = true;
+
+          // Request either active proposal or draft
+          if (!await this.$_isProposalExist(this.proposalId)) {
+            this.$router.push({ name: 'Not found' });
+            return;
+          }
+
+          if (this.isDraft) {
+            await this[ActionType.REQUEST_STATE]();
+            await this[ActionType.REQUEST_DEPOSIT]();
+            this[ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME](this.proposalId);
+          } else {
+            this[ActionType.REQUEST_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME](this.proposalId);
+          }
+          // get votes
+          await this[ActionType.REQUEST_VOTES_BY_PROPOSAL_NAME](this.proposalId);
+        } catch (error) {
+          console.error('Error', error);
+        } finally {
+          this.isDataLoading = false;
+        }
       },
     },
   };
@@ -332,8 +697,40 @@
   .proposal {
     &__img {
       background-position: center;
+      background-size: cover;
       background-repeat: no-repeat;
-      min-height: 400px;
+      height: 480px;
+    }
+  }
+
+  .actions-left {
+    max-width: 230px;
+    font-size: 14px;
+  }
+
+  .actions-btn-container {
+    width: 140px;
+  }
+
+  .v-tab--active {
+    background-color: $white;
+
+    &:before {
+      display: none;
+    }
+  }
+
+  @media (max-width: 1263px) {
+    .actions-left {
+      max-width: 60%;
+      margin-right: 16px;
+      margin-bottom: 16px;
+    }
+  }
+
+  @media (max-width: 599px) {
+    .actions-left {
+      max-width: 100%;
     }
   }
 </style>
