@@ -57,7 +57,8 @@
           >
             <template #maxMonthlyBudget>
               <span class="font-weight-bold">
-                {{ maxMonthlyBudget }}
+                <!--                {{ maxMonthlyBudget }}-->
+                {{ $constants.MAX_MONTHLY_BUDGET }}
               </span>
             </template>
 
@@ -82,6 +83,10 @@
 
           <p class="body-2 font-weight-medium">
             {{ $t('about.votingPeriodsAndFundingP3') }}
+          </p>
+
+          <p class="body-2 font-weight-medium">
+            {{ $t('about.votingPeriodsAndFundingP4') }}
           </p>
         </section>
 
@@ -389,6 +394,10 @@
             answer: this.$t('about.faqs.2.answer'),
           },
           {
+            question: this.$t('about.faqs.13.question'),
+            answer: this.$t('about.faqs.13.answer'),
+          },
+          {
             question: this.$t('about.faqs.3.question', { depositFee: this.depositRequired }),
             answer: this.$t('about.faqs.3.answer'),
           },
@@ -505,7 +514,7 @@
         color: $primary;
 
         &:before {
-          content: "\F156";
+          content: "\F0374";
         }
       }
     }

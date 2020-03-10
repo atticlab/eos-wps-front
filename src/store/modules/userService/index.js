@@ -52,6 +52,13 @@ const getters = {
     return state.proposal && Object.keys(state.proposal).length
            ? Vue.prototype.$helpers.parseProposal(state.proposal)
            : {};
+  },
+  getDaysBeforeCurrentVotingPeriodExpires(state) {
+    if (!state.proposalState) return null;
+    const nextPeriodDate = Vue.prototype.$moment.utc(state.proposalState.next_voting_period).startOf('day');
+    const todayDate = Vue.prototype.$moment.utc().startOf('day');
+
+    return nextPeriodDate.diff(todayDate, 'days');
   }
 };
 /* eslint-enable */
