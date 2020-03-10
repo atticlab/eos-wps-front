@@ -100,7 +100,6 @@ const errorsHandler = {
       const errParsed = JSON.parse(err);
       errMsg = errParsed.error.details[0].message;
     }
-
     if (err.type) {
       errMsg = err.type;
     }

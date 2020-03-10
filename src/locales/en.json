@@ -316,7 +316,7 @@
     "accountHasntBalance": "Account does not contain a balance",
     "smallBalance": "Post balance cannot be less than 0",
     "votesDoesntExist": "Votes does not exist",
-    "invalidVote": "[vote] invalid (ex: yes/no/abstain)",
+    "invalidVote": "Invalid vote (ex: yes/no/abstain)",
     "completeActionRequired": "You should execute `complete` action"
   },
   "proposalStatuses": {
