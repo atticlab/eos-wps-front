@@ -255,7 +255,7 @@
                               class="red--text font-weight-medium mb-0"
                             >
                               <template #daysTillEnd>
-                                {{ daysBeforeCurrentVotingPeriodExpires }}
+                                {{ getDaysBeforeCurrentVotingPeriodExpires }}
                               </template>
                             </i18n>
                           </v-card-text>
@@ -571,16 +571,10 @@
       }),
       ...mapGetters('userService', {
         getAccountNameWithAuthority: 'getAccountNameWithAuthority',
+        getDaysBeforeCurrentVotingPeriodExpires: 'getDaysBeforeCurrentVotingPeriodExpires',
       }),
       isDraft() {
         return this.$route.path.includes('draft');
-      },
-      daysBeforeCurrentVotingPeriodExpires() {
-        if (!this.proposalState) return null;
-        const nextPeriodDate = this.$moment.utc(this.proposalState.next_voting_period).startOf('day');
-        const todayDate = this.$moment.utc().startOf('day');
-
-        return nextPeriodDate.diff(todayDate, 'days');
       },
       isMinDepositPaid() {
         if (!this.proposalDeposit || Object.keys(this.proposalDeposit).length === 0) return 0;

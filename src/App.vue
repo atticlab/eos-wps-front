@@ -286,6 +286,18 @@
     </v-app-bar>
 
     <v-content>
+      <div class="d-flex justify-end pa-4 voting-period-counter">
+        <i18n
+          path="proposalPage.currentVotingPeriodEndsIn"
+          tag="p"
+          class="red--text font-weight-medium mb-0"
+        >
+          <template #daysTillEnd>
+            {{ getDaysBeforeCurrentVotingPeriodExpires }}
+          </template>
+        </i18n>
+      </div>
+
       <v-overlay v-if="isScatterLoginLoading">
         <v-alert
           transition="scale-transition"
@@ -399,9 +411,11 @@
         isScatterNotConnected: state => state.userService.isScatterNotConnected,
         routeTo: state => state.userService.routeTo,
         draftProposals: state => state.userService.draftProposals,
+        proposalState: state => state.userService.proposalState,
       }),
       ...mapGetters('userService', {
         getAccountNameWithAuthority: 'getAccountNameWithAuthority',
+        getDaysBeforeCurrentVotingPeriodExpires: 'getDaysBeforeCurrentVotingPeriodExpires',
       }),
       thisYear() {
         const now = new Date();
@@ -428,6 +442,7 @@
     },
     async created() {
       this[ActionType.SCATTER_INIT]();
+      await this[ActionType.REQUEST_STATE]();
       this.$_getProducers();
       this.$eventBus.$on('proposal-created', (val) => {
         if (!val) return;
@@ -452,6 +467,7 @@
         ActionType.DEFINE_ROUTE_TO,
         ActionType.REQUEST_PRODUCERS,
         ActionType.REQUEST_DRAFTS_BY_ACCOUNT_NAME,
+        ActionType.REQUEST_STATE,
       ]),
     },
   };
@@ -505,5 +521,10 @@
     justify-content: center;
     height: calc(100vh - 80px);
     min-height: 266px;
+  }
+
+  .voting-period-counter {
+    background-color: $white;
+    border-bottom: 1px solid $grey-white !important;
   }
 </style>

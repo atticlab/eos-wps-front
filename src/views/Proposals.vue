@@ -68,7 +68,7 @@
         <template v-if="!isDrafts">
           <div class="mb-12">
             <h2 class="fs-30 mb-12">
-              {{ $t('common.paidProposals') }}
+              {{ $t('common.passingProposals') }}
             </h2>
 
             <v-row>
@@ -110,7 +110,7 @@
 
           <div class="mb-12">
             <h2 class="fs-30 mb-12">
-              {{ $t('common.unpaidProposals') }}
+              {{ $t('common.notMeetingThreshold') }}
             </h2>
 
             <template
