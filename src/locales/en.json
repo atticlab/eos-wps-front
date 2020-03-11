@@ -229,6 +229,43 @@
       }
     }
   },
+  "userGuide": {
+    "submittingProposal": "Submitting a proposal",
+    "eosWpsUserGuide": "EOS WPS User Guide",
+    "signInSection": {
+      "title": "Sign in to EOS WPS Portal",
+      "li1": "Go to {url}",
+      "li2": {
+        "title": "Sign in with your EOS account",
+        "a": "Click “Sign in with Scatter”",
+        "b": "Select the account you would like to use to submit the proposal from the Scatter pop-up and click “Allow”"
+      },
+      "li3": "Click the “Create proposal” button at the top of the portal"
+    },
+    "setupProposalSection": {
+      "title": "Setup Proposal",
+      "containMin": "It must contain a minimum of {num} characters",
+      "containMax": "It can contain a maximum of {num} characters",
+      "subSection1": {
+        "title": "Enter all of the required fields:",
+        "li1": {
+          "title": "{proposalName} serves as a unique identifier for your proposal. It won’t be displayed anywhere in the portal, but will be added as a record in the table in the WPS smart contract.",
+          "subLi1": "It must be unique",
+          "subLi4": "It must only contain lower-case english characters or numbers 1-5"
+        },
+        "li2": {
+          "title": "{proposalTitle} will display to voters in the portal as the title of your proposal in the the list of active proposals and on the details page of your proposal."
+        },
+        "li3": {
+          "title": "{proposalSummary} is a short summary of your proposal that will be displayed to voters in the portal with your proposal in the list of active proposals and on the details page of your proposal."
+        },
+        "li4": {
+          "title": "{proposalCategory} helps organize proposals according to the type of work being proposed. It will be displayed to voters in the portal with your proposal in the list of active proposals and on the details page of your proposal.",
+          "a": "Select the appropriate category from the options provided in the drop-down:"
+        }
+      }
+    }
+  },
   "notFoundPage": {
     "notFound": "Not found",
     "home": "Home"
@@ -243,7 +280,6 @@
     "notOnlySpaces": "Spaces only are not allowed",
     "onlyNumbersDecimals": "Only numbers and decimals are allowed",
     "twoDigitsOnly": "Only two-digit numbers are allowed",
-    "allowedVideo": "Only youtube, youku, tudou, and iqiyi are allowed",
     "onlyNumbers": "Only numbers are allowed",
     "minValue": "The value must be at least {value}",
     "maxValue": "The value must be at most {value}",

@@ -454,10 +454,6 @@
 <style lang="scss" scoped>
   @import "~@/assets/scss/variables";
 
-  .sections-wrapper {
-    max-width: 740px;
-  }
-
   .num {
     color: $grey--2;
     font-size: 44px;
