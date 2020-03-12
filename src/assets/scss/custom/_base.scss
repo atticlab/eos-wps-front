@@ -36,6 +36,10 @@
   }
 }
 
+.sections-wrapper {
+  max-width: 740px;
+}
+
 @media (min-width: 1904px) {
   .container--custom {
     max-width: 1185px !important;

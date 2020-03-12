@@ -9,6 +9,7 @@ const Proposals = () => import('../views/Proposals.vue');
 const Proposal = () => import('../views/Proposal.vue');
 const ProposalCreation = () => import('../views/ProposalCreation.vue');
 const About = () => import('../views/About.vue');
+const UserGuide = () => import('../views/UserGuide.vue');
 const NotFound = () => import('../views/NotFound.vue');
 
 Vue.use(VueRouter);
@@ -60,6 +61,11 @@ const routes = [
     path: '/about',
     name: 'About',
     component: About,
+  },
+  {
+    path: '/user-guide',
+    name: 'User guide',
+    component: UserGuide,
   },
   {
     path: '/404',

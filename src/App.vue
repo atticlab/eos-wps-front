@@ -64,6 +64,13 @@
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+          <v-list-item :to="{ name: 'User guide' }">
+            <v-list-item-content>
+              <v-list-item-title class="font-weight-bold body-2">
+                {{ $t('userGuide.guide') }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
           <v-list-item :to="{ name: 'ProposalsActive' }">
             <v-list-item-content>
               <v-list-item-title class="font-weight-bold body-2">
@@ -195,6 +202,15 @@
 
         <v-btn
           text
+          :to="{ name: 'User guide' }"
+          class="font-weight-bold text-transform-none px-lg-6"
+          exact-active-class="custom-before-underline"
+        >
+          {{ $t('userGuide.guide') }}
+        </v-btn>
+
+        <v-btn
+          text
           :to="{ name: 'ProposalsActive' }"
           class="font-weight-bold text-transform-none px-lg-6"
           exact-active-class="custom-before-underline"
@@ -234,7 +250,9 @@
                 fas fa-chevron-down
               </v-icon>
 
-              {{ getAccountNameWithAuthority }}
+              <span class="d-none d-lg-block">
+                {{ getAccountNameWithAuthority }}
+              </span>
 
               <span class="icon-circle">
                 {{ getAccountNameWithAuthority.split('')[0] }}
