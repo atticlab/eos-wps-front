@@ -230,8 +230,14 @@
     }
   },
   "userGuide": {
+    "guide": "User guide",
     "submittingProposal": "Submitting a proposal",
     "eosWpsUserGuide": "EOS WPS User Guide",
+    "clickButton": "Click the “{buttonName}” button.",
+    "proposalBudget": "Proposal budget",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "selectDate": "Select a date in the popup calendar.",
     "signInSection": {
       "title": "Sign in to EOS WPS Portal",
       "li1": "Go to {url}",
@@ -262,7 +268,89 @@
         "li4": {
           "title": "{proposalCategory} helps organize proposals according to the type of work being proposed. It will be displayed to voters in the portal with your proposal in the list of active proposals and on the details page of your proposal.",
           "a": "Select the appropriate category from the options provided in the drop-down:"
+        },
+        "li5": {
+          "title": "{proposalBudget} is the amount of EOS that will be transferred to your account if your proposal passes. You can request a single payment, or up to 6 monthly payments. You can break your budget down into multiple line items to display a detailed tally of costs, or simply add one budget item containing the full cost (see sample of detailed budget below). The total budget will be displayed to voters in the portal with your proposal in the list of active proposals and the full tally will be displayed along with the total on the details page of your proposal.",
+          "a": "Click the “Add new item” button under the “Add budget items to your proposal” heading near the bottom of the page.",
+          "b": "Enter a {title} for your budget line item.",
+          "c": "Enter the {cost} (in EOS) for your budget line item.",
+          "d": {
+            "title": "Enter the {amount} of those items included in your budget.",
+            "subLi1": "The {subtotal} for the budget line item will reflect the {cost} multiplied by the {amount}."
+          },
+          "e": "Select the unit type from the options provided in the drop-down:",
+          "f": "Click “Save.”",
+          "g": "Repeat steps a-f if you have additional budget line items to add.",
+          "h": {
+            "title": "Select the {durationOfPayments} from the options provided in the dropdown.",
+            "subLi1": "Payments can be divided equally between 1-6 months",
+            "subLi2": "The total budget will be divided by the duration of payments to determine the monthly EOS budget."
+          },
+          "sampleBudget": "Sample budget:"
         }
+      },
+      "subSection2": {
+        "title": "Enter the optional fields, if you wish:",
+        "li1": {
+          "title": "{heroImage} is an optional image you can include to help illustrate or bring attention to your proposal. It will be displayed to voters in the portal with your proposal in the list of active proposals and on the details page of your proposal.",
+          "a": "Enter the URL of the image you’d like to include with your proposal.",
+          "subLi1": "Note: it is up to you to upload the image to whichever image sharing or web hosting service you choose."
+        },
+        "li2": {
+          "title": "{videoLink} is an optional link to a video you can include to help explain your proposal. It will be displayed to voters in the portal on the details page of your proposal.",
+          "a": "Enter the URL of the video you’d like to include with your proposal.",
+          "subLi1": "Note: it is up to you to upload the video to whichever video sharing or web hosting service you choose."
+        }
+      },
+      "subSection3": {
+        "title": "Save your draft and continue to the next step:",
+        "li1": {
+          "title": "If you’d like to save your progress before moving on to the next step, click the “Save Draft” button at the bottom of the page.",
+          "a": "Click the “Allow” button in the scatter pop-up to save your progress to the blockchain."
+        },
+        "li2": {
+          "title": "Click the “Continue” button at the bottom of the page to move on to the next step.",
+          "subLi1": "Note: progress won’t be saved unless you click the “Save Draft” button. Progress will be lost if you don’t save your draft on the next step or complete the proposal submission process."
+        }
+      }
+    },
+    "descriptionSection": {
+      "title": "Provide a detailed description for your proposal",
+      "li1": "Enter a detailed {description} in the free-form text field provided. Feel free to use the formatting options made available to help make your description stand out. The description will be displayed to voters in the portal on the details page of your proposal.",
+      "li2": "Click the “Save Draft” button at the bottom of the page to save your progress to the blockchain.",
+      "li3": "Click the “Continue” button at the bottom of the page to move on to the next step."
+    },
+    "timelineSection": {
+      "title": "Set up your project timeline",
+      "li1": {
+        "title": "Add a {timeline} for a project milestone to inform voters of when you plan to deliver specific milestones of your proposal. It will be displayed to them in the details page of your proposal.",
+        "b": "Enter a {title} for your milestone.",
+        "c": "Select a {startDate} for your milestone.",
+        "d": "Select an {endDate} for your milestone.",
+        "f": "Repeat steps a-e if you have additional milestones to add. "
+      }
+    },
+    "publishProposalSection": {
+      "title": "Publish proposal",
+      "preface": "Now that your draft is saved, you should be on the Drafts page of the EOS WPS portal. You can access this page at any time by clicking the Drafts button at the top of the portal. Here you can see a list of all of the draft proposals currently awaiting to be published, including the draft you just saved. Click on your proposal to go to the details page. From here you can review your proposal and have options to pay the proposal fee, edit the proposal, or delete the proposal. Before you can publish your proposal, you must pay the proposal fee.",
+      "subSection1": {
+        "title": "Pay proposal fee:",
+        "li2": "Approve the transfer of 100 EOS to the eosio.wps account by clicking the “Allow” button in the Scatter pop-up window.",
+        "p1": "Once the fee has been successfully paid, you’ll see new options to activate the proposal or refund your proposal fee. Once you activate the proposal you are no longer able to edit the proposal or refund your proposal fee. Make sure you’re happy with the proposal before moving on to the final step."
+      },
+      "subSection2": {
+        "title": "Activate proposal:",
+        "li2": "Read the disclaimer in the pop-up window. Your proposal can’t be edited once it’s activated.",
+        "li3": {
+          "title": "Decide if you want to activate the proposal immediately or for the next voting period. The pop-up window will display how many days remain in the voting period. Your proposal needs to pass in the voting period it’s published - so consider activating for the next voting period if the current period is nearing the end. Voting periods are 30 days.",
+          "a": {
+            "title": "Click “Activate for current” if you want to activate your proposal for the current period.",
+            "subLi1": "If there are 5 days or less remaining in the voting period, you’ll be prevented from activating the proposal for the current period."
+          },
+          "b": "Click “Activate for next” if you want to activate your proposal for the next period."
+        },
+        "li4": "Click “Allow” in the Scatter pop-up to activate your proposal.",
+        "p1": "If you clicked the “Activate for current” option, your proposal should now be displayed in the Active proposals section of the EOS WPS Portal and is available for voting by EOS Block Producers. If you clicked “Activate for next,” it will begin displaying there as soon as the next voting period begins."
       }
     }
   },
