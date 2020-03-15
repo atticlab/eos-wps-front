@@ -49,10 +49,12 @@ export default {
           });
         }
 
-        const response = await this.eos.transaction(
+        const { signatureProvider } = window;
+        const res = await signatureProvider.signTransaction(
           this.$helpers.buildBaseTransactionPayload(payload),
+          { expireSeconds: 120, blocksBehind: 3 },
         );
-        return response.transaction_id;
+        return res.transaction_id;
       } catch (e) {
         console.error('$_modifyProposal', e);
         this.$errorsHandler.handleError(e);

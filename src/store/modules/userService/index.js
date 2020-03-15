@@ -6,11 +6,8 @@ const state = {
   routeTo: null,
   eos: null,
   eosAccount: null,
-  scatter: null,
 
   isBp: false,
-  isScatterLoginLoading: false,
-  isScatterNotConnected: false,
 
   isActiveProposalByProposalNameLoading: false,
   isActiveProposalsLoading: false,

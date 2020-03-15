@@ -95,7 +95,6 @@ const errorsHandler = {
   handleError: (err) => {
     const errTitle = i18n.t('notifications.error');
     let errMsg;
-
     if (typeof err === 'string') {
       const errParsed = JSON.parse(err);
       errMsg = errParsed.error.details[0].message;
@@ -103,9 +102,10 @@ const errorsHandler = {
     if (err.type) {
       errMsg = err.type;
     }
-    if (err.message === 'notifications.mustLogin') {
+    if (typeof err.message === 'string') {
       errMsg = err.message;
     }
+
     return VueNotifications.error({ title: errTitle, message: getUserFriendlyErrorMsg(errMsg) });
   },
 };

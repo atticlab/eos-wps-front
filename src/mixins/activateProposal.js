@@ -27,7 +27,8 @@ export default {
         }
 
         this.isActivateProposalLoading = true;
-        const res = await this.eos.transaction(
+        const { signatureProvider } = window;
+        const res = await signatureProvider.signTransaction(
           this.$helpers.buildBaseTransactionPayload([{
             actionName: 'activate',
             data: {
@@ -36,6 +37,7 @@ export default {
               start_voting_period: data.startVotingPeriod, // activate for the current period
             },
           }]),
+          { expireSeconds: 120, blocksBehind: 3 },
         );
         return res.transaction_id;
       } catch (e) {

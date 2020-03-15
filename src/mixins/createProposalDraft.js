@@ -27,7 +27,8 @@ export default {
         }
 
         this.isCreateProposalDraftLoading = true;
-        const response = await this.eos.transaction(
+        const { signatureProvider } = window;
+        const res = await signatureProvider.signTransaction(
           this.$helpers.buildBaseTransactionPayload([{
             actionName: 'submitdraft',
             data: {
@@ -39,8 +40,9 @@ export default {
               proposal_json: data.proposal_json,
             },
           }]),
+          { expireSeconds: 120, blocksBehind: 3 },
         );
-        return response.transaction_id;
+        return res.transaction_id;
       } catch (e) {
         console.error('$_createProposalDraft', e);
         this.$errorsHandler.handleError(e);
