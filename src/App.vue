@@ -270,6 +270,8 @@
             </v-list-item>
           </v-list>
         </v-menu>
+
+        <LanguageDropdown />
       </v-toolbar-items>
 
       <v-btn
@@ -411,9 +413,11 @@
 } from 'vuex';
   import ActionType from '@/store/constants';
   import getProducers from '@/mixins/getProducers';
+  import LanguageDropdown from '@/components/LanguageDropdown.vue';
 
   export default {
     name: 'App',
+    components: { LanguageDropdown },
     mixins: [
       getProducers,
     ],
