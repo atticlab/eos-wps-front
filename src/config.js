@@ -1,4 +1,5 @@
 import { Anchor } from 'ual-anchor';
+import { Ledger } from 'ual-ledger';
 import { Scatter } from 'ual-scatter';
 
 const appName = 'WPS';
@@ -21,6 +22,12 @@ export default {
     },
     {
       authenticator: Anchor,
+      options: {
+        appName,
+      },
+    },
+    {
+      authenticator: Ledger,
       options: {
         appName,
       },
