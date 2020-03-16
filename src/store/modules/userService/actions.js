@@ -31,7 +31,18 @@ export default {
         if (user.scatter) {
           // If using scatter, grab authority from the first identity
           ([{ authority }] = user.scatter.identity.accounts);
-        } else if (user.requestPermission) {
+        } else if (user.requestPermission === true) {
+          // if using a ledger, figure out what authority this is
+          const [publicKey] = user.signatureProvider.cachedKeys;
+          const account = await user.rpc.get_account(user.accountName);
+          const [match] = account.permissions.filter((p) => {
+            const matching = p.required_auth.keys.filter(k => k.key === publicKey);
+            return matching.length;
+          });
+          if (match) {
+            authority = match.perm_name;
+          }
+        } else {
           // If using anchor, grab authority from requestPermission
           authority = user.requestPermission;
         }
