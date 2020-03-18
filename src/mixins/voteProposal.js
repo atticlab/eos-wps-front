@@ -39,7 +39,7 @@ export default {
           }]),
           { expireSeconds: 120, blocksBehind: 3 },
         );
-        return res.transaction_id;
+        return res.transaction_id || res.transactionId;
       } catch (e) {
         // TODO: notify about err
         console.error('$_voteProposal', e);

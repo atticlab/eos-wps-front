@@ -37,7 +37,7 @@ export default {
           }]),
           { expireSeconds: 120, blocksBehind: 3 },
         );
-        return res.transaction_id;
+        return res.transaction_id || res.transactionId;
       } catch (e) {
         console.error('$_sendDeposit', e);
         this.$errorsHandler.handleError(e);

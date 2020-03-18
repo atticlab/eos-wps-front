@@ -54,7 +54,7 @@ export default {
           this.$helpers.buildBaseTransactionPayload(payload),
           { expireSeconds: 120, blocksBehind: 3 },
         );
-        return res.transaction_id;
+        return res.transaction_id || res.transactionId;
       } catch (e) {
         console.error('$_modifyProposal', e);
         this.$errorsHandler.handleError(e);
