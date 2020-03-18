@@ -31,12 +31,14 @@
     "yes": "Yes",
     "no": "No",
     "about": "About",
-    "overview": "Overview"
+    "overview": "Overview",
+    "duration": "Duration"
   },
   "proposalItem": {
     "availableBudget": "Available budget",
     "status": "Status",
     "passing": "Passing",
+    "notPassing": "Not passing",
     "insufficientVotes": "Insufficient votes",
     "insufficientBudget": "Insufficient budget"
   },

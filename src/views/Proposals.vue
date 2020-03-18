@@ -1,5 +1,5 @@
 <template>
-  <div class="py-12">
+  <div class="pb-12">
     <v-container class="container--custom">
       <div class="d-flex justify-space-between flex-wrap">
         <h1 class="fs-50 font-weight-bold">
@@ -11,9 +11,9 @@
         </div>
       </div>
 
-      <v-divider class="v-divider--custom my-12" />
+      <v-divider class="v-divider--custom my-6" />
 
-      <div class="layout-toggler mb-10 text-right">
+      <div class="layout-toggler mb-2 text-right">
         <v-btn
           elevation="0"
           fab
@@ -23,6 +23,7 @@
             'white--text': true
           }"
           class="mr-4"
+          small
           @click="isList = true"
         >
           <v-icon
@@ -41,6 +42,7 @@
             'primary--text': !isList,
             'white--text': true
           }"
+          small
           @click="isList = false"
         >
           <v-icon
@@ -66,8 +68,8 @@
 
       <template v-else>
         <template v-if="!isDrafts">
-          <div class="mb-12">
-            <h2 class="fs-30 mb-12">
+          <div class="mb-6">
+            <h2 class="fs-30">
               {{ $t('common.passingProposals') }}
             </h2>
 
@@ -76,11 +78,246 @@
                 v-if="proposalsFullInfo.paidProposals
                   && proposalsFullInfo.paidProposals.length !== 0"
               >
+                <template v-if="!isList">
+                  <v-col
+                    v-for="(proposal, index) in proposalsFullInfo.paidProposals"
+                    :key="index"
+                    md="6"
+                  >
+                    <ProposalItem
+                      :is-list="isList"
+                      :proposal-name="proposal.proposal_name"
+                      :title="proposal.title"
+                      :proposer="proposal.proposer"
+                      :available-budget="proposal.available_budget"
+                      :img="proposal.proposal_json.img || undefined"
+                      :category="proposal.proposal_json.category"
+                      :summary="proposal.proposal_json.summary"
+                      :budget="proposal.total_budget"
+                      :duration="proposal.duration"
+                      :payments="proposal.payouts"
+                      :status-by-votes="proposal.statusByVotes"
+                      :votes="proposal.total_net_votes"
+                      :is-draft="proposal.isDraft"
+                    />
+                  </v-col>
+                </template>
+
+                <template v-else>
+                  <v-col>
+                    <v-simple-table
+                      :fixed-header="true"
+                      class="w-100"
+                    >
+                      <ProposalsColTitles :is-draft="isDrafts" />
+
+                      <tbody>
+                        <ProposalItem
+                          v-for="(proposal, index) in proposalsFullInfo.paidProposals"
+                          :key="index"
+                          :is-list="isList"
+                          :proposal-name="proposal.proposal_name"
+                          :title="proposal.title"
+                          :proposer="proposal.proposer"
+                          :available-budget="proposal.available_budget"
+                          :img="proposal.proposal_json.img || undefined"
+                          :category="proposal.proposal_json.category"
+                          :summary="proposal.proposal_json.summary"
+                          :budget="proposal.total_budget"
+                          :duration="proposal.duration"
+                          :payments="proposal.payouts"
+                          :status-by-votes="proposal.statusByVotes"
+                          :votes="proposal.total_net_votes"
+                          :is-draft="proposal.isDraft"
+                        />
+                      </tbody>
+                    </v-simple-table>
+                  </v-col>
+                </template>
+              </template>
+              <v-col v-else>
+                <span class="font-weight-bold body-2">
+                  {{ $t('noDataTexts.nothingToDisplay') }}
+                </span>
+              </v-col>
+            </v-row>
+          </div>
+
+          <div>
+            <h2 class="fs-30">
+              {{ $t('common.notMeetingThreshold') }}
+            </h2>
+
+            <template
+              v-if="proposalsFullInfo.insufficientBudgetProposals
+                && proposalsFullInfo.insufficientBudgetProposals.length !== 0
+                || proposalsFullInfo.insufficientVotesProposals
+                && proposalsFullInfo.insufficientVotesProposals.length !== 0"
+            >
+              <div
+                v-if="proposalsFullInfo.insufficientBudgetProposals
+                  && proposalsFullInfo.insufficientBudgetProposals.length !== 0"
+              >
+                <h3 class="red--text body-2 font-weight-bold">
+                  {{ $t('proposalItem.insufficientBudget') }}
+                </h3>
+
+                <v-row>
+                  <template v-if="!isList">
+                    <v-col
+                      v-for="(proposal, index) in proposalsFullInfo.insufficientBudgetProposals"
+                      :key="index"
+                      cols="12"
+                      :md="isList ? 12 : 6"
+                    >
+                      <v-card
+                        flat
+                        class="responsive-card"
+                      >
+                        <ProposalItem
+                          :is-list="isList"
+                          :proposal-name="proposal.proposal_name"
+                          :title="proposal.title"
+                          :proposer="proposal.proposer"
+                          :available-budget="proposal.available_budget"
+                          :img="proposal.proposal_json.img || undefined"
+                          :category="proposal.proposal_json.category"
+                          :summary="proposal.proposal_json.summary"
+                          :budget="proposal.total_budget"
+                          :duration="proposal.duration"
+                          :payments="proposal.payouts"
+                          :status-by-votes="proposal.statusByVotes"
+                          :votes="proposal.total_net_votes"
+                          :is-draft="proposal.isDraft"
+                        />
+                      </v-card>
+                    </v-col>
+                    >
+                  </template>
+
+                  <template v-else>
+                    <v-col>
+                      <v-simple-table
+                        :fixed-header="true"
+                        class="w-100"
+                      >
+                        <ProposalsColTitles :is-draft="isDrafts" />
+
+                        <tbody>
+                          <ProposalItem
+                            v-for="(proposal, index)
+                              in proposalsFullInfo.insufficientBudgetProposals"
+                            :key="index"
+                            :is-list="isList"
+                            :proposal-name="proposal.proposal_name"
+                            :title="proposal.title"
+                            :proposer="proposal.proposer"
+                            :available-budget="proposal.available_budget"
+                            :img="proposal.proposal_json.img || undefined"
+                            :category="proposal.proposal_json.category"
+                            :summary="proposal.proposal_json.summary"
+                            :budget="proposal.total_budget"
+                            :duration="proposal.duration"
+                            :payments="proposal.payouts"
+                            :status-by-votes="proposal.statusByVotes"
+                            :votes="proposal.total_net_votes"
+                            :is-draft="proposal.isDraft"
+                          />
+                        </tbody>
+                      </v-simple-table>
+                    </v-col>
+                  </template>
+                </v-row>
+              </div>
+
+              <div
+                v-if="proposalsFullInfo.insufficientVotesProposals
+                  && proposalsFullInfo.insufficientVotesProposals.length !== 0"
+                class="mb-6"
+              >
+                <h3 class="red--text body-2 font-weight-bold">
+                  {{ $t('proposalItem.insufficientVotes') }}
+                </h3>
+
+                <v-row>
+                  <template v-if="!isList">
+                    <v-col
+                      v-for="(proposal, index) in proposalsFullInfo.insufficientVotesProposals"
+                      :key="index"
+                      :md="6"
+                    >
+                      <ProposalItem
+                        :is-list="isList"
+                        :proposal-name="proposal.proposal_name"
+                        :title="proposal.title"
+                        :proposer="proposal.proposer"
+                        :available-budget="proposal.available_budget"
+                        :img="proposal.proposal_json.img || undefined"
+                        :category="proposal.proposal_json.category"
+                        :summary="proposal.proposal_json.summary"
+                        :budget="proposal.total_budget"
+                        :duration="proposal.duration"
+                        :payments="proposal.payouts"
+                        :status-by-votes="proposal.statusByVotes"
+                        :votes="proposal.total_net_votes"
+                        :is-draft="proposal.isDraft"
+                      />
+                    </v-col>
+                  </template>
+
+                  <template v-else>
+                    <v-col>
+                      <v-simple-table
+                        :fixed-header="true"
+                        class="w-100"
+                      >
+                        <ProposalsColTitles :is-draft="isDrafts" />
+
+                        <tbody>
+                          <ProposalItem
+                            v-for="(proposal, index)
+                              in proposalsFullInfo.insufficientVotesProposals"
+                            :key="index"
+                            :is-list="isList"
+                            :proposal-name="proposal.proposal_name"
+                            :title="proposal.title"
+                            :proposer="proposal.proposer"
+                            :available-budget="proposal.available_budget"
+                            :img="proposal.proposal_json.img || undefined"
+                            :category="proposal.proposal_json.category"
+                            :summary="proposal.proposal_json.summary"
+                            :budget="proposal.total_budget"
+                            :duration="proposal.duration"
+                            :payments="proposal.payouts"
+                            :status-by-votes="proposal.statusByVotes"
+                            :votes="proposal.total_net_votes"
+                            :is-draft="proposal.isDraft"
+                          />
+                        </tbody>
+                      </v-simple-table>
+                    </v-col>
+                  </template>
+                </v-row>
+              </div>
+            </template>
+
+            <span
+              v-else
+              class="font-weight-bold body-2"
+            >
+              {{ $t('noDataTexts.nothingToDisplay') }}
+            </span>
+          </div>
+        </template>
+
+        <template v-else>
+          <v-row class="mb-6">
+            <template v-if="proposalsParsed && proposalsParsed.length !== 0">
+              <template v-if="!isList">
                 <v-col
-                  v-for="(proposal, index) in proposalsFullInfo.paidProposals"
+                  v-for="(proposal, index) in proposalsParsed"
                   :key="index"
-                  cols="12"
-                  :md="isList ? 12 : 6"
+                  md="6"
                 >
                   <ProposalItem
                     :is-list="isList"
@@ -96,137 +333,42 @@
                     :payments="proposal.payouts"
                     :status-by-votes="proposal.statusByVotes"
                     :votes="proposal.total_net_votes"
-                    :is-draft="proposal.isDraft"
+                    :is-draft="isDrafts"
                   />
                 </v-col>
               </template>
-              <v-col v-else>
-                <span class="font-weight-bold body-2">
-                  {{ $t('noDataTexts.nothingToDisplay') }}
-                </span>
-              </v-col>
-            </v-row>
-          </div>
 
-          <div class="mb-12">
-            <h2 class="fs-30 mb-12">
-              {{ $t('common.notMeetingThreshold') }}
-            </h2>
-
-            <template
-              v-if="proposalsFullInfo.insufficientBudgetProposals
-                && proposalsFullInfo.insufficientBudgetProposals.length !== 0
-                || proposalsFullInfo.insufficientVotesProposals
-                && proposalsFullInfo.insufficientVotesProposals.length !== 0"
-            >
-              <div
-                v-if="proposalsFullInfo.insufficientBudgetProposals
-                  && proposalsFullInfo.insufficientBudgetProposals.length !== 0"
-                class="mb-6"
-              >
-                <h3 class="red--text fs-20 mb-6">
-                  {{ $t('proposalItem.insufficientBudget') }}
-                </h3>
-
-                <v-row>
-                  <v-col
-                    v-for="(proposal, index) in proposalsFullInfo.insufficientBudgetProposals"
-                    :key="index"
-                    cols="12"
-                    :md="isList ? 12 : 6"
+              <template v-else>
+                <v-col>
+                  <v-simple-table
+                    :fixed-header="true"
+                    class="w-100"
                   >
-                    <ProposalItem
-                      :is-list="isList"
-                      :proposal-name="proposal.proposal_name"
-                      :title="proposal.title"
-                      :proposer="proposal.proposer"
-                      :available-budget="proposal.available_budget"
-                      :img="proposal.proposal_json.img || undefined"
-                      :category="proposal.proposal_json.category"
-                      :summary="proposal.proposal_json.summary"
-                      :budget="proposal.total_budget"
-                      :duration="proposal.duration"
-                      :payments="proposal.payouts"
-                      :status-by-votes="proposal.statusByVotes"
-                      :votes="proposal.total_net_votes"
-                      :is-draft="proposal.isDraft"
-                    />
-                  </v-col>
-                </v-row>
-              </div>
+                    <ProposalsColTitles :is-draft="isDrafts" />
 
-              <div
-                v-if="proposalsFullInfo.insufficientVotesProposals
-                  && proposalsFullInfo.insufficientVotesProposals.length !== 0"
-                class="mb-6"
-              >
-                <h3 class="red--text fs-20 mb-6">
-                  {{ $t('proposalItem.insufficientVotes') }}
-                </h3>
-
-                <v-row>
-                  <v-col
-                    v-for="(proposal, index) in proposalsFullInfo.insufficientVotesProposals"
-                    :key="index"
-                    cols="12"
-                    :md="isList ? 12 : 6"
-                  >
-                    <ProposalItem
-                      :is-list="isList"
-                      :proposal-name="proposal.proposal_name"
-                      :title="proposal.title"
-                      :proposer="proposal.proposer"
-                      :available-budget="proposal.available_budget"
-                      :img="proposal.proposal_json.img || undefined"
-                      :category="proposal.proposal_json.category"
-                      :summary="proposal.proposal_json.summary"
-                      :budget="proposal.total_budget"
-                      :duration="proposal.duration"
-                      :payments="proposal.payouts"
-                      :status-by-votes="proposal.statusByVotes"
-                      :votes="proposal.total_net_votes"
-                      :is-draft="proposal.isDraft"
-                    />
-                  </v-col>
-                </v-row>
-              </div>
-            </template>
-
-            <span
-              v-else
-              class="font-weight-bold body-2"
-            >
-              {{ $t('noDataTexts.nothingToDisplay') }}
-            </span>
-          </div>
-        </template>
-
-        <template v-else>
-          <v-row class="mb-12">
-            <template v-if="proposalsParsed && proposalsParsed.length !== 0">
-              <v-col
-                v-for="(proposal, index) in proposalsParsed"
-                :key="index"
-                cols="12"
-                :md="isList ? 12 : 6"
-              >
-                <ProposalItem
-                  :is-list="isList"
-                  :proposal-name="proposal.proposal_name"
-                  :title="proposal.title"
-                  :proposer="proposal.proposer"
-                  :available-budget="proposal.available_budget"
-                  :img="proposal.proposal_json.img || undefined"
-                  :category="proposal.proposal_json.category"
-                  :summary="proposal.proposal_json.summary"
-                  :budget="proposal.total_budget"
-                  :duration="proposal.duration"
-                  :payments="proposal.payouts"
-                  :status-by-votes="proposal.statusByVotes"
-                  :votes="proposal.total_net_votes"
-                  :is-draft="isDrafts"
-                />
-              </v-col>
+                    <tbody>
+                      <ProposalItem
+                        v-for="(proposal, index) in proposalsParsed"
+                        :key="index"
+                        :is-list="isList"
+                        :proposal-name="proposal.proposal_name"
+                        :title="proposal.title"
+                        :proposer="proposal.proposer"
+                        :available-budget="proposal.available_budget"
+                        :img="proposal.proposal_json.img || undefined"
+                        :category="proposal.proposal_json.category"
+                        :summary="proposal.proposal_json.summary"
+                        :budget="proposal.total_budget"
+                        :duration="proposal.duration"
+                        :payments="proposal.payouts"
+                        :status-by-votes="proposal.statusByVotes"
+                        :votes="proposal.total_net_votes"
+                        :is-draft="isDrafts"
+                      />
+                    </tbody>
+                  </v-simple-table>
+                </v-col>
+              </template>
             </template>
             <v-col v-else>
               <span class="font-weight-bold body-2">
@@ -235,35 +377,35 @@
             </v-col>
           </v-row>
         </template>
+      </template>
 
-        <div
-          v-if="getAccountNameWithAuthority"
-          class="create-proposal"
-        >
-          <div class="d-flex align-center justify-center flex-column">
-            <v-btn
-              fab
-              color="primary"
-              class="mb-4"
-              :elevation="0"
-              :large="true"
-              height="68"
-              width="68"
-              :to="{ name: 'Proposal editor' }"
+      <div
+        v-if="getAccountNameWithAuthority"
+        class="create-proposal"
+      >
+        <div class="d-flex align-center justify-center flex-column">
+          <v-btn
+            fab
+            color="primary"
+            class="mb-4"
+            :elevation="0"
+            :large="true"
+            height="68"
+            width="68"
+            :to="{ name: 'Proposal editor' }"
+          >
+            <v-icon
+              class="fs-17"
+              dark
             >
-              <v-icon
-                class="fs-17"
-                dark
-              >
-                mdi-plus
-              </v-icon>
-            </v-btn>
-            <div class="font-weight-bold body-2">
-              {{ $t('common.createProposal') }}
-            </div>
+              mdi-plus
+            </v-icon>
+          </v-btn>
+          <div class="font-weight-bold body-2">
+            {{ $t('common.createProposal') }}
           </div>
         </div>
-      </template>
+      </div>
     </v-container>
   </div>
 </template>
@@ -271,12 +413,14 @@
 <script>
   import { mapState, mapGetters, mapActions } from 'vuex';
   import ProposalItem from '@/components/ProposalItem.vue';
+  import ProposalsColTitles from '@/components/ProposalsColTitles.vue';
   import ActionType from '@/store/constants';
 
   export default {
     name: 'Proposals',
     components: {
       ProposalItem,
+      ProposalsColTitles,
     },
     data() {
       return {
@@ -392,8 +536,8 @@
       },
       defineStatus(totalNetVotes, voteMargin, isEligible) {
         return totalNetVotes >= voteMargin && isEligible
-               ? this.$t('proposalStatuses.paid')
-               : this.$t('proposalStatuses.unpaid');
+          ? this.$t('proposalItem.passing')
+          : this.$t('proposalItem.notPassing');
       },
       sortProposalsByVotes(proposals) {
         return proposals
@@ -403,12 +547,12 @@
         const paidProposals = this.sortProposalsByVotes(
           proposals
             .filter(proposal => proposal.statusByVotes
-              === this.$t('proposalStatuses.paid')),
+              === this.$t('proposalItem.passing')),
         );
 
         const unpaidProposals = proposals
           .filter(proposal => proposal.statusByVotes
-            === this.$t('proposalStatuses.unpaid'));
+            === this.$t('proposalItem.notPassing'));
 
         const insufficientBudgetProposals = this.sortProposalsByVotes(
           unpaidProposals
@@ -483,5 +627,16 @@
     background-position: top, right, bottom, left;
     background-size: 15px 5px, 5px 15px;
     background-repeat: repeat-x, repeat-y;
+  }
+
+  .responsive-card {
+    overflow-x: auto;
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .w-100 {
+    width: 100%;
   }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="py-12 proposal">
+  <div class="pb-12 proposal">
     <v-container class="container--custom">
       <div
         v-if="isDataLoading"

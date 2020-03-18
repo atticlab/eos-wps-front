@@ -1,5 +1,5 @@
 <template>
-  <v-container class="py-12 container--custom">
+  <v-container class="pb-12 container--custom">
     <h1 class="fs-50">
       {{ $t('userGuide.submittingProposal') }}
     </h1>
@@ -20,7 +20,7 @@
           </h2>
 
           <ol class="body-2 font-weight-medium">
-            <li>
+            <li class="ol-block">
               <i18n path="userGuide.signInSection.li1">
                 <template #url>
                   <a
@@ -33,7 +33,7 @@
               </i18n>
             </li>
 
-            <li>
+            <li class="ol-block">
               {{ $t('userGuide.signInSection.li2.title') }}
               <ol type="a">
                 <li>{{ $t('userGuide.signInSection.li2.a') }}</li>
@@ -41,7 +41,9 @@
               </ol>
             </li>
 
-            <li>{{ $t('userGuide.signInSection.li3') }}</li>
+            <li class="ol-block">
+              {{ $t('userGuide.signInSection.li3') }}
+            </li>
           </ol>
         </section>
 
@@ -56,7 +58,7 @@
             </h3>
 
             <ol class="body-2 font-weight-medium">
-              <li>
+              <li class="ol-block">
                 <i18n path="userGuide.setupProposalSection.subSection1.li1.title">
                   <template #proposalName>
                     <span class="font-weight-bold">
@@ -81,7 +83,7 @@
                 </ul>
               </li>
 
-              <li>
+              <li class="ol-block">
                 <i18n path="userGuide.setupProposalSection.subSection1.li2.title">
                   <template #proposalTitle>
                     <span class="font-weight-bold">
@@ -100,7 +102,7 @@
                 </ul>
               </li>
 
-              <li>
+              <li class="ol-block">
                 <i18n path="userGuide.setupProposalSection.subSection1.li3.title">
                   <template #proposalSummary>
                     <span class="font-weight-bold">
@@ -119,7 +121,7 @@
                 </ul>
               </li>
 
-              <li>
+              <li class="ol-block">
                 <i18n path="userGuide.setupProposalSection.subSection1.li4.title">
                   <template #proposalCategory>
                     <span class="font-weight-bold">
@@ -145,7 +147,7 @@
                 </ol>
               </li>
 
-              <li>
+              <li class="ol-block">
                 <i18n path="userGuide.setupProposalSection.subSection1.li5.title">
                   <template #proposalBudget>
                     <span class="font-weight-bold">
@@ -267,7 +269,7 @@
             </h3>
 
             <ol class="body-2 font-weight-medium">
-              <li>
+              <li class="ol-block">
                 <i18n path="userGuide.setupProposalSection.subSection2.li1.title">
                   <template #heroImage>
                     <span class="font-weight-bold">
@@ -288,7 +290,7 @@
                 </ol>
               </li>
 
-              <li>
+              <li class="ol-block">
                 <i18n path="userGuide.setupProposalSection.subSection2.li2.title">
                   <template #videoLink>
                     <span class="font-weight-bold">
@@ -317,7 +319,7 @@
             </h3>
 
             <ol class="body-2 font-weight-medium">
-              <li>
+              <li class="ol-block">
                 {{ $t('userGuide.setupProposalSection.subSection3.li1.title') }}
                 <ol type="a">
                   <li>
@@ -326,7 +328,7 @@
                 </ol>
               </li>
 
-              <li>
+              <li class="ol-block">
                 {{ $t('userGuide.setupProposalSection.subSection3.li2.title') }}
                 <ul>
                   <li>
@@ -344,7 +346,7 @@
           </h2>
 
           <ol class="body-2 font-weight-medium">
-            <li>
+            <li class="ol-block">
               <i18n path="userGuide.descriptionSection.li1">
                 <template #description>
                   <span class="font-weight-bold text-lowercase">
@@ -353,10 +355,10 @@
                 </template>
               </i18n>
             </li>
-            <li>
+            <li class="ol-block">
               {{ $t('userGuide.descriptionSection.li2') }}
             </li>
-            <li>
+            <li class="ol-block">
               {{ $t('userGuide.descriptionSection.li3') }}
             </li>
           </ol>
@@ -368,7 +370,7 @@
           </h2>
 
           <ol class="body-2 font-weight-medium">
-            <li>
+            <li class="ol-block">
               <i18n path="userGuide.timelineSection.li1.title">
                 <template #timeline>
                   <span class="font-weight-bold text-lowercase">
@@ -453,10 +455,12 @@
 
 
             <ol class="body-2 font-weight-medium mb-6">
-              <li>
+              <li class="ol-block">
                 {{ $t('userGuide.clickButton', { buttonName: $t('proposalPage.payFeeShort') }) }}
               </li>
-              <li>{{ $t('userGuide.publishProposalSection.subSection1.li2') }}</li>
+              <li class="ol-block">
+                {{ $t('userGuide.publishProposalSection.subSection1.li2') }}
+              </li>
             </ol>
 
             <p class="body-2 font-weight-medium">
@@ -470,13 +474,13 @@
             </h3>
 
             <ol class="body-2 font-weight-medium mb-6">
-              <li>
+              <li class="ol-block">
                 {{ $t('userGuide.clickButton', { buttonName: $t('proposalPage.activate') }) }}
               </li>
-              <li>
+              <li class="ol-block">
                 {{ $t('userGuide.publishProposalSection.subSection2.li2') }}
               </li>
-              <li>
+              <li class="ol-block">
                 {{ $t('userGuide.publishProposalSection.subSection2.li3.title') }}
 
                 <ol type="a">
@@ -516,4 +520,7 @@
 </script>
 
 <style lang="scss" scoped>
+  .ol-block {
+    margin-bottom: 10px;
+  }
 </style>
