@@ -4,23 +4,23 @@ export default {
   [ActionType.SET_EOS]: (state, data) => {
     state.eos = Object.assign({}, data);
   },
+  [ActionType.SET_SIGNATURE_PROVIDER]: (state, data) => {
+    state.signatureProvider = Object.assign({}, data);
+  },
   [ActionType.SET_EOS_ACCOUNT]: (state, data) => {
     state.eosAccount = data;
   },
   [ActionType.SET_IS_BP]: (state, data) => {
     state.isBp = data;
   },
-  [ActionType.SET_IS_SCATTER_LOGIN_LOADING]: (state, data) => {
-    state.isScatterLoginLoading = data;
+  [ActionType.SET_IS_UAL_LOGIN_LOADING]: (state, data) => {
+    state.isUALLoginLoading = data;
   },
-  [ActionType.SET_IS_SCATTER_NOT_CONNECTED]: (state, data) => {
-    state.isScatterNotConnected = data;
+  [ActionType.SET_IS_UAL_NOT_CONNECTED]: (state, data) => {
+    state.isUALNotConnected = data;
   },
   [ActionType.SET_ROUTE_TO]: (state, data) => {
     state.routeTo = data;
-  },
-  [ActionType.SET_SCATTER]: (state, data) => {
-    state.scatter = data;
   },
 
   [ActionType.SET_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME]: (state, data) => {

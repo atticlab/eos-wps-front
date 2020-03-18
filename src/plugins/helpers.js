@@ -65,7 +65,7 @@ const helpers = {
       if (!p.actionName) throw new Error('empty actionName');
       if (!p.data) throw new Error('empty data');
       actions.push({
-        account: Vue.prototype.$constants.CONTRACT_NAME,
+        account: p.account || Vue.prototype.$constants.CONTRACT_NAME,
         name: p.actionName,
         authorization: [{
           actor: Vue.prototype.$store.getters['userService/getAccountName'],

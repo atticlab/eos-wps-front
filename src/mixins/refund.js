@@ -23,13 +23,15 @@ export default {
         }
 
         this.isRefundLoading = true;
-        const res = await this.eos.transaction(
+        const { signatureProvider } = window;
+        const res = await signatureProvider.signTransaction(
           this.$helpers.buildBaseTransactionPayload([{
             actionName: 'refund',
             data: {
               account: this.getAccountName,
             },
           }]),
+          { expireSeconds: 120, blocksBehind: 3 },
         );
         return res.transaction_id;
       } catch (e) {

@@ -1,17 +1,37 @@
-import ScatterJS from '@scatterjs/core';
+import { Anchor } from 'ual-anchor';
+import { Ledger } from 'ual-ledger';
+import { Scatter } from 'ual-scatter';
+
+const appName = 'WPS';
 
 export default {
-  eos: ScatterJS.Network.fromJson({
-    blockchain: 'eos',
+  networks: [{
     chainId: 'e70aaab8997e1dfce58fbfac80cbbb8fecec7b99cf982a9444273cbc64c41473',
-    host: 'junglessl.atticlab.net',
-    port: 443,
-    protocol: 'https',
-    httpEndpoint: 'https://junglessl.atticlab.net',
-    expireInSeconds: 60,
-    broadcast: true,
-    verbose: false,
-    sign: true,
-  }),
-  appName: 'WPS',
+    rpcEndpoints: [{
+      protocol: 'https',
+      host: 'junglessl.atticlab.net',
+      port: Number(443),
+    }],
+  }],
+  authenticators: [
+    {
+      authenticator: Scatter,
+      options: {
+        appName,
+      },
+    },
+    {
+      authenticator: Anchor,
+      options: {
+        appName,
+      },
+    },
+    {
+      authenticator: Ledger,
+      options: {
+        appName,
+      },
+    },
+  ],
+  appName,
 };

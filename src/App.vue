@@ -96,19 +96,8 @@
           <v-list-item class="px-0">
             <v-list-item-content class="pt-0">
               <v-list-item-title class="text-center">
-                <v-btn
-                  v-if="!getAccountNameWithAuthority"
-                  large
-                  height="50"
-                  color="primary"
-                  class="text-transform-none mt-8"
-                  :disabled="isScatterLoginLoading"
-                  @click="SCATTER_LOGIN"
-                >
-                  {{ $t('common.signInWithScatter') }}
-                </v-btn>
                 <v-menu
-                  v-else
+                  v-if="getAccountNameWithAuthority"
                   offset-y
                 >
                   <template v-slot:activator="{ on }">
@@ -133,7 +122,7 @@
 
                   <v-list>
                     <v-list-item
-                      @click="SCATTER_LOGOUT"
+                      @click="UAL_LOGOUT"
                     >
                       <v-list-item-title class="body-2 font-weight-medium">
                         {{ $t('common.signOut') }}
@@ -267,7 +256,7 @@
 
           <v-list>
             <v-list-item
-              @click="SCATTER_LOGOUT()"
+              @click="UAL_LOGOUT()"
             >
               <v-list-item-title class="font-weight-medium">
                 {{ $t('common.signOut') }}
@@ -279,18 +268,10 @@
         <LanguageDropdown />
       </v-toolbar-items>
 
-      <v-btn
+      <div
         v-if="!getAccountNameWithAuthority"
-        color="primary"
-        class="d-none d-md-flex ml-4 text-transform-none"
-        :elevation="0"
-        :disabled="isScatterLoginLoading"
-        :large="true"
-        height="50"
-        @click="SCATTER_LOGIN"
-      >
-        {{ $t('common.signInWithScatter') }}
-      </v-btn>
+        class="button-placeholder"
+      />
 
       <v-btn
         v-else
@@ -322,26 +303,7 @@
           </template>
         </i18n>
       </div>
-
-      <v-overlay v-if="isScatterLoginLoading">
-        <v-alert
-          transition="scale-transition"
-          border-top
-          color="primary"
-          :class="{ 'alert-scatter': true }"
-        >
-          {{ $t('notifications.scatterInit') }}
-        </v-alert>
-
-        <v-progress-circular
-          :size="70"
-          :width="7"
-          color="primary"
-          indeterminate
-        />
-      </v-overlay>
-
-      <router-view v-else />
+      <router-view />
     </v-content>
 
     <v-footer
@@ -388,34 +350,13 @@
         </v-card-text>
       </v-card>
     </v-footer>
-
-    <v-snackbar
-      v-if="!isScatterLoginLoading"
-      v-model="isSnackbarOpen"
-      color="primary"
-      :timeout="30000"
-      :top="true"
-      :multi-line="true"
-      class="text-center"
-    >
-      {{ $t('notifications.scatterIsNotConnected') }}
-      <v-btn
-        color="red"
-        text
-        @click="SET_IS_SCATTER_NOT_CONNECTED(false)"
-      >
-        <v-icon>
-          mdi-close
-        </v-icon>
-      </v-btn>
-    </v-snackbar>
   </v-app>
 </template>
 
 <script>
   import {
- mapState, mapActions, mapGetters, mapMutations,
-} from 'vuex';
+    mapState, mapActions, mapGetters,
+  } from 'vuex';
   import ActionType from '@/store/constants';
   import getProducers from '@/mixins/getProducers';
   import LanguageDropdown from '@/components/LanguageDropdown.vue';
@@ -429,13 +370,10 @@
     data() {
       return {
         drawer: false,
-        isSnackbarOpen: true,
       };
     },
     computed: {
       ...mapState({
-        isScatterLoginLoading: state => state.userService.isScatterLoginLoading,
-        isScatterNotConnected: state => state.userService.isScatterNotConnected,
         routeTo: state => state.userService.routeTo,
         draftProposals: state => state.userService.draftProposals,
         proposalState: state => state.userService.proposalState,
@@ -460,15 +398,9 @@
           }
         },
       },
-      isScatterNotConnected: {
-        immediate: true,
-        handler(val) {
-          this.isSnackbarOpen = val;
-        },
-      },
     },
     async created() {
-      this[ActionType.SCATTER_INIT]();
+      this[ActionType.UAL_INIT]();
       await this[ActionType.REQUEST_STATE]();
       this.$_getProducers();
       this.$eventBus.$on('proposal-created', (val) => {
@@ -484,13 +416,10 @@
       });
     },
     methods: {
-      ...mapMutations('userService', [
-        ActionType.SET_IS_SCATTER_NOT_CONNECTED,
-      ]),
       ...mapActions('userService', [
-        ActionType.SCATTER_INIT,
-        ActionType.SCATTER_LOGOUT,
-        ActionType.SCATTER_LOGIN,
+        ActionType.UAL_INIT,
+        ActionType.UAL_LOGOUT,
+        ActionType.UAL_LOGIN,
         ActionType.DEFINE_ROUTE_TO,
         ActionType.REQUEST_PRODUCERS,
         ActionType.REQUEST_DRAFTS_BY_ACCOUNT_NAME,
@@ -506,15 +435,6 @@
 
 <style lang="scss">
   @import '~@/assets/scss/main';
-
-  .alert-scatter {
-    width: 100%;
-    text-align: center;
-    position: fixed !important;
-    z-index: 2;
-    left: 0;
-    top: 0;
-  }
 
   .v-app-bar {
     border-bottom: 1px solid $grey-white !important;
