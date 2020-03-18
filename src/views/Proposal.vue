@@ -434,6 +434,25 @@
                       </v-btn>
                     </div>
                   </div>
+
+                  <div class="d-flex justify-space-between align-center flex-wrap mb-4">
+                    <div class="actions-left">
+                      <div class="font-weight-semi-bold text-uppercase">
+                        {{ $t('proposalPage.claimAction') }}
+                      </div>
+                    </div>
+
+                    <div class="actions-btn-container">
+                      <v-btn
+                        block
+                        :elevation="0"
+                        class="btn--alt"
+                        @click="$_claimAction(proposalId)"
+                      >
+                        {{ $t('proposalPage.claim') }}
+                      </v-btn>
+                    </div>
+                  </div>
                 </template>
               </v-container>
             </v-card>
@@ -534,6 +553,7 @@
   import cancelProposalDraft from '@/mixins/cancelProposalDraft';
   import isProposalExist from '@/mixins/isProposalExist';
   import notification from '@/mixins/notification';
+  import claimAction from '@/mixins/claimAction';
 
   export default {
     name: 'Proposal',
@@ -552,6 +572,7 @@
       cancelProposalDraft,
       isProposalExist,
       notification,
+      claimAction,
     ],
     data() {
       return {
