@@ -141,8 +141,8 @@
               <v-list-item-title>
                 <v-btn
                   color="primary"
-                  class="text-transform-none"
-                  height="50"
+                  class="text-transform-none px-3"
+                  height="40"
                   :to="{ name: 'Proposal editor' }"
                 >
                   {{ $t('common.createProposal') }}
@@ -156,7 +156,7 @@
 
     <v-app-bar
       app
-      height="80"
+      height="60"
       class="border fs-14"
       :elevate-on-scroll="true"
     >
@@ -278,9 +278,8 @@
         :to="{ name: 'Proposal editor' }"
         color="primary"
         :elevation="0"
-        class="d-none d-md-flex text-transform-none"
-        :large="true"
-        height="50"
+        class="d-none d-md-flex text-transform-none px-3"
+        height="40"
       >
         {{ $t('common.createProposal') }}
       </v-btn>
@@ -292,11 +291,11 @@
     </v-app-bar>
 
     <v-content>
-      <div class="d-flex justify-end pa-4 voting-period-counter">
+      <div class="d-flex justify-end py-1 px-4 voting-period-counter">
         <i18n
           path="proposalPage.currentVotingPeriodEndsIn"
           tag="p"
-          class="red--text font-weight-medium mb-0"
+          class="red--text font-weight-medium body-2 mb-0"
         >
           <template #daysTillEnd>
             {{ getDaysBeforeCurrentVotingPeriodExpires }}
@@ -455,10 +454,11 @@
   }
 
   .drawer-header {
-    height: 80px;
+    height: 60px;
 
     .v-list-item__content {
-      height: 80px;
+      padding-top: 8px;
+      height: 60px;
     }
   }
 
@@ -466,7 +466,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    height: calc(100vh - 80px);
+    height: calc(100vh - 60px);
     min-height: 266px;
   }
 
