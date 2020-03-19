@@ -125,12 +125,22 @@
       ? `/proposal/draft/${proposalName}`
       : `/proposal/active/${proposalName}` }"
   >
-    <td>{{ title }}</td>
-    <!--      <td>{{ proposer }}</td>-->
-    <td v-if="!isDraft">
+    <td class="body-2 font-weight-semi-bold">
+      {{ title }}
+    </td>
+    <td class="body-2 font-weight-semi-bold primary--text">
+      {{ proposer }}
+    </td>
+    <td
+      v-if="!isDraft"
+      class="body-2 font-weight-semi-bold"
+    >
       {{ availableBudget }}
     </td>
-    <td v-if="!isDraft">
+    <td
+      v-if="!isDraft"
+      class="body-2 font-weight-semi-bold"
+    >
       <span
         v-if="!isDraft"
         :class="{'red--text': statusByVotes === $t('proposalItem.notPassing'),
@@ -139,17 +149,23 @@
         {{ statusByVotes }}
       </span>
     </td>
-    <td>
+    <td class="body-2 font-weight-semi-bold">
       {{ budget }}
     </td>
-    <td v-if="!isDraft">
+    <td
+      v-if="!isDraft"
+      class="body-2 font-weight-semi-bold"
+    >
       {{ payments }}
     </td>
-    <td>
+    <td class="body-2 font-weight-semi-bold">
       {{ duration }}
       {{ $t('common.months') }}
     </td>
-    <td v-if="!isDraft">
+    <td
+      v-if="!isDraft"
+      class="body-2 font-weight-semi-bold"
+    >
       <span
         :class="{ 'primary--text': votes > 0,
                   'red--text': votes < 0,
@@ -272,5 +288,9 @@
 
   .h-100 {
     height: 100%;
+  }
+
+  td {
+    line-height: 1.55rem !important;
   }
 </style>

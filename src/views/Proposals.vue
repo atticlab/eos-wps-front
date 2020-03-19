@@ -618,6 +618,7 @@
     align-items: center;
     justify-content: center;
     height: 235px;
+    margin-top: 55px;
 
     background-image:
       radial-gradient(circle at 2px, #4a4a4a 1px, rgba(255,255,255,0) 1px),

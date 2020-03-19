@@ -4,7 +4,9 @@
       <th class="text-left">
         {{ $t('proposalCreationPage.proposalName') }}
       </th>
-      <!--    <th class="text-left">{{ $t('proposalPage.proposedBy') }}</th>-->
+      <th class="text-left">
+        {{ $t('proposalPage.proposedBy') }}
+      </th>
       <th
         v-if="!isDraft"
         class="text-left"
@@ -50,3 +52,13 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+  @import "~@/assets/scss/variables";
+
+  th {
+    color: $black !important;
+    font-weight: 700;
+    font-size: 14px;
+  }
+</style>

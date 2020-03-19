@@ -24,7 +24,7 @@
               <i18n path="userGuide.signInSection.li1">
                 <template #url>
                   <a
-                    href="http://eoswps.io"
+                    href="https://eoswps.io"
                     target="_blank"
                   >
                     https://eoswps.io
