@@ -454,10 +454,11 @@
   }
 
   .drawer-header {
-    height: 80px;
+    height: 60px;
 
     .v-list-item__content {
-      height: 80px;
+      padding-top: 8px;
+      height: 60px;
     }
   }
 
@@ -465,7 +466,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    height: calc(100vh - 80px);
+    height: calc(100vh - 60px);
     min-height: 266px;
   }
 
