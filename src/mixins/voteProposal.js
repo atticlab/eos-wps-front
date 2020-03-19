@@ -27,7 +27,8 @@ export default {
         }
 
         this.isVoteProposalLoading = true;
-        const res = await this.eos.transaction(
+        const { signatureProvider } = window;
+        const res = await signatureProvider.signTransaction(
           this.$helpers.buildBaseTransactionPayload([{
             actionName: 'vote',
             data: {
@@ -36,8 +37,9 @@ export default {
               vote: data.vote,
             },
           }]),
+          { expireSeconds: 120, blocksBehind: 3 },
         );
-        return res.transaction_id;
+        return res.transaction_id || res.transactionId;
       } catch (e) {
         // TODO: notify about err
         console.error('$_voteProposal', e);

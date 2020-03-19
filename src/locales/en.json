@@ -1,6 +1,7 @@
 {
   "common": {
     "proposals": "Proposals",
+    "signIn": "Sign in",
     "signInWithScatter": "Sign in with Scatter",
     "signOut": "Sign out",
     "createProposal": "Create proposal",

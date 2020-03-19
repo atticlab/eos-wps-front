@@ -610,6 +610,7 @@
       async refund() {
         try {
           await this.$_refund();
+          this.getData();
           this.showSuccessMsg(this.$t('notifications.sentRefund'));
         } catch {} // eslint-disable-line no-empty
       },

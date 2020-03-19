@@ -23,12 +23,21 @@ export default {
         }
 
         this.isSendDepositLoading = true;
-        const response = await this.eos.transfer(
-          this.getAccountName,
-          this.$constants.CONTRACT_NAME,
-          '100.0000 EOS', '',
+        const { signatureProvider } = window;
+        const res = await signatureProvider.signTransaction(
+          this.$helpers.buildBaseTransactionPayload([{
+            account: 'eosio.token',
+            actionName: 'transfer',
+            data: {
+              from: this.getAccountName,
+              to: this.$constants.CONTRACT_NAME,
+              quantity: '100.0000 EOS',
+              memo: '',
+            },
+          }]),
+          { expireSeconds: 120, blocksBehind: 3 },
         );
-        return response.transaction_id;
+        return res.transaction_id || res.transactionId;
       } catch (e) {
         console.error('$_sendDeposit', e);
         this.$errorsHandler.handleError(e);

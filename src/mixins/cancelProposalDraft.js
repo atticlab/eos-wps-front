@@ -27,7 +27,8 @@ export default {
         }
 
         this.isCancelProposalDraftLoading = true;
-        const res = await this.eos.transaction(
+        const { signatureProvider } = window;
+        const res = await signatureProvider.signTransaction(
           this.$helpers.buildBaseTransactionPayload([{
             actionName: 'canceldraft',
             data: {
@@ -35,8 +36,9 @@ export default {
               proposal_name: data.proposalName,
             },
           }]),
+          { expireSeconds: 120, blocksBehind: 3 },
         );
-        return res.transaction_id;
+        return res.transaction_id || res.transactionId;
       } catch (e) {
         console.error('$_cancelProposalDraft', e);
         this.$errorsHandler.handleError(e);

@@ -1,7 +1,8 @@
 import Vue from 'vue';
-import Eos from 'eosjs';
-import ScatterJS from '@scatterjs/core';
-import ScatterEOS from '@scatterjs/eosjs';
+
+import { UALJs } from 'ual-plainjs-renderer';
+
+import i18n from '../../../i18n';
 import router from '../../../router';
 import ActionType from '../../constants';
 import config from '@/config';
@@ -14,63 +15,92 @@ const settingsTable = 'settings';
 const stateTable = 'state';
 const votesTable = 'votes';
 
-ScatterJS.plugins(new ScatterEOS());
-
 export default {
-  [ActionType.SCATTER_INIT]: async ({ commit }) => {
+  [ActionType.UAL_INIT]: async ({ commit }) => {
     try {
-      commit(ActionType.SET_IS_SCATTER_LOGIN_LOADING, true);
-      const connected = await ScatterJS.connect(config.appName, { network: config.eos });
-      if (!connected) {
-        throw new Error('Scatter not connected');
-      }
-      const { scatter } = ScatterJS;
-      if (scatter.isExtension) {
-        throw new Error('Web scatter not supported');
-      }
-
-      commit(ActionType.SET_EOS, scatter.eos(config.eos, Eos));
-      if (scatter.identity) {
-        commit(ActionType.SET_EOS_ACCOUNT, scatter.account('eos'));
-      }
-
-      window.scatter = null;
-      window.ScatterJS = null;
+      commit(ActionType.SET_IS_UAL_LOGIN_LOADING, true);
+      const authenticators = config.authenticators.map(
+        ({
+          authenticator: Authenticator,
+          options,
+        }) => new Authenticator(config.networks, options),
+      );
+      const authCallback = async ([user]) => {
+        let authority;
+        window.signatureProvider = user;
+        if (user.scatter) {
+          // If using scatter, grab authority from the first identity
+          ([{ authority }] = user.scatter.identity.accounts);
+        } else if (user.requestPermission === true) {
+          // if using a ledger, figure out what authority this is
+          const [publicKey] = user.signatureProvider.cachedKeys;
+          const account = await user.rpc.get_account(user.accountName);
+          const [match] = account.permissions.filter((p) => {
+            const matching = p.required_auth.keys.filter(k => k.key === publicKey);
+            return matching.length;
+          });
+          if (match) {
+            authority = match.perm_name;
+          }
+        } else {
+          // If using anchor, grab authority from requestPermission
+          authority = user.requestPermission;
+        }
+        const name = await user.getAccountName();
+        commit(ActionType.SET_EOS_ACCOUNT, {
+          name,
+          authority,
+        });
+        // hide button until UAL plainjs renderer is fixed
+        if (window.ual.dom) {
+          window.ual.dom.reset();
+          window.document.getElementById('ual-button').remove();
+        }
+      };
+      const ual = new UALJs(
+        authCallback,
+        config.networks,
+        config.appName,
+        authenticators,
+        {
+          containerElement: document.body,
+          buttonStyleOverride: `
+            #ual-button:after {
+              text-indent: 0;
+              content: '${i18n.t('common.signIn')}';
+            }
+          `,
+        },
+      );
+      ual.init();
+      window.ual = ual;
+      window.signatureProvider = null;
       return true;
     } catch (e) {
-      console.error('ActionType.SCATTER_INIT', e);
-      commit(ActionType.SET_IS_SCATTER_NOT_CONNECTED, true);
+      console.error('ActionType.UAL_INIT', e);
+      commit(ActionType.SET_IS_UAL_NOT_CONNECTED, true);
       return false;
     } finally {
-      commit(ActionType.SET_IS_SCATTER_LOGIN_LOADING, false);
+      commit(ActionType.SET_IS_UAL_LOGIN_LOADING, false);
     }
   },
-  [ActionType.SCATTER_LOGIN]: async ({ commit, dispatch }) => {
+  [ActionType.UAL_LOGIN]: async ({ dispatch }) => {
     try {
-      if (!ScatterJS.scatter || !ScatterJS.scatter.login) {
-        try {
-          await dispatch(ActionType.SCATTER_INIT);
-        } catch (e) {
-          throw e;
-        }
-      }
-      // SET_IS_SCATTER_LOGIN_LOADING if the SCATTER_INIT called
-      // commit(ActionType.SET_IS_SCATTER_LOGIN_LOADING, true);
-
-      if (!await ScatterJS.scatter.login()) return new Error('no identity');
-      commit(ActionType.SET_EOS_ACCOUNT, ScatterJS.scatter.account('eos'));
+      await dispatch(ActionType.UAL_INIT);
+      window.ual.dom.showAuthModal();
       return true;
     } catch (e) {
-      console.error('ActionType.SCATTER_LOGIN', e);
+      console.error('ActionType.UAL_LOGIN', e);
       return false;
     }
   },
-  [ActionType.SCATTER_LOGOUT]: ({ commit, dispatch }, data) => {
-    if (ScatterJS.scatter && ScatterJS.scatter.logout) {
-      ScatterJS.scatter.logout();
+  [ActionType.UAL_LOGOUT]: async ({ commit, dispatch }, data) => {
+    if (window.ual.logoutUser) {
+      window.ual.logoutUser();
     }
     commit(ActionType.SET_EOS_ACCOUNT, null);
     commit(ActionType.SET_IS_BP, false);
+    dispatch(ActionType.UAL_INIT);
     dispatch(ActionType.DEFINE_ROUTE_TO, null);
     if (data !== 'ProposalsActive') {
       router.push({ name: 'ProposalsActive' });
@@ -185,7 +215,7 @@ export default {
     const indexPosition = 1;
 
     if (!getters.getAccountName) {
-      throw new Error('you should login in Scatter');
+      throw new Error('you should login in first');
     }
     if (!proposalName) {
       throw new Error('you should specify proposalName');
@@ -225,7 +255,7 @@ export default {
     const indexPosition = 1;
 
     if (!getters.getAccountName) {
-      throw new Error('you should login in Scatter');
+      throw new Error('you should login in first');
     }
     try {
       commit(ActionType.SET_IS_DRAFTS_BY_ACCOUNT_NAME_LOADING, true);
