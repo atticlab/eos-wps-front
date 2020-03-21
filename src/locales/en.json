@@ -32,12 +32,14 @@
     "yes": "Yes",
     "no": "No",
     "about": "About",
-    "overview": "Overview"
+    "overview": "Overview",
+    "duration": "Duration"
   },
   "proposalItem": {
     "availableBudget": "Available budget",
     "status": "Status",
     "passing": "Passing",
+    "notPassing": "Not passing",
     "insufficientVotes": "Insufficient votes",
     "insufficientBudget": "Insufficient budget"
   },
@@ -149,9 +151,9 @@
     "votingPeriodsAndFunding": "Voting periods and funding",
     "votingPeriodsAndFundingP1": "A maximum budget of {maxMonthlyBudget} will be made available for each {votingPeriod}. The period budget and duration are settings within the WPS smart contract that can be adjusted by MSIG approval from 15 of the top 21 Block Producers.",
     "votingPeriod": "{days}-day voting period",
-    "votingPeriodsAndFundingP2": "{eosio} is funded from the fees accumulated in the eosio.names and eosio.ramfee accounts prior to the deployment of REX. Prior to REX, these accounts accumulated roughly 3.5 million EOS from EOS premium name auctions and RAM purchase fees. These administrative fees were voluntarily collected from token holders by the network. It’s important to note these do not constitute inflation or taxation as they stem from services rendered by the network for specific individuals at their request. An MSIG approval from 15 of the top 21 Block Producers will be required to move funds to eosio.wps, and this will occur on an ongoing basis.",
+    "votingPeriodsAndFundingP2": "{eosio} is funded from the fees accumulated in the eosio.names and eosio.ramfee accounts prior to the deployment of REX. Prior to REX, these accounts accumulated roughly 3.5 million EOS from EOS premium name auctions and RAM purchase fees. These administrative fees were voluntarily collected from token holders by the network. It’s important to note these funds do not stem from inflation or taxation as they originate from services rendered by the network for specific individuals at their request. An MSIG approval from 15 of the top 21 Block Producers will be required to move funds to eosio.wps, and this will occur on an ongoing basis.",
     "votingPeriodsAndFundingP3": "Any ongoing fees being collected by `eosio.names` & `eosio.ramfee` will continue to flow to REX holders and shall not be transferred to `eosio.wps`. Funds flowing into REX will not be affected by this proposal.",
-    "votingPeriodsAndFundingP4": "We’ll propose to transfer 50,000 EOS, or two periods worth, to the `eosio.wps` account upon activation of the EOS WPS system. We’ll propose a top-up of another 25,000 EOS one month ahead of each period. This gives the top 21 the flexibility to discontinue the WPS system at any time by simply not funding it.",
+    "votingPeriodsAndFundingP4": "We’ll propose to transfer 50,000 EOS, or two periods worth, to the `eosio.wps` account upon activation of the EOS WPS system. We’ll propose a top-up of another {maxMonthlyBudget} one month ahead of each period. This gives the top 21 the flexibility to discontinue the WPS system at any time by simply not funding it.",
     "passingProposals": "Passing proposals",
     "passingProposalsP": "To pass a proposal, it must meet the following {proposalThreshold} at the close of the voting period",
     "proposalThresholdSmall": "proposal threshold",
@@ -196,7 +198,7 @@
       },
       "5": {
         "question": "Is the {depositFee} fee ever refunded?",
-        "answer": "No, the fee is non-refundable once the proposal has been published. However, during the draft period of a proposal, the deposit of 100 EOS can be refunded."
+        "answer": "No, the fee is non-refundable once the proposal has been published. However, during the draft period of a proposal, the deposit of {depositFee} can be refunded."
       },
       "6": {
         "question": "Can my proposal be eligible for the next period if it does not meet the threshold in during the voting period it was published?",
@@ -212,7 +214,7 @@
       },
       "9": {
         "question": "Can I request payment in milestones, or does it need to be a lump sum?",
-        "answer": "Yes, you can request to split your payment across a maximum of 6 30-day periods, coinciding with the voting periods. But payment is subject to continued voting for each period. Votes for multi-period proposals roll over to subsequent voting periods. Payment will only be transferred during periods where the proposal meets the proposal threshold. If threshold is not met during a period, the proposal will remain active for the next voting periods."
+        "answer": "Yes, you can request to split your payment across a maximum of 6 {days}-day periods, coinciding with the voting periods. But payment is subject to continued voting for each period. Votes for multi-period proposals roll over to subsequent voting periods. Payment will only be transferred during periods where the proposal meets the proposal threshold. If threshold is not met during a period, the proposal will remain active for the next voting periods."
       },
       "10": {
         "question": "Do I need to pay a fee for each voting period for my multi-period proposal?",
@@ -246,8 +248,8 @@
       "li1": "Go to {url}",
       "li2": {
         "title": "Sign in with your EOS account",
-        "a": "Click “Sign in with Scatter”",
-        "b": "Select the account you would like to use to submit the proposal from the Scatter pop-up and click “Allow”"
+        "a": "Click “Sign in”",
+        "b": "Select your preffered wallet and sign in with the account you'd like to use to submit the proposal."
       },
       "li3": "Click the “Create proposal” button at the top of the portal"
     },
@@ -338,14 +340,14 @@
       "preface": "Now that your draft is saved, you should be on the Drafts page of the EOS WPS portal. You can access this page at any time by clicking the Drafts button at the top of the portal. Here you can see a list of all of the draft proposals currently awaiting to be published, including the draft you just saved. Click on your proposal to go to the details page. From here you can review your proposal and have options to pay the proposal fee, edit the proposal, or delete the proposal. Before you can publish your proposal, you must pay the proposal fee.",
       "subSection1": {
         "title": "Pay proposal fee:",
-        "li2": "Approve the transfer of 100 EOS to the eosio.wps account by clicking the “Allow” button in the Scatter pop-up window.",
+        "li2": "Approve the transfer of {depositFee} to the eosio.wps account by clicking the “Allow” button in the Scatter pop-up window.",
         "p1": "Once the fee has been successfully paid, you’ll see new options to activate the proposal or refund your proposal fee. Once you activate the proposal you are no longer able to edit the proposal or refund your proposal fee. Make sure you’re happy with the proposal before moving on to the final step."
       },
       "subSection2": {
         "title": "Activate proposal:",
         "li2": "Read the disclaimer in the pop-up window. Your proposal can’t be edited once it’s activated.",
         "li3": {
-          "title": "Decide if you want to activate the proposal immediately or for the next voting period. The pop-up window will display how many days remain in the voting period. Your proposal needs to pass in the voting period it’s published - so consider activating for the next voting period if the current period is nearing the end. Voting periods are 30 days.",
+          "title": "Decide if you want to activate the proposal immediately or for the next voting period. The pop-up window will display how many days remain in the voting period. Your proposal needs to pass in the voting period it’s published - so consider activating for the next voting period if the current period is nearing the end. Voting periods are {days} days.",
           "a": {
             "title": "Click “Activate for current” if you want to activate your proposal for the current period.",
             "subLi1": "If there are 5 days or less remaining in the voting period, you’ll be prevented from activating the proposal for the current period."
@@ -449,7 +451,9 @@
     "smallBalance": "Post balance cannot be less than 0",
     "votesDoesntExist": "Votes does not exist",
     "invalidVote": "Invalid vote (ex: yes/no/abstain)",
-    "completeActionRequired": "You should execute `complete` action"
+    "completeActionRequired": "You should execute `complete` action",
+    "mustHaveVotes": "You must have votes",
+    "cannotActivateWithin": "Cannot be activated shortly after the end of the next voting period"
   },
   "proposalStatuses": {
     "paid": "Paid",

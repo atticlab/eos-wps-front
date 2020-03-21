@@ -1,5 +1,5 @@
 <template>
-  <v-container class="py-12 container--custom">
+  <v-container class="pb-12 container--custom">
     <h1 class="fs-50">
       {{ $t('about.wpsFull') }}
     </h1>

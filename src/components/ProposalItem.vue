@@ -1,32 +1,39 @@
 <template>
   <router-link
+    v-if="!isList"
     class="proposal-link d-block"
     :to="{ path: isDraft
       ? `/proposal/draft/${proposalName}`
       : `/proposal/active/${proposalName}` }"
   >
-    <v-card flat>
+    <v-card
+      class="h-100"
+      flat
+    >
       <div>
         <v-img
-          v-if="!isList"
           :src="img"
           height="218px"
         />
-        <div class="pa-4">
+        <div class="px-4 py-2">
           <div
             class="d-flex justify-space-between flex-column align-start
-                   flex-sm-row align-sm-center mb-1 mb-sm-0"
+                       flex-sm-row align-sm-center mb-0"
           >
-            <h2 class="fs-20 mb-1">
+            <h2 class="fs-20">
               {{ title }}
             </h2>
 
-            <span class="primary--text font-weight-bold text-capitalize body-2">
+            <span
+              class="primary--text font-weight-bold text-capitalize body-2"
+            >
               {{ category }}
             </span>
           </div>
 
-          <div class="mb-3 font-weight-medium body-2">
+          <div
+            class="font-weight-medium body-2"
+          >
             by
             <span class="font-weight-bold primary--text">{{ proposer }}</span>
           </div>
@@ -39,7 +46,7 @@
             >
               <div
                 v-if="!isDraft"
-                class="font-weight-bold mb-2 body-2"
+                class="font-weight-bold body-2"
               >
                 {{ $t('proposalItem.availableBudget') }}:
                 <span class="font-weight-medium">{{ availableBudget }}</span>
@@ -47,20 +54,18 @@
 
               <div
                 v-if="!isDraft"
-                class="font-weight-bold mb-2 body-2"
+                class="font-weight-bold body-2"
               >
                 {{ $t('proposalItem.status') }}:
                 <span
-                  :class="{'text-capitalize': true,
-                           'red--text': statusByVotes === $t('proposalStatuses.unpaid'),
-                           'primary--text': statusByVotes === $t('proposalStatuses.paid')
-                  }"
+                  :class="{'red--text': statusByVotes === $t('proposalItem.notPassing'),
+                           'primary--text': statusByVotes === $t('proposalItem.passing')}"
                 >
                   {{ statusByVotes }}
                 </span>
               </div>
 
-              <div class="font-weight-bold mb-2 body-2">
+              <div class="font-weight-bold body-2">
                 {{ $t('common.requested') }}:
                 <span class="font-weight-medium">{{ budget }}</span>
               </div>
@@ -72,13 +77,13 @@
             >
               <div
                 v-if="!isDraft"
-                class="font-weight-bold mb-2 body-2"
+                class="font-weight-bold body-2"
               >
                 {{ $t('common.payments') }}:
                 <span class="font-weight-medium">{{ payments }}</span>
               </div>
 
-              <div class="font-weight-bold mb-2 body-2">
+              <div class="font-weight-bold body-2">
                 {{ $t('common.paymentsDuration') }}:
                 <span class="font-weight-medium">
                   {{ duration }}
@@ -88,7 +93,7 @@
 
               <div
                 v-if="!isDraft"
-                class="font-weight-bold mb-2 body-2"
+                class="font-weight-bold body-2"
               >
                 {{ $t('common.votes') }}:
                 <span
@@ -102,12 +107,73 @@
             </v-col>
           </v-row>
 
-          <div class=" font-weight-medium my-2 body-2">
+          <div
+            v-if="!isList"
+            class=" font-weight-medium my-2 body-2"
+          >
             {{ summary }}
           </div>
         </div>
       </div>
     </v-card>
+  </router-link>
+
+  <router-link
+    v-else
+    class="proposal-link proposal-link--list d-block"
+    :to="{ path: isDraft
+      ? `/proposal/draft/${proposalName}`
+      : `/proposal/active/${proposalName}` }"
+  >
+    <td class="body-2 font-weight-semi-bold">
+      {{ title }}
+    </td>
+    <td class="body-2 font-weight-semi-bold primary--text">
+      {{ proposer }}
+    </td>
+    <td
+      v-if="!isDraft"
+      class="body-2 font-weight-semi-bold"
+    >
+      {{ availableBudget }}
+    </td>
+    <td
+      v-if="!isDraft"
+      class="body-2 font-weight-semi-bold"
+    >
+      <span
+        v-if="!isDraft"
+        :class="{'red--text': statusByVotes === $t('proposalItem.notPassing'),
+                 'primary--text': statusByVotes === $t('proposalItem.passing')}"
+      >
+        {{ statusByVotes }}
+      </span>
+    </td>
+    <td class="body-2 font-weight-semi-bold">
+      {{ budget }}
+    </td>
+    <td
+      v-if="!isDraft"
+      class="body-2 font-weight-semi-bold"
+    >
+      {{ payments }}
+    </td>
+    <td class="body-2 font-weight-semi-bold">
+      {{ duration }}
+      {{ $t('common.months') }}
+    </td>
+    <td
+      v-if="!isDraft"
+      class="body-2 font-weight-semi-bold"
+    >
+      <span
+        :class="{ 'primary--text': votes > 0,
+                  'red--text': votes < 0,
+        }"
+      >
+        {{ votes }}
+      </span>
+    </td>
   </router-link>
 </template>
 
@@ -187,17 +253,26 @@
     position: relative;
     transition: all 0.2s;
     text-decoration: none;
+    color: initial;
+    height: 100%;
+
+    &--list {
+      display: table-row !important;
+      &:before {
+        display: none;
+      }
+    }
 
     &:before {
-      content: '';
-      background-color: $primary;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      z-index: 1;
-      transition: all 0.15s;
-      position: absolute;
-      height: 4px;
+    content: '';
+    background-color: $primary;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    z-index: 1;
+    transition: all 0.15s;
+    position: absolute;
+    height: 4px;
     }
 
     &:hover:before {
@@ -206,6 +281,16 @@
 
     &:hover {
       transform: translateY(-1%);
+
+      background-color: #eee;
     }
+  }
+
+  .h-100 {
+    height: 100%;
+  }
+
+  td {
+    line-height: 1.55rem !important;
   }
 </style>

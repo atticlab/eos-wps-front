@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-row class="mb-10 mt-6">
+    <v-row class="mb-10 mt-6 px-3">
       <v-col
         cols="12"
         sm="6"
