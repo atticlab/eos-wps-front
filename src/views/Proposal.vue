@@ -447,7 +447,7 @@
                         block
                         :elevation="0"
                         class="btn--alt"
-                        :disabled="!canBeClaimed"
+                        :disabled="!canBeClaimed || isClaimLoading"
                         @click="claimAction(proposalId)"
                       >
                         {{ $t('proposalPage.claim') }}
