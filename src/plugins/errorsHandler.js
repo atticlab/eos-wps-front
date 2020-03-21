@@ -50,7 +50,6 @@ const getUserFriendlyErrorMsg = (msg) => {
   if (msg.includes('no claimable amount')) return i18n.t('notifications.noClaimableAmount');
   if (msg.includes('no claimable amount')) return i18n.t('notifications.noClaimableAmount');
   if (msg.includes('already activated')) return i18n.t('notifications.alreadyActivated');
-  if (msg.includes('already activated')) return i18n.t('notifications.alreadyActivated');
   if (msg.includes('has not been modified')) return i18n.t('notifications.notModified');
   if (msg.includes('already exists')) return i18n.t('notifications.alreadyExists');
   if (msg.includes('deposit account does not exist')) return i18n.t('notifications.depositAccountDoesntExist');
@@ -85,6 +84,8 @@ const getUserFriendlyErrorMsg = (msg) => {
   if (msg.includes('[proposal_name] votes does not exist')) return i18n.t('notifications.votesDoesntExist');
   if (msg.includes('[vote] invalid')) return i18n.t('notifications.invalidVote');
   if (msg.includes('[current_voting_period] is completed, any account must execute [complete] ACTION to continue')) return i18n.t('notifications.completeActionRequired');
+  if (msg.includes('[voter] must have votes')) return i18n.t('notifications.mustHaveVotes');
+  if (msg.includes('cannot activate within')) return i18n.t('notifications.cannotActivateWithin');
 
   // End WPS smart contract errors
 
@@ -95,17 +96,25 @@ const errorsHandler = {
   handleError: (err) => {
     const errTitle = i18n.t('notifications.error');
     let errMsg;
+
     if (typeof err === 'string') {
-      const errParsed = JSON.parse(err);
-      errMsg = errParsed.error.details[0].message;
+      try {
+        const errParsed = JSON.parse(err);
+        errMsg = errParsed.error.details[0].message;
+      } catch {} // eslint-disable-line no-empty
     }
-    if (err.type) {
-      errMsg = err.type;
-    }
+    // if (err.type) {
+    //   errMsg = err.type;
+    // }
     if (typeof err.message === 'string') {
       errMsg = err.message;
     }
+    if (err && err.cause && err.cause.json && err.cause.json.error && err.cause.json.error.details
+      && err.cause.json.error.details[0] && err.cause.json.error.details[0].message) {
+      errMsg = err.cause.json.error.details[0].message;
+    }
 
+    console.log('errMsg', errMsg);
     return VueNotifications.error({ title: errTitle, message: getUserFriendlyErrorMsg(errMsg) });
   },
 };

@@ -449,7 +449,9 @@
     "smallBalance": "Post balance cannot be less than 0",
     "votesDoesntExist": "Votes does not exist",
     "invalidVote": "Invalid vote (ex: yes/no/abstain)",
-    "completeActionRequired": "You should execute `complete` action"
+    "completeActionRequired": "You should execute `complete` action",
+    "mustHaveVotes": "You must have votes",
+    "cannotActivateWithin": "Cannot be activated shortly after the end of the next voting period"
   },
   "proposalStatuses": {
     "paid": "Paid",
