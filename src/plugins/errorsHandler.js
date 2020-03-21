@@ -114,7 +114,6 @@ const errorsHandler = {
       errMsg = err.cause.json.error.details[0].message;
     }
 
-    console.log('errMsg', errMsg);
     return VueNotifications.error({ title: errTitle, message: getUserFriendlyErrorMsg(errMsg) });
   },
 };

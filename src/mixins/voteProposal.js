@@ -41,7 +41,6 @@ export default {
         );
         return res.transaction_id || res.transactionId;
       } catch (e) {
-        // TODO: notify about err
         console.error('$_voteProposal', e);
         this.$errorsHandler.handleError(e);
         throw e;
