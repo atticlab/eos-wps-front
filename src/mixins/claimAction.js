@@ -20,7 +20,7 @@ export default {
       if (!proposalName) {
         throw new Error('empty proposalName');
       }
-      console.log(proposalName);
+
       try {
         if (!this.eosAccount) {
           throw new Error('notifications.mustLogin');

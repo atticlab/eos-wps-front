@@ -415,6 +415,7 @@
   import ProposalItem from '@/components/ProposalItem.vue';
   import ProposalsColTitles from '@/components/ProposalsColTitles.vue';
   import ActionType from '@/store/constants';
+  import defineProposalStatus from '@/mixins/defineProposalStatus';
 
   export default {
     name: 'Proposals',
@@ -422,6 +423,9 @@
       ProposalItem,
       ProposalsColTitles,
     },
+    mixins: [
+      defineProposalStatus,
+    ],
     data() {
       return {
         sortByOptions: [
@@ -489,7 +493,7 @@
         const proposalsWithStatusesByVotes = this.proposalsParsed.map(proposal => ({
           ...proposal,
           ...{
-            statusByVotes: this.defineStatus(
+            statusByVotes: this.$_defineProposalStatus(
                 proposal.total_net_votes,
                 this.proposalsSettings.vote_margin,
                 Boolean(proposal.eligible),
@@ -533,11 +537,6 @@
       getLastPartOfRoute(path) {
         const pathItems = path.split('/');
         return pathItems[pathItems.length - 1];
-      },
-      defineStatus(totalNetVotes, voteMargin, isEligible) {
-        return totalNetVotes >= voteMargin && isEligible
-          ? this.$t('proposalItem.passing')
-          : this.$t('proposalItem.notPassing');
       },
       sortProposalsByVotes(proposals) {
         return proposals

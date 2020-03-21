@@ -447,7 +447,8 @@
                         block
                         :elevation="0"
                         class="btn--alt"
-                        @click="$_claimAction(proposalId)"
+                        :disabled="!canBeClaimed"
+                        @click="claimAction(proposalId)"
                       >
                         {{ $t('proposalPage.claim') }}
                       </v-btn>
@@ -554,6 +555,7 @@
   import isProposalExist from '@/mixins/isProposalExist';
   import notification from '@/mixins/notification';
   import claimAction from '@/mixins/claimAction';
+  import defineProposalStatus from '@/mixins/defineProposalStatus';
 
   export default {
     name: 'Proposal',
@@ -573,6 +575,7 @@
       isProposalExist,
       notification,
       claimAction,
+      defineProposalStatus,
     ],
     data() {
       return {
@@ -589,6 +592,7 @@
         proposalState: state => state.userService.proposalState,
         votesByProposalName: state => state.userService.votesByProposalName,
         proposalDeposit: state => state.userService.proposalDeposit,
+        proposalsSettings: state => state.userService.proposalsSettings,
       }),
       ...mapGetters('userService', {
         getAccountNameWithAuthority: 'getAccountNameWithAuthority',
@@ -602,6 +606,10 @@
 
         return Number(this.proposalDeposit.balance.split(' ')[0])
           >= this.$constants.MIN_DEPOSIT;
+      },
+      canBeClaimed() {
+        return this.$_defineProposalStatus(this.proposal.total_net_votes,
+          this.proposalsSettings.vote_margin, Boolean(this.proposal.eligible)) === this.$t('proposalItem.passing');
       },
     },
     // Get a proposal if a user is already on the proposal page
@@ -702,6 +710,11 @@
         } finally {
           this.isDataLoading = false;
         }
+      },
+      async claimAction(proposalName) {
+        try {
+          await this.$_claimAction(proposalName);
+        } catch {} // eslint-disable-line no-empty
       },
     },
   };
