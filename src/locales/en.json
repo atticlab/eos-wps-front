@@ -90,7 +90,9 @@
     "voteFor": "Vote for proposal",
     "abstainIn": "Abstain from voting",
     "voteAgainst": "Vote against proposal",
-    "published": "Published"
+    "published": "Published",
+    "claimAction": "Claim Action",
+    "claim": "Claim"
   },
   "proposalCreationPage": {
     "proposalCreation": "Proposal creation",

@@ -48,7 +48,6 @@ const getUserFriendlyErrorMsg = (msg) => {
   if (msg.includes('contract not yet initialized')) return i18n.t('notifications.contractNotInitialized');
   if (msg.includes('settings are missing')) return i18n.t('notifications.settingsAreMissing');
   if (msg.includes('no claimable amount')) return i18n.t('notifications.noClaimableAmount');
-  if (msg.includes('no claimable amount')) return i18n.t('notifications.noClaimableAmount');
   if (msg.includes('already activated')) return i18n.t('notifications.alreadyActivated');
   if (msg.includes('has not been modified')) return i18n.t('notifications.notModified');
   if (msg.includes('already exists')) return i18n.t('notifications.alreadyExists');

@@ -434,6 +434,26 @@
                       </v-btn>
                     </div>
                   </div>
+
+                  <div class="d-flex justify-space-between align-center flex-wrap mb-4">
+                    <div class="actions-left">
+                      <div class="font-weight-semi-bold text-uppercase">
+                        {{ $t('proposalPage.claimAction') }}
+                      </div>
+                    </div>
+
+                    <div class="actions-btn-container">
+                      <v-btn
+                        block
+                        :elevation="0"
+                        class="btn--alt"
+                        :disabled="!canBeClaimed || isClaimLoading"
+                        @click="claimAction(proposalId)"
+                      >
+                        {{ $t('proposalPage.claim') }}
+                      </v-btn>
+                    </div>
+                  </div>
                 </template>
               </v-container>
             </v-card>
@@ -534,6 +554,8 @@
   import cancelProposalDraft from '@/mixins/cancelProposalDraft';
   import isProposalExist from '@/mixins/isProposalExist';
   import notification from '@/mixins/notification';
+  import claimAction from '@/mixins/claimAction';
+  import defineProposalStatus from '@/mixins/defineProposalStatus';
 
   export default {
     name: 'Proposal',
@@ -552,6 +574,8 @@
       cancelProposalDraft,
       isProposalExist,
       notification,
+      claimAction,
+      defineProposalStatus,
     ],
     data() {
       return {
@@ -568,6 +592,7 @@
         proposalState: state => state.userService.proposalState,
         votesByProposalName: state => state.userService.votesByProposalName,
         proposalDeposit: state => state.userService.proposalDeposit,
+        proposalsSettings: state => state.userService.proposalsSettings,
       }),
       ...mapGetters('userService', {
         getAccountNameWithAuthority: 'getAccountNameWithAuthority',
@@ -581,6 +606,10 @@
 
         return Number(this.proposalDeposit.balance.split(' ')[0])
           >= this.$constants.MIN_DEPOSIT;
+      },
+      canBeClaimed() {
+        return this.$_defineProposalStatus(this.proposal.total_net_votes,
+          this.proposalsSettings.vote_margin, Boolean(this.proposal.eligible)) === this.$t('proposalItem.passing');
       },
     },
     // Get a proposal if a user is already on the proposal page
@@ -681,6 +710,11 @@
         } finally {
           this.isDataLoading = false;
         }
+      },
+      async claimAction(proposalName) {
+        try {
+          await this.$_claimAction(proposalName);
+        } catch {} // eslint-disable-line no-empty
       },
     },
   };
