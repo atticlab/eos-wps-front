@@ -28,6 +28,7 @@
     "months": "month(s)",
     "passingProposals": "Passing proposals",
     "notMeetingThreshold": "Not meeting threshold",
+    "pendingProposals": "Pending proposals",
     "paymentsDuration": "Duration of payments",
     "yes": "Yes",
     "no": "No",
@@ -40,6 +41,7 @@
     "status": "Status",
     "passing": "Passing",
     "notPassing": "Not passing",
+    "pending": "Pending",
     "insufficientVotes": "Insufficient votes",
     "insufficientBudget": "Insufficient budget"
   },

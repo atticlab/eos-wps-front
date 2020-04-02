@@ -8,7 +8,7 @@
         {{ $t('proposalPage.proposedBy') }}
       </th>
       <th
-        v-if="!isDraft"
+        v-if="!isDraft && !isPending"
         class="text-left"
       >
         {{ $t('proposalItem.availableBudget') }}
@@ -46,6 +46,10 @@ export default {
   name: 'ProposalsColTitles',
   props: {
     isDraft: {
+      type: Boolean,
+      default: false,
+    },
+    isPending: {
       type: Boolean,
       default: false,
     },

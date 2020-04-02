@@ -42,6 +42,11 @@ const routes = [
     component: Proposal,
   },
   {
+    path: '/proposal/pending/:slug',
+    name: 'ProposalPending',
+    component: Proposal,
+  },
+  {
     path: '/proposal/draft/:slug',
     name: 'ProposalDraft',
     component: Proposal,

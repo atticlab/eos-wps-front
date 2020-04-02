@@ -110,7 +110,6 @@ export default {
   [ActionType.DEFINE_ROUTE_TO]: ({ commit }, data) => {
     commit(ActionType.SET_ROUTE_TO, data);
   },
-
   [ActionType.REQUEST_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME]: async ({ commit }, proposalName) => {
     if (!proposalName) {
       throw new Error('you should specify proposalName');
@@ -179,6 +178,44 @@ export default {
       Vue.prototype.$errorsHandler.handleError(e);
     } finally {
       commit(ActionType.SET_IS_ACTIVE_PROPOSALS_LOADING, false);
+    }
+  },
+  [ActionType.REQUEST_PENDING_PROPOSALS]: async ({ commit }) => {
+    let response = null;
+    let lowerBound = 'pending';
+    const upperBound = lowerBound;
+    const result = [];
+    const indexPosition = 2; // status
+
+    try {
+      commit(ActionType.SET_IS_PENDING_PROPOSALS_LOADING, true);
+      do {
+        /* eslint-disable */
+        response = await Vue.prototype.$independentEosApi
+          .getTableRows(
+            proposalsTable,
+            Vue.prototype.$constants.CONTRACT_NAME,
+            Vue.prototype.$constants.CONTRACT_NAME,
+            lowerBound,
+            upperBound,
+            indexPosition,
+          );
+        /* eslint-enable */
+        result.push(...response.rows);
+        lowerBound = response.next_key;
+      } while (response.more);
+
+      if (!result || !result.length) {
+        commit(ActionType.SET_PENDING_PROPOSALS, []);
+        return;
+      }
+
+      commit(ActionType.SET_PENDING_PROPOSALS, Vue.prototype.$helpers.copyDeep(result));
+    } catch (e) {
+      console.error('REQUEST_PENDING_PROPOSALS', e);
+      Vue.prototype.$errorsHandler.handleError(e);
+    } finally {
+      commit(ActionType.SET_IS_PENDING_PROPOSALS_LOADING, false);
     }
   },
   [ActionType.REQUEST_DEPOSIT]: async ({ commit, getters }) => {
