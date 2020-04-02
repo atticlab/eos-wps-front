@@ -55,7 +55,7 @@
       </div>
 
       <div
-        v-if="isAllDataLoading || isDraftProposalByAccountNameLoading"
+        v-if="isAllDataLoading || isDraftProposalByAccountNameLoading || isPendingProposalsLoading"
         class="d-flex justify-center"
       >
         <v-progress-circular
@@ -143,7 +143,7 @@
             </v-row>
           </div>
 
-          <div>
+          <div class="mb-6">
             <h2 class="fs-30">
               {{ $t('common.notMeetingThreshold') }}
             </h2>
@@ -301,13 +301,95 @@
               </div>
             </template>
 
-            <span
-              v-else
-              class="font-weight-bold body-2"
-            >
-              {{ $t('noDataTexts.nothingToDisplay') }}
-            </span>
+            <v-row v-else>
+              <v-col>
+                <span
+                  class="font-weight-bold body-2"
+                >
+                  {{ $t('noDataTexts.nothingToDisplay') }}
+                </span>
+              </v-col>
+            </v-row>
           </div>
+
+
+          <!-- Pending proposals -->
+          <div>
+            <h2 class="fs-30">
+              {{ $t('common.pendingProposals') }}
+            </h2>
+
+            <v-row>
+              <template
+                v-if="pendingProposalsParsed
+                  && pendingProposalsParsed.length !== 0"
+              >
+                <template v-if="!isList">
+                  <v-col
+                    v-for="(proposal, index) in pendingProposalsParsed"
+                    :key="index"
+                    md="6"
+                  >
+                    <ProposalItem
+                      :is-list="isList"
+                      :proposal-name="proposal.proposal_name"
+                      :title="proposal.title"
+                      :proposer="proposal.proposer"
+                      :available-budget="proposal.available_budget"
+                      :img="proposal.proposal_json.img || undefined"
+                      :category="proposal.proposal_json.category"
+                      :summary="proposal.proposal_json.summary"
+                      :budget="proposal.total_budget"
+                      :duration="proposal.duration"
+                      :payments="proposal.payouts"
+                      :status-by-votes="proposal.statusByVotes"
+                      :votes="proposal.total_net_votes"
+                      is-pending
+                    />
+                  </v-col>
+                </template>
+
+                <template v-else>
+                  <v-col>
+                    <v-simple-table
+                      :fixed-header="true"
+                      class="w-100"
+                    >
+                      <ProposalsColTitles is-pending />
+
+                      <tbody>
+                        <ProposalItem
+                          v-for="(proposal, index) in pendingProposalsParsed"
+                          :key="index"
+                          :is-list="isList"
+                          :proposal-name="proposal.proposal_name"
+                          :title="proposal.title"
+                          :proposer="proposal.proposer"
+                          :available-budget="proposal.available_budget"
+                          :img="proposal.proposal_json.img || undefined"
+                          :category="proposal.proposal_json.category"
+                          :summary="proposal.proposal_json.summary"
+                          :budget="proposal.total_budget"
+                          :duration="proposal.duration"
+                          :payments="proposal.payouts"
+                          :status-by-votes="proposal.statusByVotes"
+                          :votes="proposal.total_net_votes"
+                          is-pending
+                        />
+                      </tbody>
+                    </v-simple-table>
+                  </v-col>
+                </template>
+              </template>
+
+              <v-col v-else>
+                <span class="font-weight-bold body-2">
+                  {{ $t('noDataTexts.nothingToDisplay') }}
+                </span>
+              </v-col>
+            </v-row>
+          </div>
+          <!-- Pending proposals end -->
         </template>
 
         <template v-else>
@@ -441,8 +523,10 @@
     computed: {
       ...mapState({
         proposals: state => state.userService.proposals,
+        pendingProposals: state => state.userService.pendingProposals,
         draftProposals: state => state.userService.draftProposals,
         isActiveProposalsLoading: state => state.userService.isActiveProposalsLoading,
+        isPendingProposalsLoading: state => state.userService.isPendingProposalsLoading,
         isSettingsLoading: state => state.userService.isSettingsLoading,
         proposalsSettings: state => state.userService.proposalsSettings,
         isDraftProposalByAccountNameLoading: state => state
@@ -471,6 +555,16 @@
         }
 
         return proposalsClone
+          .map(
+            proposal => this.$helpers.parseProposal(proposal),
+          );
+      },
+      pendingProposalsParsed() {
+        if (!this.pendingProposals || this.pendingProposals.length === 0) return [];
+
+        const pendingProposalsClone = this.$helpers.copyDeep(this.pendingProposals);
+
+        return pendingProposalsClone
           .map(
             proposal => this.$helpers.parseProposal(proposal),
           );
@@ -522,6 +616,7 @@
           if (this.proposalsType === 'active') {
             this[ActionType.REQUEST_SETTINGS]();
             this[ActionType.REQUEST_PROPOSALS]();
+            this[ActionType.REQUEST_PENDING_PROPOSALS]();
           } else {
             this[ActionType.REQUEST_DRAFTS_BY_ACCOUNT_NAME]();
           }
@@ -531,6 +626,7 @@
     methods: {
       ...mapActions('userService', [
         ActionType.REQUEST_PROPOSALS,
+        ActionType.REQUEST_PENDING_PROPOSALS,
         ActionType.REQUEST_SETTINGS,
         ActionType.REQUEST_DRAFTS_BY_ACCOUNT_NAME,
       ]),

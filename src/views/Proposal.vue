@@ -17,7 +17,7 @@
         <v-row>
           <v-col
             cols="12"
-            :lg="getAccountNameWithAuthority ? 7 : 12"
+            :lg="getAccountNameWithAuthority && !isPending ? 7 : 12"
             class="d-flex"
           >
             <v-card
@@ -157,7 +157,7 @@
           </v-col>
 
           <v-col
-            v-if="getAccountNameWithAuthority"
+            v-if="getAccountNameWithAuthority && !isPending"
             cols="12"
             class="d-flex"
             lg="5"
@@ -600,6 +600,9 @@
       }),
       isDraft() {
         return this.$route.path.includes('draft');
+      },
+      isPending() {
+        return this.$route.path.includes('pending');
       },
       isMinDepositPaid() {
         if (!this.proposalDeposit || Object.keys(this.proposalDeposit).length === 0) return 0;

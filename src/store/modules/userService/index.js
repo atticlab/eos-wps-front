@@ -11,6 +11,7 @@ const state = {
 
   isActiveProposalByProposalNameLoading: false,
   isActiveProposalsLoading: false,
+  isPendingProposalsLoading: false,
   isDepositsLoading: false,
   isDraftProposalByProposalNameLoading: false,
   isDraftProposalByAccountNameLoading: false,
@@ -22,6 +23,7 @@ const state = {
 
   proposal: {},
   proposals: [],
+  pendingProposals: [],
   draftProposals: [],
   proposalDeposit: {},
   eosPrice: 0,

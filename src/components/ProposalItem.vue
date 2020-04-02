@@ -4,7 +4,9 @@
     class="proposal-link d-block"
     :to="{ path: isDraft
       ? `/proposal/draft/${proposalName}`
-      : `/proposal/active/${proposalName}` }"
+      : isPending
+        ? `/proposal/pending/${proposalName}`
+        : `/proposal/active/${proposalName}` }"
   >
     <v-card
       class="h-100"
@@ -45,7 +47,7 @@
               class="pb-0 pb-sm-3"
             >
               <div
-                v-if="!isDraft"
+                v-if="!isDraft && !isPending"
                 class="font-weight-bold body-2"
               >
                 {{ $t('proposalItem.availableBudget') }}:
@@ -53,11 +55,18 @@
               </div>
 
               <div
-                v-if="!isDraft"
+                v-if="!isDraft && isPending"
                 class="font-weight-bold body-2"
               >
                 {{ $t('proposalItem.status') }}:
                 <span
+                  v-if="isPending"
+                  class="warning--text"
+                >
+                  {{ $t('proposalItem.pending') }}
+                </span>
+                <span
+                  v-else
                   :class="{'red--text': statusByVotes === $t('proposalItem.notPassing'),
                            'primary--text': statusByVotes === $t('proposalItem.passing')}"
                 >
@@ -123,7 +132,9 @@
     class="proposal-link proposal-link--list d-block"
     :to="{ path: isDraft
       ? `/proposal/draft/${proposalName}`
-      : `/proposal/active/${proposalName}` }"
+      : isPending
+        ? `/proposal/pending/${proposalName}`
+        : `/proposal/active/${proposalName}` }"
   >
     <td class="body-2 font-weight-semi-bold">
       {{ title }}
@@ -132,7 +143,7 @@
       {{ proposer }}
     </td>
     <td
-      v-if="!isDraft"
+      v-if="!isDraft && !isPending"
       class="body-2 font-weight-semi-bold"
     >
       {{ availableBudget }}
@@ -142,11 +153,17 @@
       class="body-2 font-weight-semi-bold"
     >
       <span
-        v-if="!isDraft"
+        v-if="!isDraft && !isPending"
         :class="{'red--text': statusByVotes === $t('proposalItem.notPassing'),
                  'primary--text': statusByVotes === $t('proposalItem.passing')}"
       >
         {{ statusByVotes }}
+      </span>
+      <span
+        v-else-if="isPending"
+        class="warning--text"
+      >
+        {{ $t('proposalItem.pending') }}
       </span>
     </td>
     <td class="body-2 font-weight-semi-bold">
@@ -241,6 +258,10 @@
       isList: {
         type: Boolean,
         default: true,
+      },
+      isPending: {
+        type: Boolean,
+        default: false,
       },
     },
   };

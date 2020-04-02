@@ -29,6 +29,9 @@ export default {
   [ActionType.SET_PROPOSALS]: (state, data) => {
     state.proposals = data;
   },
+  [ActionType.SET_PENDING_PROPOSALS]: (state, data) => {
+    state.pendingProposals = data;
+  },
   [ActionType.SET_DEPOSIT]: (state, data) => {
     state.proposalDeposit = data;
   },
@@ -66,6 +69,9 @@ export default {
   },
   [ActionType.SET_IS_ACTIVE_PROPOSALS_LOADING]: (state, data) => {
     state.isActiveProposalsLoading = data;
+  },
+  [ActionType.SET_IS_PENDING_PROPOSALS_LOADING]: (state, data) => {
+    state.isPendingProposalsLoading = data;
   },
   [ActionType.SET_IS_DEPOSITS_LOADING]: (state, data) => {
     state.isDepositsLoading = data;
