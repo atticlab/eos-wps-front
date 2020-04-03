@@ -580,6 +580,7 @@
     data() {
       return {
         proposalId: this.$route.params.slug,
+        proposer: this.$route.params.proposer,
         activationDialog: false,
         isDataLoading: true,
       };
@@ -694,7 +695,7 @@
           this.isDataLoading = true;
 
           // Request either active proposal or draft
-          if (!await this.$_isProposalExist(this.proposalId)) {
+          if (!await this.$_isProposalExist(this.proposalId, this.proposer)) {
             this.$router.push({ name: 'Not found' });
             return;
           }
@@ -702,7 +703,9 @@
           if (this.isDraft) {
             await this[ActionType.REQUEST_STATE]();
             await this[ActionType.REQUEST_DEPOSIT]();
-            this[ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME](this.proposalId);
+            this[ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME](
+              { proposalName: this.proposalId, proposer: this.proposer },
+            );
           } else {
             this[ActionType.REQUEST_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME](this.proposalId);
           }

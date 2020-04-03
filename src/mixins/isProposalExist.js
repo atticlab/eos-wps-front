@@ -12,7 +12,7 @@ export default {
     }),
   },
   methods: {
-    async $_isProposalExist(candidateName) {
+    async $_isProposalExist(candidateName, account = this.getAccountName) {
       const proposalsTable = 'proposals';
       const draftsTable = 'drafts';
       const indexPosition = 1;
@@ -31,19 +31,19 @@ export default {
           candidateName,
           indexPosition,
         )];
-        if (this.getAccountName) {
+        if (account) {
           promiseArr.push(this.$independentEosApi
             .getTableRows(
               draftsTable,
               this.$constants.CONTRACT_NAME,
-              this.getAccountName,
+              account,
               candidateName,
               candidateName,
               indexPosition,
             ));
         }
         const [activeProposal, draftProposal] = await Promise.all(promiseArr);
-        if (!this.getAccountName) {
+        if (!account) {
           return !!activeProposal.rows.length;
         }
         return !!activeProposal.rows.length || !!draftProposal.rows.length;

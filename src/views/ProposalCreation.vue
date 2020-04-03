@@ -203,7 +203,7 @@ mapState, mapGetters, mapActions, mapMutations,
             return;
           }
 
-          this[ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME](this.proposalId);
+          this[ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME]({ proposalName: this.proposalId });
         },
       },
       async isDraftModified() {
@@ -213,7 +213,7 @@ mapState, mapGetters, mapActions, mapMutations,
           return;
         }
 
-        this[ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME](this.proposalId);
+        this[ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME]({ proposalName: this.proposalId });
       },
     },
     methods: {

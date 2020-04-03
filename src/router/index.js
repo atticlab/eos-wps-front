@@ -47,12 +47,9 @@ const routes = [
     component: Proposal,
   },
   {
-    path: '/proposal/draft/:slug',
+    path: '/proposal/draft/:proposer/:slug',
     name: 'ProposalDraft',
     component: Proposal,
-    meta: {
-      requiresAuth: true,
-    },
   },
   {
     path: '/proposal-editor/:slug?',
