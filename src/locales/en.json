@@ -481,5 +481,11 @@
     "visitRepos": "Share your feedback in our GitHub repos:",
     "smartContractRepo": "Smart contract repo",
     "uiRepo": "UI repo"
+  },
+  "comments": {
+    "title": "Comments",
+    "post": "Post",
+    "typeComment": "Type your comment",
+    "guest": "Guest"
   }
 }

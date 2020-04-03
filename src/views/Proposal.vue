@@ -507,6 +507,13 @@
           >
             {{ $t('proposalPage.voters') }}
           </v-tab>
+          <v-tab
+            class="text-transform-none font-weight-semi-bold body-1 px-12"
+            active-class="v-tab--active"
+            :ripple="false"
+          >
+            {{ $t('comments.title') }}
+          </v-tab>
 
           <v-tab-item>
             <Overview
@@ -533,6 +540,9 @@
           <v-tab-item>
             <Voters :votes-initial="votesByProposalName" />
           </v-tab-item>
+          <v-tab-item>
+            <Comments />
+          </v-tab-item>
         </v-tabs>
       </template>
     </v-container>
@@ -546,6 +556,7 @@
   import BudgetOverview from '@/components/proposal-tabs/BudgetOverview.vue';
   import TimelineOverview from '@/components/proposal-tabs/TimelineOverview.vue';
   import Voters from '@/components/proposal-tabs/Voters.vue';
+  import Comments from '@/components/proposal-tabs/Comments.vue';
   import proposalParsed from '@/mixins/proposalParsed';
   import voteProposal from '@/mixins/voteProposal';
   import sendDeposit from '@/mixins/sendDeposit';
@@ -564,6 +575,7 @@
       BudgetOverview,
       TimelineOverview,
       Voters,
+      Comments,
     },
     mixins: [
       proposalParsed,
