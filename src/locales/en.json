@@ -486,6 +486,7 @@
     "title": "Comments",
     "post": "Post",
     "typeComment": "Type your comment",
-    "guest": "Guest"
+    "guest": "Guest",
+    "sureToDeleteComment": "Are you sure you want to delete the comment?"
   }
 }
