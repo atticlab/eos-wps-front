@@ -443,7 +443,7 @@
     "voterMustHaveClaimedProducerRewards": "Voter must have claimed producer rewards",
     "proposalNameDoesntExists": "Proposal name does not exists",
     "proposalNameHasNotYetStarted": "Proposal name has not yet started",
-    "proposalNameHasEnded": "Proposal name has ended",
+    "proposalNameHasEnded": "Proposal has expired",
     "tooMushProposals": "Cannot exceed 100 proposals per single voting period",
     "overdrawnDepositBalance": "Overdrawn deposit balance",
     "votingPeriodNotEqualTo": "Voting period must be equal to current or next",
@@ -455,7 +455,9 @@
     "invalidVote": "Invalid vote (ex: yes/no/abstain)",
     "completeActionRequired": "You should execute `complete` action",
     "mustHaveVotes": "You must have votes",
-    "cannotActivateWithin": "Cannot be activated shortly after the end of the next voting period"
+    "cannotActivateWithin": "Cannot be activated shortly after the end of the next voting period",
+    "cannotVoteForOwnProposal": "Cannot vote for own proposal",
+    "forbiddenForBp": "Forbidden for block producer"
   },
   "proposalStatuses": {
     "paid": "Paid",
