@@ -102,6 +102,8 @@ export default {
     commit(ActionType.SET_IS_BP, false);
     dispatch(ActionType.UAL_INIT);
     dispatch(ActionType.DEFINE_ROUTE_TO, null);
+    commit(ActionType.SET_DEPOSIT, 0);
+
     if (data !== 'ProposalsActive') {
       router.push({ name: 'ProposalsActive' });
     }
@@ -218,9 +220,9 @@ export default {
       commit(ActionType.SET_IS_PENDING_PROPOSALS_LOADING, false);
     }
   },
-  [ActionType.REQUEST_DEPOSIT]: async ({ commit, getters }) => {
-    const lowerBound = getters.getAccountName;
-    const upperBound = getters.getAccountName;
+  [ActionType.REQUEST_DEPOSIT]: async ({ commit }, accountName) => {
+    const lowerBound = accountName;
+    const upperBound = accountName;
     let response = null;
     const indexPosition = 1;
 

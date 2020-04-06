@@ -587,7 +587,6 @@
     },
     computed: {
       ...mapState({
-        isBp: state => state.userService.isBp,
         proposal: state => state.userService.proposal,
         draftProposal: state => state.userService.draftProposal,
         proposalState: state => state.userService.proposalState,
@@ -598,6 +597,7 @@
       ...mapGetters('userService', {
         getAccountNameWithAuthority: 'getAccountNameWithAuthority',
         getDaysBeforeCurrentVotingPeriodExpires: 'getDaysBeforeCurrentVotingPeriodExpires',
+        getAccountName: 'getAccountName',
       }),
       isDraft() {
         return this.$route.path.includes('draft');
@@ -681,6 +681,11 @@
           return;
         }
 
+        if (this.$_proposalParsed.proposer === this.getAccountName) {
+          this.showErrorMsg(this.$t('notifications.cannotVoteForOwnProposal'));
+          return;
+        }
+
         try {
           await this.$_voteProposal({
             proposalName: this.proposalId,
@@ -702,7 +707,7 @@
 
           if (this.isDraft) {
             await this[ActionType.REQUEST_STATE]();
-            await this[ActionType.REQUEST_DEPOSIT]();
+            await this[ActionType.REQUEST_DEPOSIT](this.$route.params.proposer);
             this[ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME](
               { proposalName: this.proposalId, proposer: this.proposer },
             );
