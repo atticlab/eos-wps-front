@@ -152,6 +152,23 @@
                     {{ $_proposalParsed.proposal_json.video }}
                   </a>
                 </p>
+
+                <p
+                  v-if="$_proposalParsed.proposal_json
+                    && $_proposalParsed.proposal_json.discussion"
+                  class="mt-8 mb-4 body-2 font-weight-medium"
+                >
+                  <span>
+                    {{ $t('proposalPage.discussionChanel') }}:
+                  </span>
+                  <a
+                    :href="$_proposalParsed.proposal_json.discussion"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {{ $_proposalParsed.proposal_json.discussion }}
+                  </a>
+                </p>
               </v-container>
             </v-card>
           </v-col>

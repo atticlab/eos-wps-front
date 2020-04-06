@@ -94,7 +94,8 @@
     "voteAgainst": "Vote against proposal",
     "published": "Published",
     "claimAction": "Claim Action",
-    "claim": "Claim"
+    "claim": "Claim",
+    "discussionChanel": "Discussion chanel"
   },
   "proposalCreationPage": {
     "proposalCreation": "Proposal creation",
@@ -143,7 +144,9 @@
     "chooseDuration": "Choose a payment duration",
     "budgetEos": "Budget is allocated and paid in EOS!",
     "totalEosBudget": "Total EOS budget",
-    "addTotalBudget": "Add your total budget in EOS"
+    "addTotalBudget": "Add your total budget in EOS",
+    "proposalDiscussionChanel": "Proposal discussion chanel",
+    "provideDiscussionChanel": "Provide your discussion chanel for a proposal"
   },
   "about": {
     "wpsFull": "EOS Worker Proposal System",
