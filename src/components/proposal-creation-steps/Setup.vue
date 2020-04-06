@@ -124,6 +124,22 @@
         />
       </div>
 
+
+      <div class="mb-4">
+        <label
+          for="proposalDiscussionChanel"
+          class="body-1 font-weight-bold d-block"
+        >
+          {{ $t('proposalCreationPage.proposalDiscussionChanel') }}
+        </label>
+        <v-text-field
+          id="proposalDiscussionChanel"
+          v-model="setupData.discussionChanel"
+          :label="$t('proposalCreationPage.provideDiscussionChanel')"
+        />
+      </div>
+
+
       <v-card
         class="mb-12"
         flat
@@ -378,6 +394,7 @@
           category: '',
           img: '',
           video: '',
+          discussionChanel: '',
           duration: 1,
           totalBudgetFromContract: 0,
         },
@@ -619,6 +636,7 @@
         this.setupData.category = this.getProposalParsed.proposal_json.category;
         this.setupData.img = this.getProposalParsed.proposal_json.img || '';
         this.setupData.video = this.getProposalParsed.proposal_json.video || '';
+        this.setupData.discussionChanel = this.getProposalParsed.proposal_json.discussion || '';
         this.setupData.totalBudgetFromContract = Number(
           this.getProposalParsed.total_budget.split(' ')[0],
         );
@@ -773,6 +791,9 @@
 
         if (this.setupData.img) proposalAdditionalInfo.img = this.setupData.img;
         if (this.setupData.video) proposalAdditionalInfo.video = this.setupData.video;
+        if (this.setupData.discussionChanel) {
+          proposalAdditionalInfo.discussion = this.setupData.discussionChanel;
+        }
         if (this.getProposalParsed
             && Object.keys(this.getProposalParsed).length !== 0
             && this.getProposalParsed.proposal_json.overview) {
@@ -813,6 +834,12 @@
           proposalAdditionalInfo.video = this.setupData.video;
         } else {
           delete proposalAdditionalInfo.video;
+        }
+
+        if (this.setupData.discussionChanel) {
+          proposalAdditionalInfo.discussion = this.setupData.discussionChanel;
+        } else {
+          delete proposalAdditionalInfo.discussionChanel;
         }
 
         const payload = {
