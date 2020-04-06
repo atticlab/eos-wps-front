@@ -3,7 +3,7 @@
     v-if="!isList"
     class="proposal-link d-block"
     :to="{ path: isDraft
-      ? `/proposal/draft/${proposalName}`
+      ? `/proposal/draft/${proposer}/${proposalName}`
       : isPending
         ? `/proposal/pending/${proposalName}`
         : `/proposal/active/${proposalName}` }"
@@ -131,7 +131,7 @@
     v-else
     class="proposal-link proposal-link--list d-block"
     :to="{ path: isDraft
-      ? `/proposal/draft/${proposalName}`
+      ? `/proposal/draft/${proposer}/${proposalName}`
       : isPending
         ? `/proposal/pending/${proposalName}`
         : `/proposal/active/${proposalName}` }"

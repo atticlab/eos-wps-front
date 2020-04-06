@@ -248,10 +248,13 @@ export default {
       commit(ActionType.SET_IS_DEPOSITS_LOADING, false);
     }
   },
-  [ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME]: async ({ commit, getters }, proposalName) => {
+  [ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME]: async ({ commit, getters }, payload) => {
     const indexPosition = 1;
+    const { proposalName } = payload;
+    let { proposer } = payload;
+    proposer = proposer || getters.getAccountName;
 
-    if (!getters.getAccountName) {
+    if (!proposer) {
       throw new Error('you should login in first');
     }
     if (!proposalName) {
@@ -263,7 +266,7 @@ export default {
         .getTableRows(
           draftsTable,
           Vue.prototype.$constants.CONTRACT_NAME,
-          getters.getAccountName,
+          proposer,
           proposalName,
           proposalName,
           indexPosition,
