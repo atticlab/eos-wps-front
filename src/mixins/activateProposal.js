@@ -10,6 +10,7 @@ export default {
     ...mapState({
       eos: state => state.userService.eos,
       eosAccount: state => state.userService.eosAccount,
+      isBp: state => state.userService.isBp,
     }),
     ...mapGetters('userService', {
       getAccountName: 'getAccountName',
@@ -24,6 +25,9 @@ export default {
       try {
         if (!this.eosAccount) {
           throw new Error('notifications.mustLogin');
+        }
+        if (this.isBp) {
+          throw new Error('notifications.forbiddenForBp');
         }
 
         this.isActivateProposalLoading = true;

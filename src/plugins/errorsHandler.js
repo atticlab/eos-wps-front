@@ -85,6 +85,7 @@ const getUserFriendlyErrorMsg = (msg) => {
   if (msg.includes('[current_voting_period] is completed, any account must execute [complete] ACTION to continue')) return i18n.t('notifications.completeActionRequired');
   if (msg.includes('[voter] must have votes')) return i18n.t('notifications.mustHaveVotes');
   if (msg.includes('cannot activate within')) return i18n.t('notifications.cannotActivateWithin');
+  if (msg === 'notifications.forbiddenForBp') return i18n.t(msg);
 
   // End WPS smart contract errors
 
