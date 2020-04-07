@@ -1,7 +1,12 @@
 <template>
   <div class="comments__item">
-    <div class="font-weight-semi-bold primary-text mb-3">
-      {{ author }}
+    <div class="mb-3 d-flex justify-space-between flex-wrap">
+      <span class="font-weight-semi-bold primary--text">
+        {{ account }}
+      </span>
+      <span class="ml-2">
+        {{ $moment(timestamp).format('YYYY-MM-DD') }}
+      </span>
     </div>
 
     <div
@@ -13,16 +18,21 @@
 
     <CommentsEditor
       v-else
+      :proposal-name="proposalName"
+      :account="account"
       :initial-comment="comment"
+      @comment-posted="commentPosted"
+      @is-scatter-active="setIsScatterActive"
     />
 
-    <div>
+    <div v-if="isUserOwnerOfComment">
       <v-btn
         v-if="!isEditing"
         small
         :elevation="0"
         class="text-transform-none mr-3"
         color="primary"
+        :disabled="isCreateProposalCommentLoading || deleteCommentDialog"
         @click="openEditor"
       >
         {{ $t('proposalPage.edit') }}
@@ -33,12 +43,14 @@
         :elevation="0"
         class="text-transform-none mr-3"
         color="error"
+        :disabled="isScatterActive"
         @click="closeEditor"
       >
         {{ $t('proposalCreationPage.cancel') }}
       </v-btn>
       <v-dialog
         v-model="deleteCommentDialog"
+        persistent
         width="400px"
       >
         <template v-slot:activator="{ on }">
@@ -47,6 +59,7 @@
             :elevation="0"
             class="text-transform-none mr-3"
             color="error"
+            :disabled="isEditing || deleteCommentDialog"
             v-on="on"
           >
             {{ $t('proposalCreationPage.delete') }}
@@ -64,14 +77,16 @@
             <v-btn
               class="text-transform-none"
               color="error"
-              @click="deleteCommentDialog = false"
+              :disabled="isCreateProposalCommentLoading"
+              @click="deleteComment"
             >
               {{ $t('proposalCreationPage.delete') }}
             </v-btn>
             <v-btn
               class="text-transform-none"
               color="error"
-              @click="deleteCommentDialog = false"
+              :disabled="isCreateProposalCommentLoading"
+              @click="closeDeleteDialog"
             >
               {{ $t('proposalCreationPage.cancel') }}
             </v-btn>
@@ -83,30 +98,50 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import CommentsEditor from '@/components/comments/CommentsEditor.vue';
+import createProposalComment from '@/mixins/createProposalComment';
 
 export default {
   name: 'CommentItem',
   components: {
     CommentsEditor,
   },
+  mixins: [createProposalComment],
   props: {
-    author: {
+    proposalName: {
+      type: String,
+      required: true,
+    },
+    account: {
       type: String,
       default() {
         return this.$t('comments.guest');
       },
     },
+    timestamp: {
+      type: String,
+      default: '',
+    },
     comment: {
       type: String,
-      default: 'Comment comment comment comment comment comment.',
+      default: '',
     },
   },
   data() {
     return {
       isEditing: false,
       deleteCommentDialog: false,
+      isScatterActive: false,
     };
+  },
+  computed: {
+    ...mapGetters('userService', {
+      getAccountName: 'getAccountName',
+    }),
+    isUserOwnerOfComment() {
+      return this.getAccountName === this.account;
+    },
   },
   methods: {
     openEditor() {
@@ -114,6 +149,29 @@ export default {
     },
     closeEditor() {
       this.isEditing = false;
+    },
+    closeDeleteDialog() {
+      this.deleteCommentDialog = false;
+    },
+    setIsScatterActive(val) {
+      this.isScatterActive = val;
+    },
+    commentPosted() {
+      this.$emit('comment-posted', true);
+      this.closeEditor();
+    },
+    async deleteComment() {
+      try {
+        await this.$_createProposalComment({
+          account: this.account,
+          proposalName: this.proposalName,
+          comment: [],
+        });
+
+        this.$emit('comment-deleted', true);
+      } finally {
+        this.closeDeleteDialog();
+      }
     },
   },
 };

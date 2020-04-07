@@ -17,6 +17,8 @@
         :elevation="0"
         class="text-transform-none"
         color="primary"
+        :disabled="isCreateProposalCommentLoading"
+        @click="postComment"
       >
         {{ $t('comments.post') }}
       </v-btn>
@@ -27,11 +29,13 @@
 <script>
 import { validationMixin } from 'vuelidate';
 import { required, maxLength } from 'vuelidate/lib/validators';
+import createProposalComment from '@/mixins/createProposalComment';
 
 export default {
   name: 'CommentsEditor',
   mixins: [
     validationMixin,
+    createProposalComment,
   ],
   validations() {
     return {
@@ -45,6 +49,14 @@ export default {
     initialComment: {
       type: String,
       default: '',
+    },
+    proposalName: {
+      type: String,
+      required: true,
+    },
+    account: {
+      type: String,
+      required: true,
     },
   },
   data() {
@@ -66,6 +78,13 @@ export default {
 
       return errors;
     },
+    commentRestructured() {
+      if (!this.comment) return [];
+
+      return [
+        { key: 'text', value: this.comment },
+      ];
+    },
   },
   created() {
     this.comment = this.initialComment;
@@ -78,9 +97,22 @@ export default {
       this.$v.$touch();
       return !this.$v.$anyError;
     },
-    postComment() {
+    async postComment() {
       if (!this.validateAll()) return;
-      console.log('Comment posted');
+
+      try {
+        this.$emit('is-scatter-active', true);
+
+        await this.$_createProposalComment({
+          account: this.account,
+          proposalName: this.proposalName,
+          comment: this.commentRestructured,
+        });
+
+        this.$emit('comment-posted', true);
+      } finally {
+        this.$emit('is-scatter-active', false);
+      }
     },
   },
 };
