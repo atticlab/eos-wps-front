@@ -20,6 +20,7 @@ const state = {
   isStateLoading: false,
   isVotesLoading: false,
   isProposalVotesLoading: false,
+  isProposalCommentsLoading: false,
 
   proposal: {},
   proposals: [],
@@ -31,6 +32,7 @@ const state = {
   proposalState: {},
   proposalsVotes: [],
   votesByProposalName: [],
+  proposalComments: [],
 
   proposalInitialDuration: 0,
   proposalInitialMonthlyBudget: '',

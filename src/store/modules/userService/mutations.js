@@ -62,6 +62,9 @@ export default {
   [ActionType.SET_PROPOSAL_INITIAL_MONTHLY_BUDGET]: (state, data) => {
     state.proposalInitialMonthlyBudget = data;
   },
+  [ActionType.SET_PROPOSAL_COMMENTS]: (state, data) => {
+    state.proposalComments = data;
+  },
 
   // flags
   [ActionType.SET_IS_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME_LOADING]: (state, data) => {
@@ -96,5 +99,8 @@ export default {
   },
   [ActionType.SET_IS_PROPOSAL_VOTES_LOADING]: (state, data) => {
     state.isProposalVotesLoading = data;
+  },
+  [ActionType.SET_IS_PROPOSAL_COMMENTS_LOADING]: (state, data) => {
+    state.isProposalCommentsLoading = data;
   },
 };
