@@ -14,6 +14,7 @@ const eosPriceTable = 'orarates';
 const settingsTable = 'settings';
 const stateTable = 'state';
 const votesTable = 'votes';
+const commentsTable = 'comments';
 
 export default {
   [ActionType.UAL_INIT]: async ({ commit }) => {
@@ -482,6 +483,47 @@ export default {
       Vue.prototype.$errorsHandler.handleError(e);
     } finally {
       commit(ActionType.SET_IS_PROPOSAL_VOTES_LOADING, false);
+    }
+  },
+  [ActionType.REQUEST_PROPOSAL_COMMENTS_BY_PROPOSAL_NAME]: async ({ commit }, proposalName) => {
+    if (!proposalName) {
+      throw new Error('you should specify proposalName');
+    }
+    let lowerBound = '';
+    let response = null;
+    const result = [];
+    const indexPosition = 1;
+
+    try {
+      commit(ActionType.SET_IS_PROPOSAL_COMMENTS_LOADING, true);
+      do {
+        /* eslint-disable */
+        response = await Vue.prototype.$independentEosApi
+          .getTableRows(
+            commentsTable,
+            Vue.prototype.$constants.CONTRACT_NAME,
+            proposalName,
+            lowerBound,
+            null,
+            indexPosition,
+          );
+        /* eslint-enable */
+        result.push(...response.rows);
+        lowerBound = response.next_key;
+      } while (response.more);
+
+      if (!result || !result.length) {
+        commit(ActionType.SET_PROPOSAL_COMMENTS, []);
+        return;
+      }
+
+      commit(ActionType.SET_PROPOSAL_COMMENTS, Vue.prototype.$helpers.copyDeep(result));
+    } catch (e) {
+      console.error('REQUEST_PROPOSAL_COMMENTS_BY_PROPOSAL_NAME', e);
+      Vue.prototype.$errorsHandler.handleError(e);
+      commit(ActionType.SET_PROPOSAL_COMMENTS, []);
+    } finally {
+      commit(ActionType.SET_IS_PROPOSAL_COMMENTS_LOADING, false);
     }
   },
 };

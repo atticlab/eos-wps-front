@@ -460,7 +460,8 @@
     "mustHaveVotes": "You must have votes",
     "cannotActivateWithin": "Cannot be activated shortly after the end of the next voting period",
     "cannotVoteForOwnProposal": "Cannot vote for own proposal",
-    "forbiddenForBp": "Forbidden for block producer"
+    "forbiddenForBp": "Forbidden for block producer",
+    "cannotComment": "You can't create comment"
   },
   "proposalStatuses": {
     "paid": "Paid",

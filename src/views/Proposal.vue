@@ -661,6 +661,7 @@
         ActionType.REQUEST_STATE,
         ActionType.REQUEST_VOTES_BY_PROPOSAL_NAME,
         ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME,
+        ActionType.REQUEST_PROPOSAL_COMMENTS_BY_PROPOSAL_NAME,
       ]),
       async transfer() {
         try {
@@ -742,6 +743,7 @@
             );
           } else {
             this[ActionType.REQUEST_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME](this.proposalId);
+            this[ActionType.REQUEST_PROPOSAL_COMMENTS_BY_PROPOSAL_NAME](this.proposalId);
           }
           // get votes
           await this[ActionType.REQUEST_VOTES_BY_PROPOSAL_NAME](this.proposalId);

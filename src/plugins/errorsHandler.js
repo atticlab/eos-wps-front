@@ -86,6 +86,7 @@ const getUserFriendlyErrorMsg = (msg) => {
   if (msg.includes('[voter] must have votes')) return i18n.t('notifications.mustHaveVotes');
   if (msg.includes('cannot activate within')) return i18n.t('notifications.cannotActivateWithin');
   if (msg === 'notifications.forbiddenForBp') return i18n.t(msg);
+  if (msg === 'notifications.cannotComment') return i18n.t(msg);
 
   // End WPS smart contract errors
 
@@ -114,6 +115,7 @@ const errorsHandler = {
       errMsg = err.cause.json.error.details[0].message;
     }
 
+    console.log('errMsg', err.cause);
     return VueNotifications.error({ title: errTitle, message: getUserFriendlyErrorMsg(errMsg) });
   },
 };
