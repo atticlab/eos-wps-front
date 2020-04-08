@@ -101,7 +101,7 @@ export default {
     }
     commit(ActionType.SET_EOS_ACCOUNT, null);
     commit(ActionType.SET_IS_BP, false);
-    dispatch(ActionType.UAL_INIT);
+    // dispatch(ActionType.UAL_INIT);
     dispatch(ActionType.DEFINE_ROUTE_TO, null);
     commit(ActionType.SET_DEPOSIT, 0);
 
@@ -492,7 +492,7 @@ export default {
     let lowerBound = '';
     let response = null;
     const result = [];
-    const indexPosition = 1;
+    const indexPosition = 2;
 
     try {
       commit(ActionType.SET_IS_PROPOSAL_COMMENTS_LOADING, true);
