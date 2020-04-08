@@ -461,7 +461,9 @@
     "cannotActivateWithin": "Cannot be activated shortly after the end of the next voting period",
     "cannotVoteForOwnProposal": "Cannot vote for own proposal",
     "forbiddenForBp": "Forbidden for block producer",
-    "cannotComment": "You can't create comment"
+    "cannotComment": "You can't create comment",
+    "notEligibleCommentator": "Only eligible proposers are allowed to comment",
+    "cannotBeRegisteredBp": "Cannot be a registered producer"
   },
   "proposalStatuses": {
     "paid": "Paid",

@@ -87,6 +87,8 @@ const getUserFriendlyErrorMsg = (msg) => {
   if (msg.includes('cannot activate within')) return i18n.t('notifications.cannotActivateWithin');
   if (msg === 'notifications.forbiddenForBp') return i18n.t(msg);
   if (msg === 'notifications.cannotComment') return i18n.t(msg);
+  if (msg.includes('not eligible to comment on')) return i18n.t('notifications.notEligibleCommentator');
+  if (msg.includes('cannot be a registered producer')) return i18n.t('notifications.cannotBeRegisteredBp');
 
   // End WPS smart contract errors
 
@@ -104,15 +106,15 @@ const errorsHandler = {
         errMsg = errParsed.error.details[0].message;
       } catch {} // eslint-disable-line no-empty
     }
-    // if (err.type) {
-    //   errMsg = err.type;
-    // }
     if (typeof err.message === 'string') {
       errMsg = err.message;
     }
     if (err && err.cause && err.cause.json && err.cause.json.error && err.cause.json.error.details
       && err.cause.json.error.details[0] && err.cause.json.error.details[0].message) {
       errMsg = err.cause.json.error.details[0].message;
+    }
+    if (err.cause && err.cause.type === 'signature_rejected') {
+      errMsg = err.cause.type;
     }
 
     console.log('errMsg', err.cause);
