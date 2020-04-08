@@ -492,7 +492,7 @@ export default {
     let lowerBound = '';
     let response = null;
     const result = [];
-    const indexPosition = 1;
+    const indexPosition = 2;
 
     try {
       commit(ActionType.SET_IS_PROPOSAL_COMMENTS_LOADING, true);
