@@ -931,20 +931,3 @@
     },
   };
 </script>
-
-<style lang="scss" scoped>
-  @import '~@/assets/scss/variables';
-
-  .required {
-    position: relative;
-
-    &:after {
-      content: ' *';
-      color: $red;
-      position: absolute;
-      top: 0;
-      right: -12px;
-    }
-  }
-
-</style>

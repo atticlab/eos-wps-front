@@ -146,7 +146,16 @@
     "totalEosBudget": "Total EOS budget",
     "addTotalBudget": "Add your total budget in EOS",
     "proposalDiscussionChanel": "Proposal discussion chanel",
-    "provideDiscussionChanel": "Provide your discussion chanel for a proposal"
+    "provideDiscussionChanel": "Provide your discussion chanel for a proposal",
+    "proposerInfo": "Proposer info",
+    "proposerName": "Proposer name",
+    "proposerNameHint": "Leave your name here",
+    "proposerDescription": "About proposer",
+    "proposerDescriptionHint": "Add more information about you",
+    "proposerSite": "Website link",
+    "proposerSiteHint": "Add a URL of your website",
+    "proposerSocialMedia": "Social media",
+    "proposerSocialMediaHint": "Leave contacts to get in touch with you, e.g. Telegram, WeChat etc."
   },
   "about": {
     "wpsFull": "EOS Worker Proposal System",
