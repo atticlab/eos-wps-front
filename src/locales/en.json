@@ -461,7 +461,9 @@
     "cannotActivateWithin": "Cannot be activated shortly after the end of the next voting period",
     "cannotVoteForOwnProposal": "Cannot vote for own proposal",
     "forbiddenForBp": "Forbidden for block producer",
-    "cannotComment": "You can't create comment"
+    "cannotComment": "You can't create comment",
+    "notEligibleCommentator": "Only eligible proposers are allowed to comment",
+    "cannotBeRegisteredBp": "Cannot be a registered producer"
   },
   "proposalStatuses": {
     "paid": "Paid",
@@ -487,5 +489,12 @@
     "visitRepos": "Share your feedback in our GitHub repos:",
     "smartContractRepo": "Smart contract repo",
     "uiRepo": "UI repo"
+  },
+  "comments": {
+    "title": "Comments",
+    "post": "Post",
+    "typeComment": "Type your comment",
+    "guest": "Guest",
+    "sureToDeleteComment": "Are you sure you want to delete the comment?"
   }
 }

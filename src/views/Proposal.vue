@@ -524,6 +524,14 @@
           >
             {{ $t('proposalPage.voters') }}
           </v-tab>
+          <v-tab
+            v-if="!isDraft"
+            class="text-transform-none font-weight-semi-bold body-1 px-12"
+            active-class="v-tab--active"
+            :ripple="false"
+          >
+            {{ $t('comments.title') }}
+          </v-tab>
 
           <v-tab-item>
             <Overview
@@ -550,6 +558,12 @@
           <v-tab-item>
             <Voters :votes-initial="votesByProposalName" />
           </v-tab-item>
+          <v-tab-item v-if="!isDraft">
+            <Comments
+              :proposal-name="proposalId"
+              :account="getAccountName"
+            />
+          </v-tab-item>
         </v-tabs>
       </template>
     </v-container>
@@ -563,6 +577,7 @@
   import BudgetOverview from '@/components/proposal-tabs/BudgetOverview.vue';
   import TimelineOverview from '@/components/proposal-tabs/TimelineOverview.vue';
   import Voters from '@/components/proposal-tabs/Voters.vue';
+  import Comments from '@/components/proposal-tabs/Comments.vue';
   import proposalParsed from '@/mixins/proposalParsed';
   import voteProposal from '@/mixins/voteProposal';
   import sendDeposit from '@/mixins/sendDeposit';
@@ -581,6 +596,7 @@
       BudgetOverview,
       TimelineOverview,
       Voters,
+      Comments,
     },
     mixins: [
       proposalParsed,
@@ -649,7 +665,6 @@
         ActionType.REQUEST_STATE,
         ActionType.REQUEST_VOTES_BY_PROPOSAL_NAME,
         ActionType.REQUEST_DRAFT_BY_PROPOSAL_NAME,
-        ActionType.REQUEST_PROPOSAL_COMMENTS_BY_PROPOSAL_NAME,
       ]),
       async transfer() {
         try {
@@ -731,7 +746,6 @@
             );
           } else {
             this[ActionType.REQUEST_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME](this.proposalId);
-            this[ActionType.REQUEST_PROPOSAL_COMMENTS_BY_PROPOSAL_NAME](this.proposalId);
           }
           // get votes
           await this[ActionType.REQUEST_VOTES_BY_PROPOSAL_NAME](this.proposalId);
