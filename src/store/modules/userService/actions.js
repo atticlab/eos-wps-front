@@ -517,13 +517,6 @@ export default {
         return;
       }
 
-      // TODO: delete after tests
-      result.push(result[0]);
-      result.push(result[0]);
-      result.push(result[0]);
-      result.push(result[0]);
-      result.push(result[0]);
-
       commit(ActionType.SET_PROPOSAL_COMMENTS, Vue.prototype.$helpers.copyDeep(result));
     } catch (e) {
       console.error('REQUEST_PROPOSAL_COMMENTS_BY_PROPOSAL_NAME', e);
