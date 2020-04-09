@@ -103,4 +103,7 @@ export default {
   [ActionType.SET_IS_PROPOSAL_COMMENTS_LOADING]: (state, data) => {
     state.isProposalCommentsLoading = data;
   },
+  [ActionType.SET_PROPOSER]: (state, data) => {
+    state.proposer = data;
+  },
 };

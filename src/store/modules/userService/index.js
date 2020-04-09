@@ -33,6 +33,7 @@ const state = {
   proposalsVotes: [],
   votesByProposalName: [],
   proposalComments: [],
+  proposer: {},
 
   proposalInitialDuration: 0,
   proposalInitialMonthlyBudget: '',
