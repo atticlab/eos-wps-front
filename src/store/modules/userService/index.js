@@ -21,6 +21,7 @@ const state = {
   isVotesLoading: false,
   isProposalVotesLoading: false,
   isProposalCommentsLoading: false,
+  isProposerLoading: false,
 
   proposal: {},
   proposals: [],

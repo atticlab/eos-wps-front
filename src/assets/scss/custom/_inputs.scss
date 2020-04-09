@@ -16,3 +16,14 @@ input, .v-input {
   border-color: $red !important;
 }
 
+.required {
+  position: relative;
+
+  &:after {
+    content: ' *';
+    color: $red;
+    position: absolute;
+    top: 0;
+    right: -12px;
+  }
+}

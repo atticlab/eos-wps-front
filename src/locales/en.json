@@ -34,7 +34,8 @@
     "no": "No",
     "about": "About",
     "overview": "Overview",
-    "duration": "Duration"
+    "duration": "Duration",
+    "submit": "Submit"
   },
   "proposalItem": {
     "availableBudget": "Available budget",
@@ -95,7 +96,8 @@
     "published": "Published",
     "claimAction": "Claim Action",
     "claim": "Claim",
-    "discussionChanel": "Discussion chanel"
+    "discussionChanel": "Discussion chanel",
+    "proposer": "Proposer"
   },
   "proposalCreationPage": {
     "proposalCreation": "Proposal creation",
@@ -145,8 +147,8 @@
     "budgetEos": "Budget is allocated and paid in EOS!",
     "totalEosBudget": "Total EOS budget",
     "addTotalBudget": "Add your total budget in EOS",
-    "proposalDiscussionChanel": "Proposal discussion chanel",
-    "provideDiscussionChanel": "Provide your discussion chanel for a proposal"
+    "proposalDiscussionChannel": "Proposal discussion channel",
+    "provideDiscussionChannel": "Provide your discussion channel for a proposal"
   },
   "about": {
     "wpsFull": "EOS Worker Proposal System",
@@ -463,7 +465,8 @@
     "forbiddenForBp": "Forbidden for block producer",
     "cannotComment": "You can't create comment",
     "notEligibleCommentator": "Only eligible proposers are allowed to comment",
-    "cannotBeRegisteredBp": "Cannot be a registered producer"
+    "cannotBeRegisteredBp": "Cannot be a registered producer",
+    "personalInfoSubmitted": "Personal info is submitted"
   },
   "proposalStatuses": {
     "paid": "Paid",
@@ -483,7 +486,8 @@
     "nothingToDisplay": "Nothing to display yet",
     "noVideo": "No video",
     "noVoters": "No voters",
-    "noDate": "No date"
+    "noDate": "No date",
+    "noProposeInfo": "No proposer info"
   },
   "footer": {
     "visitRepos": "Share your feedback in our GitHub repos:",
@@ -496,5 +500,20 @@
     "typeComment": "Type your comment",
     "guest": "Guest",
     "sureToDeleteComment": "Are you sure you want to delete the comment?"
+  },
+  "personalInfo": {
+    "title": "Personal info",
+    "preface": {
+      "canAdd": "You can add more information about yourself here. ",
+      "infoAvailable": "This info will be available for other users when viewing proposals."
+    },
+    "name": "Proposer name",
+    "nameHint": "Leave your name here",
+    "description": "About proposer",
+    "descriptionHint": "Add more information about you",
+    "website": "Website link",
+    "websiteHint": "Add a URL of your website",
+    "socialMedia": "Social media",
+    "socialMediaHint": "Leave contacts to get in touch with you, e.g. Telegram, WeChat etc."
   }
 }
