@@ -15,6 +15,7 @@ const settingsTable = 'settings';
 const stateTable = 'state';
 const votesTable = 'votes';
 const commentsTable = 'comments';
+const proposersTable = 'proposers';
 
 export default {
   [ActionType.UAL_INIT]: async ({ commit }) => {
@@ -115,7 +116,7 @@ export default {
   },
   [ActionType.REQUEST_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME]: async ({ commit }, proposalName) => {
     if (!proposalName) {
-      throw new Error('you should specify proposalName');
+      throw new Error('REQUEST_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME you should specify proposalName');
     }
     const indexPosition = 1; // proposalName
 
@@ -258,10 +259,10 @@ export default {
     proposer = proposer || getters.getAccountName;
 
     if (!proposer) {
-      throw new Error('you should login in first');
+      throw new Error('REQUEST_DRAFT_BY_PROPOSAL_NAME you should login in first');
     }
     if (!proposalName) {
-      throw new Error('you should specify proposalName');
+      throw new Error('REQUEST_DRAFT_BY_PROPOSAL_NAME you should specify proposalName');
     }
     try {
       commit(ActionType.SET_IS_DRAFT_PROPOSAL_BY_PROPOSAL_NAME_LOADING, true);
@@ -298,7 +299,7 @@ export default {
     const indexPosition = 1;
 
     if (!getters.getAccountName) {
-      throw new Error('you should login in first');
+      throw new Error('REQUEST_DRAFTS_BY_ACCOUNT_NAME you should login in first');
     }
     try {
       commit(ActionType.SET_IS_DRAFTS_BY_ACCOUNT_NAME_LOADING, true);
@@ -351,9 +352,9 @@ export default {
       }
 
       const eosPriceObj = result.filter(e => e.rate.search('USD') !== -1);
-      if (!eosPriceObj || !eosPriceObj.length) throw new Error('can\'t find eos/usd rate');
+      if (!eosPriceObj || !eosPriceObj.length) throw new Error('REQUEST_EOS_PRICE can\'t find eos/usd rate');
       const parsedRate = parseFloat(eosPriceObj[0].rate);
-      if (!parsedRate) throw new Error('can\'t parse eos/usd rate');
+      if (!parsedRate) throw new Error('REQUEST_EOS_PRICE can\'t parse eos/usd rate');
 
       commit(ActionType.SET_EOS_PRICE, parsedRate);
     } catch (e) {
@@ -455,7 +456,7 @@ export default {
   },
   [ActionType.REQUEST_VOTES_BY_PROPOSAL_NAME]: async ({ commit }, proposalName) => {
     if (!proposalName) {
-      throw new Error('you should specify proposalName');
+      throw new Error('REQUEST_VOTES_BY_PROPOSAL_NAME you should specify proposalName');
     }
     const indexPosition = 1;
 
@@ -487,7 +488,7 @@ export default {
   },
   [ActionType.REQUEST_PROPOSAL_COMMENTS_BY_PROPOSAL_NAME]: async ({ commit }, proposalName) => {
     if (!proposalName) {
-      throw new Error('you should specify proposalName');
+      throw new Error('REQUEST_PROPOSAL_COMMENTS_BY_PROPOSAL_NAME you should specify proposalName');
     }
     let lowerBound = '';
     let response = null;
@@ -524,6 +525,39 @@ export default {
       commit(ActionType.SET_PROPOSAL_COMMENTS, []);
     } finally {
       commit(ActionType.SET_IS_PROPOSAL_COMMENTS_LOADING, false);
+    }
+  },
+  [ActionType.REQUEST_PROPOSER]: async ({ commit }, proposerName) => {
+    if (!proposerName) {
+      throw new Error('REQUEST_PROPOSER you should specify proposerName');
+    }
+    const indexPosition = 1;
+
+    try {
+      commit(ActionType.SET_IS_PROPOSER_LOADING, true);
+      const response = await Vue.prototype.$independentEosApi
+        .getTableRows(
+          proposersTable,
+          Vue.prototype.$constants.CONTRACT_NAME,
+          Vue.prototype.$constants.CONTRACT_NAME,
+          proposerName,
+          proposerName,
+          indexPosition,
+        );
+      const result = response.rows;
+
+      if (!result || !result.length) {
+        commit(ActionType.SET_PROPOSER, {});
+        return;
+      }
+
+      commit(ActionType.SET_PROPOSER, Vue.prototype.$helpers.copyDeep(result[0]));
+    } catch (e) {
+      console.error('REQUEST_VOTES_BY_PROPOSAL_NAME', e);
+      Vue.prototype.$errorsHandler.handleError(e);
+      commit(ActionType.SET_PROPOSER, {});
+    } finally {
+      commit(ActionType.SET_IS_PROPOSER_LOADING, false);
     }
   },
 };
