@@ -127,15 +127,15 @@
 
       <div class="mb-4">
         <label
-          for="proposalDiscussionChanel"
+          for="proposalDiscussionChannel"
           class="body-1 font-weight-bold d-block"
         >
-          {{ $t('proposalCreationPage.proposalDiscussionChanel') }}
+          {{ $t('proposalCreationPage.proposalDiscussionChannel') }}
         </label>
         <v-text-field
-          id="proposalDiscussionChanel"
+          id="proposalDiscussionChannel"
           v-model="setupData.discussionChanel"
-          :label="$t('proposalCreationPage.provideDiscussionChanel')"
+          :label="$t('proposalCreationPage.provideDiscussionChannel')"
         />
       </div>
 

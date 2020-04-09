@@ -18,90 +18,6 @@
       class="editor"
     />
 
-    <h2 class="body-1 font-weight-bold mb-4 ml-4">
-      {{ $t('proposalCreationPage.proposerInfo') }}
-    </h2>
-
-    <form class="ml-4">
-      <div class="mb-4">
-        <label
-          for="proposalTitle"
-          class="body-1 font-weight-bold d-inline-flex"
-        >
-          {{ $t('proposalCreationPage.proposerName') }}
-        </label>
-
-        <v-text-field
-          id="proposerName"
-          v-model.trim="proposerData.name"
-          :error-messages="proposerNameErrors"
-          :counter="300"
-          :label="$t('proposalCreationPage.proposerNameHint')"
-          @input="validateSingleField('name')"
-          @blur="validateSingleField('name')"
-        />
-      </div>
-
-      <div class="mb-4">
-        <label
-          for="proposalTitle"
-          class="body-1 font-weight-bold d-inline-flex"
-        >
-          {{ $t('proposalCreationPage.proposerDescription') }}
-        </label>
-
-        <v-textarea
-          id="proposerDescription"
-          v-model.trim="proposerData.description"
-          filled
-          :error-messages="proposerDescriptionErrors"
-          :counter="12000"
-          :label="$t('proposalCreationPage.proposerDescriptionHint')"
-          @input="validateSingleField('description')"
-          @blur="validateSingleField('description')"
-        />
-      </div>
-
-      <div class="mb-4">
-        <label
-          for="proposalTitle"
-          class="body-1 font-weight-bold d-inline-flex"
-        >
-          {{ $t('proposalCreationPage.proposerSite') }}
-        </label>
-
-        <v-text-field
-          id="proposerSite"
-          v-model="proposerData.site"
-          class="mb-4"
-          :error-messages="proposerSiteErrors"
-          :label="$t('proposalCreationPage.proposerSiteHint')"
-          @input="validateSingleField('site')"
-          @blur="validateSingleField('site')"
-        />
-      </div>
-
-      <div class="mb-4">
-        <label
-          for="proposalTitle"
-          class="body-1 font-weight-bold d-inline-flex"
-        >
-          {{ $t('proposalCreationPage.proposerSocialMedia') }}
-        </label>
-
-        <!--        :error-messages="proposerSocialMediaErrors"-->
-        <v-text-field
-          id="proposerSocialMedia"
-          v-model="proposerData.socialMedia"
-          class="mb-4"
-          required
-          :label="$t('proposalCreationPage.proposerSocialMediaHint')"
-          @input="validateSingleField('socialMedia')"
-          @blur="validateSingleField('socialMedia')"
-        />
-      </div>
-    </form>
-
     <div class="d-flex justify-center">
       <template v-if="!proposalId">
         <v-btn
@@ -158,7 +74,7 @@
   import { mapState, mapGetters, mapMutations } from 'vuex';
   import VueQuillEditor from 'vue-quill-editor';
   import { validationMixin } from 'vuelidate';
-  import { required, maxLength, url } from 'vuelidate/lib/validators';
+  import { required, maxLength } from 'vuelidate/lib/validators';
   import modifyProposalDraft from '@/mixins/modifyProposalDraft';
   import createProposalDraft from '@/mixins/createProposalDraft';
   import isProposalExist from '@/mixins/isProposalExist';
@@ -190,18 +106,6 @@
         required,
         maxLength: maxLength(12000),
       },
-      proposerData: {
-        name: {
-          maxLength: maxLength(300),
-        },
-        description: {
-          maxLength: maxLength(12000),
-        },
-        site: {
-          url,
-        },
-        socialMedia: {},
-      },
     },
     data() {
       return {
@@ -231,12 +135,6 @@
             ],
           },
         },
-        proposerData: {
-          name: '',
-          description: '',
-          site: '',
-          socialMedia: '',
-        },
       };
     },
     computed: {
@@ -249,35 +147,6 @@
       }),
       proposalId() {
         return this.$route.params.slug ? this.$route.params.slug : '';
-      },
-      proposerNameErrors() {
-        const errors = [];
-        if (!this.$v.proposerData.name.$dirty) return errors;
-
-        // eslint-disable-next-line no-unused-expressions
-        !this.$v.proposerData.name.maxLength
-        && errors.push(this.$t('validationMessages.maxLength', { numberOfChars: 300 }));
-
-        return errors;
-      },
-      proposerDescriptionErrors() {
-        const errors = [];
-        if (!this.$v.proposerData.description.$dirty) return errors;
-
-        // eslint-disable-next-line no-unused-expressions
-        !this.$v.proposerData.description.maxLength
-        && errors.push(this.$t('validationMessages.maxLength', { numberOfChars: 12000 }));
-
-        return errors;
-      },
-      proposerSiteErrors() {
-        const errors = [];
-        if (!this.$v.proposerData.site.$dirty) return errors;
-
-        // eslint-disable-next-line no-unused-expressions
-        !this.$v.proposerData.site.url && errors.push(this.$t('validationMessages.urlString'));
-
-        return errors;
       },
     },
     watch: {
@@ -307,17 +176,9 @@
       changeCurrentStep(val) {
         this.$emit('step', val);
       },
-      validateSingleField(val) {
-        console.log(val);
-        this.$v.proposerData[val].$touch();
-      },
       validateAll() {
         this.$v.$touch();
         return !this.$v.text.$anyError;
-      },
-      validateAllProposerData() {
-        this.$v.$touch();
-        return !this.$v.proposerData.$anyError;
       },
       formProposalJSON() {
         const proposalAdditionalInfo = this.$helpers.copyDeep(this.getProposalParsed.proposal_json);

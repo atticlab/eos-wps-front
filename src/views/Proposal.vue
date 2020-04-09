@@ -497,28 +497,28 @@
           class="font-weight-medium body-2"
         >
           <v-tab
-            class="text-transform-none font-weight-semi-bold body-1 px-12"
+            class="text-transform-none font-weight-semi-bold body-1 px-6"
             active-class="v-tab--active"
             :ripple="false"
           >
             {{ $t('common.overview') }}
           </v-tab>
           <v-tab
-            class="text-transform-none font-weight-semi-bold body-1 px-12"
+            class="text-transform-none font-weight-semi-bold body-1 px-6"
             active-class="v-tab--active"
             :ripple="false"
           >
             {{ $t('common.budget') }}
           </v-tab>
           <v-tab
-            class="text-transform-none font-weight-semi-bold body-1 px-12"
+            class="text-transform-none font-weight-semi-bold body-1 px-6"
             active-class="v-tab--active"
             :ripple="false"
           >
             {{ $t('common.timeline') }}
           </v-tab>
           <v-tab
-            class="text-transform-none font-weight-semi-bold body-1 px-12"
+            class="text-transform-none font-weight-semi-bold body-1 px-6"
             active-class="v-tab--active"
             :ripple="false"
           >
@@ -526,11 +526,18 @@
           </v-tab>
           <v-tab
             v-if="!isDraft"
-            class="text-transform-none font-weight-semi-bold body-1 px-12"
+            class="text-transform-none font-weight-semi-bold body-1 px-6"
             active-class="v-tab--active"
             :ripple="false"
           >
             {{ $t('comments.title') }}
+          </v-tab>
+          <v-tab
+            class="text-transform-none font-weight-semi-bold body-1 px-6"
+            active-class="v-tab--active"
+            :ripple="false"
+          >
+            {{ $t('proposalPage.proposer') }}
           </v-tab>
 
           <v-tab-item>
@@ -564,6 +571,9 @@
               :account="getAccountName"
             />
           </v-tab-item>
+          <v-tab-item>
+            <ProposerInfo />
+          </v-tab-item>
         </v-tabs>
       </template>
     </v-container>
@@ -578,6 +588,7 @@
   import TimelineOverview from '@/components/proposal-tabs/TimelineOverview.vue';
   import Voters from '@/components/proposal-tabs/Voters.vue';
   import Comments from '@/components/proposal-tabs/Comments.vue';
+  import ProposerInfo from '@/components/proposal-tabs/ProposerInfo.vue';
   import proposalParsed from '@/mixins/proposalParsed';
   import voteProposal from '@/mixins/voteProposal';
   import sendDeposit from '@/mixins/sendDeposit';
@@ -597,6 +608,7 @@
       TimelineOverview,
       Voters,
       Comments,
+      ProposerInfo,
     },
     mixins: [
       proposalParsed,
