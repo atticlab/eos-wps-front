@@ -121,6 +121,11 @@
                   </template>
 
                   <v-list>
+                    <v-list-item :to="{ name: 'Personal info' }">
+                      <v-list-item-title>
+                        {{ $t('personalInfo.title') }}
+                      </v-list-item-title>
+                    </v-list-item>
                     <v-list-item
                       @click="UAL_LOGOUT"
                     >

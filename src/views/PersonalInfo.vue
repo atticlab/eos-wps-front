@@ -6,7 +6,20 @@
 
     <v-divider class="v-divider--custom mt-8 mb-12" />
 
+    <div
+      v-if="isProposerLoading"
+      class="d-flex justify-center"
+    >
+      <v-progress-circular
+        :size="70"
+        :width="7"
+        color="primary"
+        indeterminate
+      />
+    </div>
+
     <v-card
+      v-else
       flat
       class="secondary--text py-7 px-4 px-sm-9 py-xm-12 mb-12"
     >
@@ -86,15 +99,14 @@
             {{ $t('personalInfo.socialMedia') }}
           </label>
 
-          <!--        :error-messages="proposerSocialMediaErrors"-->
           <v-text-field
             id="proposerSocialMedia"
-            v-model="proposerData.socialMedia"
+            v-model="proposerData.media"
             class="mb-4"
             required
             :label="$t('personalInfo.socialMediaHint')"
-            @input="validateSingleField('socialMedia')"
-            @blur="validateSingleField('socialMedia')"
+            @input="validateSingleField('media')"
+            @blur="validateSingleField('media')"
           />
         </div>
 
@@ -104,6 +116,8 @@
             color="primary"
             height="40"
             class="text-transform-none px-3"
+            :disabled="isSetProposerLoading"
+            @click="submitProposerData(proposerDataRestructured)"
           >
             {{ $t('common.submit') }}
           </v-btn>
@@ -114,12 +128,16 @@
 </template>
 
 <script>
+import { mapState, mapGetters, mapActions } from 'vuex';
 import { validationMixin } from 'vuelidate';
 import { maxLength, url } from 'vuelidate/lib/validators';
+import setProposer from '@/mixins/setProposer';
+import notification from '@/mixins/notification';
+import ActionType from '@/store/constants';
 
 export default {
   name: 'PersonalInfo',
-  mixins: [validationMixin],
+  mixins: [validationMixin, setProposer, notification],
   validations: {
     proposerData: {
       name: {
@@ -131,7 +149,7 @@ export default {
       site: {
         url,
       },
-      socialMedia: {},
+      media: {},
     },
   },
   data() {
@@ -140,11 +158,18 @@ export default {
         name: '',
         description: '',
         site: '',
-        socialMedia: '',
+        media: '',
       },
     };
   },
   computed: {
+    ...mapState('userService', {
+      proposer: state => state.proposer,
+      isProposerLoading: state => state.isProposerLoading,
+    }),
+    ...mapGetters('userService', {
+      getAccountName: 'getAccountName',
+    }),
     proposerNameErrors() {
       const errors = [];
       if (!this.$v.proposerData.name.$dirty) return errors;
@@ -174,15 +199,49 @@ export default {
 
       return errors;
     },
+    proposerDataRestructured() {
+      return Object.entries(this.proposerData)
+        .filter(entry => Boolean(entry[1]))
+        .map(entry => ({
+          key: entry[0],
+          value: entry[1],
+        }));
+    },
+  },
+  watch: {
+    proposer(val) {
+      if (this.isProposerLoading) return;
+
+      val.metadata_json.forEach((proposerDataObj) => {
+        if (!proposerDataObj.key) return;
+        this.proposerData[proposerDataObj.key] = proposerDataObj.value;
+      });
+    },
+  },
+  created() {
+    this[ActionType.REQUEST_PROPOSER](this.getAccountName);
   },
   methods: {
+    ...mapActions('userService', [
+      ActionType.REQUEST_PROPOSER,
+    ]),
     validateSingleField(val) {
-      console.log(val);
       this.$v.proposerData[val].$touch();
     },
     validateAllProposerData() {
       this.$v.$touch();
       return !this.$v.proposerData.$anyError;
+    },
+    async submitProposerData(proposerData) {
+      if (!this.validateAllProposerData()) return;
+
+      try {
+        await this.$_setProposer(proposerData);
+        this[ActionType.REQUEST_PROPOSER](this.getAccountName);
+        this.showSuccessMsg(this.$t('notifications.personalInfoSubmitted'));
+      } catch {
+      //  empty
+      }
     },
   },
 };

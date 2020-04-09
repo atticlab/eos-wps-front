@@ -65,6 +65,9 @@ export default {
   [ActionType.SET_PROPOSAL_COMMENTS]: (state, data) => {
     state.proposalComments = data;
   },
+  [ActionType.SET_PROPOSER]: (state, data) => {
+    state.proposer = data;
+  },
 
   // flags
   [ActionType.SET_IS_ACTIVE_PROPOSAL_BY_PROPOSAL_NAME_LOADING]: (state, data) => {
@@ -103,7 +106,7 @@ export default {
   [ActionType.SET_IS_PROPOSAL_COMMENTS_LOADING]: (state, data) => {
     state.isProposalCommentsLoading = data;
   },
-  [ActionType.SET_PROPOSER]: (state, data) => {
-    state.proposer = data;
+  [ActionType.SET_IS_PROPOSER_LOADING]: (state, data) => {
+    state.isProposerLoading = data;
   },
 };

@@ -572,7 +572,9 @@
             />
           </v-tab-item>
           <v-tab-item>
-            <ProposerInfo />
+            <ProposerInfo
+              :proposer-name="$_proposalParsed.proposer"
+            />
           </v-tab-item>
         </v-tabs>
       </template>
