@@ -66,6 +66,22 @@
           />
         </div>
 
+        <div class="pa-6 warning--text proposal-creation__warning">
+          <i18n path="proposalCreationPage.personalInfoWarning">
+            <template #here>
+              <router-link
+                :to="{ name: 'Personal info' }"
+                class="d-inline-flex"
+                target="_blank"
+              >
+                <span>
+                  {{ $t('proposalCreationPage.here') }}
+                </span>
+              </router-link>
+            </template>
+          </i18n>
+        </div>
+
         <v-stepper-items v-show="!isDraftProposalByProposalNameLoading">
           <v-stepper-content
             step="1"
@@ -279,6 +295,10 @@ mapState, mapGetters, mapActions, mapMutations,
     &__bottom {
       height: 60px;
     }
+  }
+
+  .proposal-creation__warning {
+    max-width: 800px;
   }
 
   @media (max-width: 599px) {
