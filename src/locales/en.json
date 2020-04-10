@@ -148,7 +148,9 @@
     "totalEosBudget": "Total EOS budget",
     "addTotalBudget": "Add your total budget in EOS",
     "proposalDiscussionChannel": "Proposal discussion channel",
-    "provideDiscussionChannel": "Provide your discussion channel for a proposal"
+    "provideDiscussionChannel": "Provide your discussion channel for a proposal",
+    "personalInfoWarning": "Note! You can add more information about yourself {here}. Thus, all the users viewing your proposal will be able to see more details about you on your proposal page!",
+    "here": "here"
   },
   "about": {
     "wpsFull": "EOS Worker Proposal System",
