@@ -38,7 +38,7 @@ export default {
             data: {
               proposer: this.getAccountName,
               proposal_name: data.proposalName,
-              start_voting_period: data.startVotingPeriod, // activate for the current period
+              activate_next: data.activateNext, // activate for the current or next period
             },
           }]),
           { expireSeconds: 120, blocksBehind: 3 },

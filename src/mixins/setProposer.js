@@ -32,7 +32,7 @@ export default {
             actionName: 'setproposer',
             data: {
               proposer: this.getAccountName,
-              metadata_json: data,
+              proposer_json: data,
             },
           }]),
           { expireSeconds: 120, blocksBehind: 3 },

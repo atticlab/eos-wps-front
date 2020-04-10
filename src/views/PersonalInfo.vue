@@ -212,7 +212,7 @@ export default {
     proposer(val) {
       if (this.isProposerLoading) return;
 
-      val.metadata_json.forEach((proposerDataObj) => {
+      val.proposer_json.forEach((proposerDataObj) => {
         if (!proposerDataObj.key) return;
         this.proposerData[proposerDataObj.key] = proposerDataObj.value;
       });

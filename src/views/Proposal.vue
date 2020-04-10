@@ -699,9 +699,7 @@
           // const state = await this.$_getState();
           await this.$_activateProposal({
             proposalName: this.proposalId,
-            startVotingPeriod: isNext
-                               ? this.proposalState.next_voting_period
-                               : this.proposalState.current_voting_period,
+            activateNext: isNext,
           });
           this.showSuccessMsg(this.$t('notifications.proposalActivated'));
           this.$router.push({ name: 'ProposalsActive' });

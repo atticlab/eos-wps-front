@@ -22,7 +22,7 @@
             :proposal-name="proposalName"
             :account="commentObj.account"
             :timestamp="commentObj.timestamp"
-            :comment="commentObj.metadata_json[0].value"
+            :comment="commentObj.comment_json[0].value"
             @comment-posted="callAction"
             @comment-deleted="callAction"
           />
