@@ -106,12 +106,12 @@ export default {
     }),
     proposerDataParsed() {
       if (!this.proposer
-          || !this.proposer.metadata_json
-          || this.proposer.metadata_json.length === 0) return null;
+          || !this.proposer.proposer_json
+          || this.proposer.proposer_json.length === 0) return null;
 
       const result = {};
 
-      this.proposer.metadata_json.forEach((proposerDataObj) => {
+      this.proposer.proposer_json.forEach((proposerDataObj) => {
         // eslint-disable-next-line no-undef
         result[proposerDataObj.key] = proposerDataObj.value;
       });
