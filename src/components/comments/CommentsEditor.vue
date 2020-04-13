@@ -1,16 +1,29 @@
 <template>
   <div class="comments__editor">
-    <v-textarea
+    <!--    <v-textarea-->
+    <!--      v-model.trim="comment"-->
+    <!--      name="comment"-->
+    <!--      filled-->
+    <!--      :label="$t('comments.typeComment')"-->
+    <!--      :counter="maxStringSize"-->
+    <!--      required-->
+    <!--      :error-messages="commentErrors"-->
+    <!--      @input="validateSingleField"-->
+    <!--      @blur="validateSingleField"-->
+    <!--    />-->
+
+    <input
       v-model.trim="comment"
-      name="comment"
-      filled
-      :label="$t('comments.typeComment')"
-      :counter="maxStringSize"
-      required
-      :error-messages="commentErrors"
-      @input="validateSingleField"
-      @blur="validateSingleField"
+      class="d-none"
+    >
+
+    <quill-editor
+      ref="editor"
+      v-model.trim="comment"
+      :options="editorOptions"
+      class="editor"
     />
+
     <div class="text-right">
       <v-btn
         small
@@ -29,13 +42,28 @@
 <script>
 import { validationMixin } from 'vuelidate';
 import { required, maxLength } from 'vuelidate/lib/validators';
+import Vue from 'vue';
+import VueQuillEditor from 'vue-quill-editor';
 import createProposalComment from '@/mixins/createProposalComment';
+import notification from '@/mixins/notification';
+
+// require styles
+// eslint-disable-next-line import/no-extraneous-dependencies
+import 'quill/dist/quill.core.css';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import 'quill/dist/quill.snow.css';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import 'quill/dist/quill.bubble.css';
+
+// mount with global
+Vue.use(VueQuillEditor);
 
 export default {
   name: 'CommentsEditor',
   mixins: [
     validationMixin,
     createProposalComment,
+    notification,
   ],
   validations() {
     return {
@@ -63,6 +91,30 @@ export default {
     return {
       comment: '',
       maxStringSize: 20000,
+      editorOptions: {
+        theme: 'snow',
+        modules: {
+          toolbar: [
+            ['bold', 'italic', 'underline', 'strike'],
+            ['blockquote', 'code-block'],
+
+            [{ header: 1 }, { header: 2 }],
+            [{ list: 'ordered' }, { list: 'bullet' }],
+            [{ script: 'sub' }, { script: 'super' }],
+            [{ indent: '-1' }, { indent: '+1' }],
+            [{ direction: 'rtl' }],
+
+            [{ size: ['small', false, 'large', 'huge'] }],
+            [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+            [{ color: [] }, { background: [] }],
+            [{ font: [] }],
+            [{ align: [] }],
+            ['link'],
+            ['clean'],
+          ],
+        },
+      },
     };
   },
   computed: {
@@ -85,6 +137,14 @@ export default {
         { key: 'text', value: this.comment },
       ];
     },
+    editor() {
+      return this.$refs.editor.quill;
+    },
+  },
+  watch: {
+    comment() {
+      console.log('this is current quill instance object', this.editor);
+    },
   },
   created() {
     this.comment = this.initialComment;
@@ -98,7 +158,11 @@ export default {
       return !this.$v.$anyError;
     },
     async postComment() {
-      if (!this.validateAll()) return;
+      if (!this.validateAll()) {
+        console.log(this.commentErrors);
+        this.showErrorMsg(this.$t('notifications.overviewEmpty'));
+        return;
+      }
 
       try {
         this.$emit('is-scatter-active', true);
