@@ -8,20 +8,14 @@
     <!--      :counter="maxStringSize"-->
     <!--      required-->
     <!--      :error-messages="commentErrors"-->
-    <!--      @input="validateSingleField"-->
-    <!--      @blur="validateSingleField"-->
     <!--    />-->
 
-    <input
-      v-model.trim="comment"
-      class="d-none"
-    >
-
     <quill-editor
-      ref="editor"
+      ref="commentEditor"
       v-model.trim="comment"
       :options="editorOptions"
       class="editor"
+      @change="onEditorChange($event)"
     />
 
     <div class="text-right">
@@ -115,6 +109,7 @@ export default {
           ],
         },
       },
+      isCommentEditorEmpty: true,
     };
   },
   computed: {
@@ -137,30 +132,22 @@ export default {
         { key: 'text', value: this.comment },
       ];
     },
-    editor() {
-      return this.$refs.editor.quill;
-    },
-  },
-  watch: {
-    comment() {
-      console.log('this is current quill instance object', this.editor);
-    },
   },
   created() {
     this.comment = this.initialComment;
+    this.onEditorChange({ text: this.comment });
   },
   methods: {
-    validateSingleField() {
-      this.$v.comment.$touch();
+    onEditorChange({ text }) {
+      this.isCommentEditorEmpty = !text.trim() || text.trim() === '/n';
     },
     validateAll() {
       this.$v.$touch();
       return !this.$v.$anyError;
     },
     async postComment() {
-      if (!this.validateAll()) {
-        console.log(this.commentErrors);
-        this.showErrorMsg(this.$t('notifications.overviewEmpty'));
+      if (!this.validateAll() || this.isCommentEditorEmpty) {
+        this.showErrorMsg(this.$t('notifications.commentRules'));
         return;
       }
 
