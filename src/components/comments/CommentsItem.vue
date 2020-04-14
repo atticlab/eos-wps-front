@@ -12,8 +12,9 @@
     <div
       v-if="!isEditing"
       class="mb-6"
+      v-html="comment"
     >
-      {{ comment }}
+      <!--   comment   -->
     </div>
 
     <CommentsEditor

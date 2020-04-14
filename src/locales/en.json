@@ -468,7 +468,8 @@
     "cannotComment": "You can't create comment",
     "notEligibleCommentator": "Only eligible proposers are allowed to comment",
     "cannotBeRegisteredBp": "Cannot be a registered producer",
-    "personalInfoSubmitted": "Personal info is submitted"
+    "personalInfoSubmitted": "Personal info is submitted",
+    "commentRules": "Comment is empty or too long"
   },
   "proposalStatuses": {
     "paid": "Paid",

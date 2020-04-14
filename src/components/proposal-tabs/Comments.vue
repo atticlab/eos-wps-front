@@ -11,7 +11,7 @@
         />
         <v-col v-else>
           <CommentsEditor
-            v-if="!userHasComment"
+            v-if="!userHasComment && getAccountNameWithAuthority"
             :proposal-name="proposalName"
             :account="account"
             @comment-posted="callAction"
@@ -61,6 +61,7 @@ export default {
     }),
     ...mapGetters('userService', {
       getAccountName: 'getAccountName',
+      getAccountNameWithAuthority: 'getAccountNameWithAuthority',
     }),
     userHasComment() {
       return this.proposalComments.some(comment => comment.account === this.getAccountName);
