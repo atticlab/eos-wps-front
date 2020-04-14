@@ -1,15 +1,5 @@
 <template>
   <div class="comments__editor">
-    <!--    <v-textarea-->
-    <!--      v-model.trim="comment"-->
-    <!--      name="comment"-->
-    <!--      filled-->
-    <!--      :label="$t('comments.typeComment')"-->
-    <!--      :counter="maxStringSize"-->
-    <!--      required-->
-    <!--      :error-messages="commentErrors"-->
-    <!--    />-->
-
     <quill-editor
       ref="commentEditor"
       v-model.trim="comment"
@@ -87,6 +77,7 @@ export default {
       maxStringSize: 20000,
       editorOptions: {
         theme: 'snow',
+        placeholder: this.$t('comments.typeComment'),
         modules: {
           toolbar: [
             ['bold', 'italic', 'underline', 'strike'],
@@ -113,18 +104,6 @@ export default {
     };
   },
   computed: {
-    commentErrors() {
-      const errors = [];
-      if (!this.$v.comment.$dirty) return errors;
-
-      // eslint-disable-next-line no-unused-expressions
-      !this.$v.comment.required && errors.push(this.$t('validationMessages.required'));
-      // eslint-disable-next-line no-unused-expressions
-      !this.$v.comment.maxLength
-      && errors.push(this.$t('validationMessages.maxLength', { numberOfChars: this.maxStringSize }));
-
-      return errors;
-    },
     commentRestructured() {
       if (!this.comment) return [];
 
